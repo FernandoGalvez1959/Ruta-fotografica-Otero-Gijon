@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1C2B39">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ruta foto N-VI">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Ruta fotográfica Otero de Herreros – Gijón</title>
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{
+  --paper:#E7ECE2; --card:#F6F8F2; --ink:#1C2B39; --muted:#56666F;
+  --road:#C8102E; --gold:#C98420; --blue:#2E4A86; --line:#C9D2C4;
+  --head:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 120px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;transition:background .3s,color .3s}
+body.night{--paper:#111A2C;--card:#1A2640;--ink:#E7EAF1;--muted:#9EA9BE;--gold:#E8AA4C;--blue:#8FB0F0;--line:#2C3A58}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+
+/* Cabecera */
+header{padding:22px 0 10px}
+.plates{display:flex;gap:8px;margin-bottom:10px}
+.plate{font-family:var(--head);font-weight:700;font-size:18px;color:#fff;padding:2px 10px;border-radius:5px;border:2px solid #fff;box-shadow:0 0 0 2px var(--road);background:var(--road);letter-spacing:.02em}
+.plate.b{background:#1D5FAF;box-shadow:0 0 0 2px #1D5FAF}
+h1{font-family:var(--head);font-weight:700;font-size:clamp(34px,8vw,52px);line-height:.95;margin:0}
+.sub{font-family:var(--head);font-weight:500;font-size:22px;margin:4px 0 6px;color:var(--muted)}
+.note{font-size:15px;color:var(--muted);margin:0}
+
+/* Controles */
+.controls{position:sticky;top:0;z-index:1000;background:var(--paper);padding:10px 0 8px;border-bottom:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.seg{display:flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden;flex:1 1 100%}
+.seg button{flex:1;font-family:var(--head);font-size:17px;font-weight:600;background:transparent;color:var(--ink);border:0;padding:8px 6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;flex:1 1 100%;scrollbar-width:none}
+.chip{font-family:var(--head);font-size:16px;font-weight:600;white-space:nowrap;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:4px 13px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--road);background:var(--road);color:#fff}
+.date{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:17px;font-weight:600}
+.date input{font:inherit;font-family:var(--body);font-size:16px;padding:4px 8px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+.tabs{display:flex;gap:4px}
+.tabs button{flex:1;font-family:var(--head);font-size:19px;font-weight:700;padding:9px 4px;border:0;border-bottom:4px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--road)}
+body.night .tabs button[aria-selected="true"]{border-bottom-color:var(--gold)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Lista */
+.intro{margin:16px 0 4px;font-size:15.5px;color:var(--muted)}
+.count{font-family:var(--head);font-size:18px;font-weight:600;margin:14px 0 6px}
+.spot{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
+.spot.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{background:rgba(201,132,32,.18)}100%{background:transparent}}
+@media (prefers-reduced-motion:reduce){.spot.flash{animation:none}body{transition:none}}
+
+/* Hito kilométrico: el elemento de la ruta */
+.hito{width:58px;align-self:start;background:#fff;border:2px solid #1C2B39;border-radius:14px 14px 3px 3px;text-align:center;overflow:hidden;color:#1C2B39}
+.hito .top{background:var(--road);height:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--head);font-size:12px;font-weight:700}
+.hito .k{font-family:var(--head);font-size:12px;font-weight:600;line-height:1;margin-top:5px}
+.hito b{display:block;font-family:var(--head);font-size:26px;line-height:1.05;padding-bottom:6px}
+.spot.done .hito{opacity:.55}
+
+.spot h3{font-family:var(--head);font-size:25px;font-weight:700;line-height:1.1;margin:0 0 3px}
+.meta{font-family:var(--head);font-size:16px;font-weight:500;color:var(--muted);margin:0 0 8px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.meta .off{color:var(--road);font-weight:600}
+body.night .meta .off{color:var(--gold)}
+.desc{margin:0 0 10px}
+dl{margin:0}
+dt{font-family:var(--head);font-weight:700;font-size:17px;margin-top:8px}
+dd{margin:0}
+.sun{margin-top:12px;padding:10px 12px;border-left:4px solid var(--gold);background:var(--card);border-radius:0 8px 8px 0;font-size:15.5px}
+.sun h4{font-family:var(--head);font-size:16px;font-weight:700;margin:0 0 4px;color:var(--gold)}
+.sun .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2px 16px}
+.sun .grid span b{font-family:var(--head);font-size:18px}
+.sun p{margin:6px 0 0}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{font-family:var(--head);font-size:17px;font-weight:600;padding:7px 14px;border-radius:8px;border:2px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;cursor:pointer}
+.btn.main{background:var(--ink);color:var(--paper)}
+.btn.ok{border-color:#2E7D4F;color:#2E7D4F}
+body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
+.empty{padding:30px 0;font-size:17px}
+
+/* Mapa */
+#mapPanel{padding:12px 0 20px}
+.maprow{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-family:var(--head);font-size:17px;font-weight:600;margin-bottom:8px}
+.maprow label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.maprow input{width:20px;height:20px}
+#map{height:68vh;min-height:380px;border-radius:10px;border:2px solid var(--ink);background:#dfe5da}
+.legend{font-size:14.5px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:22px;height:4px;background:var(--road);vertical-align:middle;margin-right:4px}
+.pin{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:2px solid #fff;font-family:var(--head);font-weight:700;font-size:15px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.pin.dia{background:#C98420}
+.pin.noche{background:#2E4A86}
+.pin.end{background:#C8102E;width:22px;height:22px}
+.leaflet-popup-content{font-family:var(--body);font-size:15px}
+.leaflet-popup-content b{font-family:var(--head);font-size:18px}
+.leaflet-popup-content button{margin-top:6px;font-family:var(--head);font-size:16px;font-weight:600;padding:5px 12px;border-radius:6px;border:0;background:#1C2B39;color:#fff;cursor:pointer}
+.nomap{padding:24px;font-size:16px}
+footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="plates"><span class="plate">N-VI</span><span class="plate">N-630</span><span class="plate b">A-66</span></div>
+    <h1>Ruta fotográfica</h1>
+    <p class="sub">Otero de Herreros ⇄ Gijón</p>
+    <p class="note">Paisajes, miradores y lugares especiales a menos de 25 km de la carretera, con el mejor punto de vista y la mejor luz de cada uno.</p>
+  </header>
+</div>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="row">
+      <div class="seg" role="group" aria-label="Sentido del viaje">
+        <button data-sentido="ida" aria-pressed="true">Ida: Otero → Gijón</button>
+        <button data-sentido="vuelta" aria-pressed="false">Vuelta: Gijón → Otero</button>
+      </div>
+    </div>
+    <div class="row"><div class="chips" id="chips" role="group" aria-label="Provincia"></div></div>
+    <div class="row">
+      <label class="date">Fecha del viaje <input type="date" id="fecha"></label>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="dia" aria-selected="true">☀ Diurnas</button>
+      <button role="tab" data-tab="noche" aria-selected="false">☾ Nocturnas</button>
+      <button role="tab" data-tab="mapa" aria-selected="false">Mapa</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="listPanel">
+    <p class="intro" id="intro"></p>
+    <p class="count" id="count"></p>
+    <div id="list"></div>
+  </section>
+  <section id="mapPanel" hidden>
+    <div class="maprow">
+      <label><input type="checkbox" id="showDia" checked> <span class="pin dia" style="width:20px;height:20px;font-size:0"></span> Diurnas</label>
+      <label><input type="checkbox" id="showNoche" checked> <span class="pin noche" style="width:20px;height:20px;font-size:0"></span> Nocturnas</label>
+    </div>
+    <div id="map"></div>
+    <p class="legend"><i></i> Trazado aproximado: N-VI / A-6 hasta Benavente, luego A-66 / N-630 por León y Pajares hasta Gijón. Los números siguen el orden del sentido elegido.</p>
+  </section>
+  <footer>
+    Horarios de sol y luna calculados para la fecha elegida, en hora de España. Kilómetros aproximados desde Otero de Herreros (ida) o desde Gijón (vuelta); «desvío» es la distancia aproximada desde la ruta. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; del mapa se guardan las zonas que ya hayas visto con conexión.
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const TOTAL = 420;
+const PROVS = ["Segovia","Ávila","Valladolid","Zamora","León","Asturias"];
+
+const DIA = [
+ {id:"d1",n:"Acueducto de Segovia",p:"Segovia",km:0,dv:18,lat:40.9481,lon:-4.1178,t:"Monumento",
+  d:"Dos mil años de granito sin argamasa, con casi 29 m de altura en la plaza del Azoguejo.",
+  v:"Desde lo alto de la escalinata del Postigo del Consuelo, junto a la muralla: los arcos en diagonal con la plaza a los pies. Para la perspectiva de la hilera de arcos, baja a la avenida de Fernández Ladreda y encuadra a ras de suelo.",
+  l:"Primera hora de la mañana: luz rasante que marca los sillares y plaza casi vacía. Por la tarde, la última hora dora la cara oeste.",
+  f:"S24 Ultra: 1x, o 0,6x desde abajo. Cámara (a6600 / 2000D): 18–24 mm; para aislar arcos, 55 mm.",
+  e:"Todo el año; con nieve, excepcional."},
+ {id:"d2",n:"Alcázar de Segovia",p:"Segovia",km:0,dv:20,lat:40.9546,lon:-4.1395,t:"Mirador",
+  d:"La proa del Alcázar sobre la unión del Eresma y el Clamores: la imagen más reconocible de Segovia.",
+  v:"Mirador del Alcázar, en la carretera que sube a Zamarramala desde la Fuencisla. De frente a la proa, con el valle y la sierra detrás.",
+  l:"Atardecer: la proa mira al oeste y recibe la última luz directa. Quédate hasta que se encienden los focos (ver pestaña Nocturnas).",
+  f:"S24 Ultra: 3x–5x. Cámara: 55–150 mm.",
+  e:"Otoño por el color de la arboleda del Eresma; invierno con nieve en la sierra."},
+ {id:"d3",n:"Segovia desde la Cuesta de los Hoyos",p:"Segovia",km:0,dv:19,lat:40.9463,lon:-4.1296,t:"Mirador",
+  d:"El perfil completo del casco: la catedral asomando sobre la muralla y el Alcázar a un lado.",
+  v:"Mirador de la Cuesta de los Hoyos, en la carretera del valle del Clamores, al sur del casco.",
+  l:"Última hora de la tarde, con luz lateral dorada sobre la muralla y la catedral.",
+  f:"S24 Ultra: 2x–3x. Cámara: 35–70 mm; una panorámica de tres fotos funciona muy bien.",
+  e:"Todo el año."},
+ {id:"d4",n:"La Mujer Muerta desde la Canaleja",p:"Segovia",km:0,dv:18,lat:40.9470,lon:-4.1235,t:"Paisaje",
+  d:"La silueta de la sierra con forma de mujer tendida, vista desde la ciudad.",
+  v:"Mirador de la Canaleja, en el borde sur del casco; la sierra ocupa el horizonte sobre el valle del Clamores.",
+  l:"Amanecer y atardecer, con luz rasante que perfila las cumbres. Con nieve, se tiñe de rosa justo antes de salir y después de ponerse el sol.",
+  f:"S24 Ultra: 3x. Cámara: 70–150 mm para acercar la sierra.",
+  e:"Invierno y primavera, con nieve."},
+ {id:"d5",n:"Iglesia de San Sebastián, Villacastín",p:"Segovia",km:22,dv:1,lat:40.7797,lon:-4.4136,t:"Monumento",
+  d:"La llamada «catedral de la sierra»: un templo enorme para un pueblo pequeño, junto a la N-VI.",
+  v:"Desde las afueras, a unos cientos de metros, para que la iglesia domine sobre los tejados. De cerca, la fachada en contrapicado.",
+  l:"Última hora de la tarde.",
+  f:"S24 Ultra: 3x de lejos, 0,6x de cerca. Cámara: 70–100 mm de lejos, 18 mm de cerca.",
+  e:"Todo el año."},
+ {id:"d6",n:"Castillo de Arévalo y puente de Medina",p:"Ávila",km:62,dv:1,lat:41.0685,lon:-4.7225,t:"Monumento",
+  d:"Castillo sobre la unión del Adaja y el Arevalillo, con puentes mudéjares de ladrillo a sus pies.",
+  v:"Desde la vega del Arevalillo, junto al puente de Medina: el puente en primer plano y el castillo arriba.",
+  l:"Atardecer, cuando el ladrillo se vuelve anaranjado. Por la mañana, niebla de río en otoño.",
+  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
+  e:"Otoño e invierno, por las nieblas."},
+ {id:"d7",n:"Plaza de la Villa, Arévalo",p:"Ávila",km:62,dv:1,lat:41.0632,lon:-4.7195,t:"Monumento",
+  d:"Una de las plazas mudéjares más completas de Castilla, con soportales y la iglesia de Santa María la Mayor.",
+  v:"Desde el extremo opuesto a Santa María, dejando que los soportales lleven la vista hacia la torre.",
+  l:"Primera hora de la mañana o última de la tarde; evita el mediodía.",
+  f:"S24 Ultra: 0,6x–1x. Cámara: 18–24 mm.",
+  e:"Todo el año."},
+ {id:"d8",n:"Castillo de la Mota, Medina del Campo",p:"Valladolid",km:90,dv:2,lat:41.3068,lon:-4.9065,t:"Monumento",
+  d:"Fortaleza de ladrillo del siglo XV con torre del homenaje de unos 40 m; aquí estuvo preso César Borgia.",
+  v:"Desde la explanada exterior, a unos 150 m, para meter foso, barrera y torre del homenaje en un solo encuadre.",
+  l:"Atardecer, con luz cálida sobre el ladrillo.",
+  f:"S24 Ultra: 1x. Cámara: 18–35 mm.",
+  e:"Todo el año; los cielos con nubes dan mucho juego."},
+ {id:"d9",n:"Tordesillas y el Duero",p:"Valladolid",km:115,dv:1,lat:41.4975,lon:-5.0010,t:"Paisaje",
+  d:"La villa del Tratado, asomada al Duero sobre su largo puente medieval.",
+  v:"Desde la orilla sur, junto al paseo fluvial: el puente en diagonal y la iglesia de San Antolín en lo alto.",
+  l:"Amanecer con bruma sobre el río (otoño e invierno) o atardecer con reflejo dorado.",
+  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm. Con el agua quieta, busca el reflejo completo.",
+  e:"Otoño e invierno."},
+ {id:"d10",n:"Castillo de Simancas",p:"Valladolid",km:115,dv:20,lat:41.5925,lon:-4.8285,t:"Monumento",
+  d:"El castillo que guarda el Archivo General de Simancas, sobre el Pisuerga.",
+  v:"Desde el puente medieval sobre el Pisuerga, con la villa escalonada subiendo hasta el castillo.",
+  l:"Media tarde a atardecer.",
+  f:"S24 Ultra: 2x–3x. Cámara: 50–85 mm.",
+  e:"Primavera y otoño."},
+ {id:"d11",n:"Mota del Marqués",p:"Valladolid",km:140,dv:1,lat:41.6365,lon:-5.1720,t:"Paisaje",
+  d:"Restos de castillo sobre un cerro que domina la autovía, con la iglesia de San Martín a sus pies.",
+  v:"Desde la ladera baja del cerro, con la iglesia en primer plano y el torreón arriba.",
+  l:"Atardecer. Los días de tormenta, los cielos de Tierra de Campos son espectaculares.",
+  f:"S24 Ultra: 1x–3x. Cámara: 24–70 mm.",
+  e:"Primavera, con el cereal verde."},
+ {id:"d12",n:"Urueña: murallas y Ermita de la Anunciada",p:"Valladolid",km:150,dv:5,lat:41.7275,lon:-5.2055,t:"Mirador",
+  d:"Villa amurallada sobre el páramo, con más librerías que bares. Desde el adarve se domina toda Tierra de Campos.",
+  v:"Paseo de ronda de la muralla, lado oeste, mirando a la llanura. Abajo, la ermita románica de la Anunciada con el pueblo al fondo.",
+  l:"Atardecer: el sol se pone sobre la llanura sin obstáculos. Uno de los mejores ocasos de toda la ruta.",
+  f:"S24 Ultra: 1x para la llanura, 3x–5x para la ermita. Cámara: 18 mm y 70–200 mm.",
+  e:"Primavera (verde) y verano (cereal dorado)."},
+ {id:"d13",n:"Puerta de San Andrés, Villalpando",p:"Zamora",km:175,dv:1,lat:41.8665,lon:-5.4135,t:"Monumento",
+  d:"Puerta monumental de la antigua muralla, flanqueada por dos torres semicirculares.",
+  v:"De frente, desde la plaza exterior, con el arco centrado.",
+  l:"Tarde; un cielo con nubes le da fondo.",
+  f:"S24 Ultra: 1x. Cámara: 24–35 mm.",
+  e:"Todo el año."},
+ {id:"d14",n:"Lagunas de Villafáfila",p:"Zamora",km:175,dv:18,lat:41.8300,lon:-5.6000,t:"Naturaleza",
+  d:"Lagunas salobres en plena estepa cerealista: miles de ánsares en invierno y una de las mayores poblaciones de avutardas del mundo.",
+  v:"Observatorios junto a la Laguna Grande y Casa del Parque. Fotografía desde dentro del observatorio: las aves se espantan si te ven.",
+  l:"Amanecer y atardecer, con reflejos en el agua y bandos en vuelo.",
+  f:"S24 Ultra: 10x. Cámara: 300 mm o más, con trípode.",
+  e:"Noviembre a febrero para los ánsares; abril para el cortejo de las avutardas."},
+ {id:"d15",n:"Benavente: Torre del Caracol",p:"Zamora",km:205,dv:1,lat:42.0015,lon:-5.6815,t:"Mirador",
+  d:"La torre renacentista del antiguo castillo, hoy parador, sobre la vega del Esla y el Órbigo.",
+  v:"Desde el mirador junto al parador, con la vega a tus pies; la torre se ve mejor desde el parque de la Mota, al pie.",
+  l:"Atardecer sobre la vega.",
+  f:"S24 Ultra: 1x–3x. Cámara: 18–70 mm.",
+  e:"Primavera y otoño."},
+
+ {id:"d31",n:"Castillo de Coyanza, Valencia de Don Juan",p:"León",km:235,dv:8,lat:42.2950,lon:-5.5185,t:"Monumento",
+  d:"Castillo del siglo XV de torres esbeltas y almenadas, asomado al río Esla.",
+  v:"Desde la orilla opuesta del Esla, junto al puente, con el castillo en lo alto del talud y el río delante.",
+  l:"Atardecer: la cara que mira al río recibe la última luz del oeste.",
+  f:"S24 Ultra: 2x–3x. Cámara: 35–85 mm.",
+  e:"Primavera y otoño, con la chopera del río verde o dorada."},
+ {id:"d32",n:"Santuario de la Virgen del Camino",p:"León",km:270,dv:5,lat:42.5810,lon:-5.6400,t:"Monumento",
+  d:"Santuario moderno de Coello de Portugal, con una fachada presidida por las grandes esculturas de bronce de Subirachs.",
+  v:"De frente desde la explanada, alejándote para que entren las figuras completas y la torre.",
+  l:"Luz lateral de primera o última hora; el mediodía aplana el bronce.",
+  f:"S24 Ultra: 0,6x–1x; 3x para detalles de las figuras. Cámara: 18–24 mm y 55–85 mm.",
+  e:"Todo el año."},
+ {id:"d16",n:"Catedral de León",p:"León",km:275,dv:1,lat:42.5990,lon:-5.5680,t:"Monumento",
+  d:"La Pulchra Leonina, con cerca de 1.800 m² de vidrieras medievales.",
+  v:"Exterior: desde el fondo de la Plaza de Regla, algo desplazado a la izquierda para ver fachada y torre. Interior: las vidrieras del ábside.",
+  l:"Exterior: tarde, con sol en la fachada oeste. Interior: mañana soleada para el ábside (este), tarde para el rosetón (oeste).",
+  f:"S24 Ultra: 0,6x para la fachada entera. Cámara: el angular más corto que tengas.",
+  e:"Todo el año; días soleados para el interior."},
+
+ {id:"d33",n:"Basílica de San Isidoro, León",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5705,t:"Monumento",
+  d:"Joya del románico junto a la muralla romana. Dentro está el Panteón de los Reyes, donde no se permite fotografiar.",
+  v:"Desde la Plaza de San Isidoro, en diagonal hacia la Puerta del Cordero, con la torre detrás.",
+  l:"De mediodía a media tarde, con el sol sobre la fachada sur.",
+  f:"S24 Ultra: 0,6x para el conjunto, 3x para los relieves. Cámara: 18 mm y 55 mm.",
+  e:"Todo el año."},
+ {id:"d34",n:"Casa Botines de Gaudí",p:"León",km:275,dv:1,lat:42.5985,lon:-5.5712,t:"Monumento",
+  d:"Edificio neogótico de Gaudí, con el Palacio de los Guzmanes al lado y la estatua de Gaudí sentado en un banco.",
+  v:"Desde la esquina de la Plaza de San Marcelo, en diagonal, para ver dos fachadas y las torres de las esquinas.",
+  l:"Mañana o media tarde, con luz lateral sobre la piedra.",
+  f:"S24 Ultra: 0,6x. Cámara: 18 mm, cuidando que las verticales queden rectas.",
+  e:"Todo el año."},
+ {id:"d17",n:"San Marcos, León",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5835,t:"Monumento",
+  d:"Fachada plateresca de un centenar de metros junto al río Bernesga, hoy parador.",
+  v:"Desde la plaza, en diagonal, para que la fachada fugue; o desde la orilla opuesta, con el puente de San Marcos.",
+  l:"Luz suave de última hora; evita el mediodía.",
+  f:"S24 Ultra: 0,6x. Cámara: 18 mm.",
+  e:"Todo el año."},
+
+ {id:"d35",n:"Faedo de Ciñera",p:"León",km:310,dv:2,lat:42.8650,lon:-5.6620,t:"Naturaleza",
+  d:"Hayedo de cuento junto al arroyo, premiado como bosque mejor cuidado de España, con hayas centenarias de formas retorcidas.",
+  v:"Desde la senda que remonta el arroyo, con el agua en primer plano y las hayas enmarcando el camino.",
+  l:"Días nublados o de niebla, o primera hora de la mañana: la luz suave evita manchas de sol y sombra.",
+  f:"S24 Ultra: 0,6x; para sedar el agua, modo Pro 1/2 s apoyado. Cámara: 18–24 mm, trípode, f/11, 0,5–1 s.",
+  e:"Finales de octubre y principios de noviembre, con el color del otoño."},
+ {id:"d36",n:"Pozo Ibarra, Ciñera",p:"León",km:310,dv:2,lat:42.8580,lon:-5.6690,t:"Monumento",
+  d:"El castillete del pozo minero, emblema de la minería de la montaña leonesa.",
+  v:"Desde la explanada frente al pozo, en contrapicado, con el castillete recortado contra el cielo.",
+  l:"Atardecer o cielo de tormenta; en blanco y negro gana mucho.",
+  f:"S24 Ultra: 0,6x en contrapicado. Cámara: 18 mm.",
+  e:"Todo el año."},
+ {id:"d18",n:"Hoces de Vegacervera",p:"León",km:300,dv:18,lat:42.8790,lon:-5.5310,t:"Paisaje",
+  d:"Desfiladero estrecho excavado por el río Torío entre paredes de caliza. Muy cerca, la Cueva de Valporquero.",
+  v:"Desde los apartaderos de la carretera dentro de la hoz, mirando aguas arriba con el río en primer plano.",
+  l:"Alrededor del mediodía, único momento en que entra el sol al fondo; o días nublados, que suavizan el contraste.",
+  f:"S24 Ultra: 0,6x. Cámara: 18 mm en vertical.",
+  e:"Otoño por el color; primavera por el caudal."},
+ {id:"d19",n:"Embalse y viaducto de Barrios de Luna",p:"León",km:305,dv:18,lat:42.8565,lon:-5.8680,t:"Paisaje",
+  d:"El viaducto atirantado Fernández Casado cruza el embalse con un vano central de 440 m. Está en la AP-66, alternativa de peaje a la N-630.",
+  v:"Desde las carreteras que bordean el embalse, con el puente de perfil sobre el agua.",
+  l:"Atardecer, con el agua quieta para el reflejo.",
+  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
+  e:"Primavera, con el embalse lleno."},
+ {id:"d20",n:"Colegiata de Arbas",p:"León",km:335,dv:1,lat:42.9930,lon:-5.7470,t:"Monumento",
+  d:"Colegiata románica del siglo XII en lo alto del puerto de Pajares, antiguo refugio de caminantes.",
+  v:"Desde el prado del sur, con la cabecera y las montañas detrás.",
+  l:"Tarde. Con niebla o nieve es muy fotogénica.",
+  f:"S24 Ultra: 1x. Cámara: 24–35 mm.",
+  e:"Otoño e invierno."},
+ {id:"d21",n:"Mirador del Puerto de Pajares",p:"Asturias",km:338,dv:0,lat:42.9985,lon:-5.7625,t:"Mirador",
+  d:"La bajada a Asturias: las curvas de la N-630 descendiendo entre montañas hacia el valle de Pajares.",
+  v:"Desde el mirador en la parte alta del puerto, vertiente asturiana, mirando al norte hacia el valle.",
+  l:"Primera hora, con mar de nubes en el valle; o atardecer, con luz lateral desde el oeste.",
+  f:"S24 Ultra: 1x, y 3x para las curvas. Cámara: 18–70 mm.",
+  e:"Otoño y primavera. En invierno, consulta antes el estado del puerto."},
+ {id:"d22",n:"Santa Cristina de Lena",p:"Asturias",km:360,dv:3,lat:43.1283,lon:-5.8157,t:"Monumento",
+  d:"Iglesia prerrománica del siglo IX, Patrimonio de la Humanidad, sobre una loma encima del valle.",
+  v:"Desde el camino de subida, un poco por debajo, recortándola contra las montañas.",
+  l:"Media mañana o tarde, con los prados en luz lateral.",
+  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
+  e:"Primavera y otoño."},
+
+ {id:"d37",n:"Peña Ubiña desde Tuiza",p:"Asturias",km:350,dv:18,lat:43.0283,lon:-5.8911,t:"Paisaje",
+  d:"El gran macizo calizo de Las Ubiñas (2.417 m), Reserva de la Biosfera, sobre los prados y cabañas de Tuiza.",
+  v:"Desde Tuiza de Arriba, con los prados y las cabañas en primer plano y la Ubiña al fondo.",
+  l:"Primera y última hora del día, con luz lateral sobre la roca. Carretera estrecha: sube con tiempo.",
+  f:"S24 Ultra: 1x y 3x para la cumbre. Cámara: 18–24 mm y 70–150 mm.",
+  e:"Finales de primavera (prados verdes, nieve en cumbres) y otoño."},
+ {id:"d38",n:"Pozo Santa Bárbara pintado por Okuda, Turón",p:"Asturias",km:368,dv:10,lat:43.2000,lon:-5.7250,t:"Monumento",
+  d:"Un castillete minero convertido en obra de arte con los colores geométricos de Okuda San Miguel.",
+  v:"Desde la carretera del valle, un poco retirado, para que el castillete se recorte contra la montaña verde.",
+  l:"Días de cielo cubierto claro, que hacen saltar los colores; o luz de tarde.",
+  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
+  e:"Todo el año."},
+ {id:"d23",n:"Santa María del Naranco",p:"Asturias",km:392,dv:4,lat:43.3787,lon:-5.8667,t:"Monumento",
+  d:"Palacio prerrománico de Ramiro I en la ladera del Naranco, sobre Oviedo. San Miguel de Lillo está a pocos metros, subiendo.",
+  v:"Desde el prado inferior, para ver el palacio con sus arcos y Oviedo detrás.",
+  l:"Tarde y atardecer, con luz cálida sobre la piedra.",
+  f:"S24 Ultra: 1x. Cámara: 24–35 mm.",
+  e:"Todo el año."},
+ {id:"d24",n:"Mirador del Naranco",p:"Asturias",km:392,dv:7,lat:43.3830,lon:-5.8745,t:"Mirador",
+  d:"Junto al monumento al Sagrado Corazón: Oviedo a tus pies y la Cordillera al fondo.",
+  v:"Explanada junto al monumento, mirando al sur.",
+  l:"Atardecer; los días claros tras lluvia se ven las cumbres nevadas.",
+  f:"S24 Ultra: 3x–5x para las montañas. Cámara: 70–200 mm.",
+  e:"Días despejados, sobre todo en invierno y primavera."},
+
+ {id:"d39",n:"San Julián de los Prados (Santullano), Oviedo",p:"Asturias",km:388,dv:1,lat:43.3688,lon:-5.8372,t:"Monumento",
+  d:"La mayor iglesia prerrománica que se conserva, del siglo IX, con pinturas murales en su interior. Patrimonio de la Humanidad.",
+  v:"Desde el prado del lado sur, con la iglesia completa y el pórtico lateral.",
+  l:"Mañana, con luz suave sobre la piedra.",
+  f:"S24 Ultra: 1x. Cámara: 18–35 mm.",
+  e:"Todo el año."},
+ {id:"d40",n:"Plaza del Fontán, Oviedo",p:"Asturias",km:390,dv:1,lat:43.3617,lon:-5.8467,t:"Monumento",
+  d:"Plaza porticada del siglo XVIII con mercado y casas de colores, en el corazón del casco antiguo.",
+  v:"Desde bajo los soportales, usando los arcos como marco de la plaza.",
+  l:"Mañana, con ambiente de mercado; por la tarde, luz cálida en las fachadas.",
+  f:"S24 Ultra: 0,6x. Cámara: 18–24 mm.",
+  e:"Todo el año."},
+ {id:"d41",n:"La Iglesia Skate, Llanera",p:"Asturias",km:400,dv:5,lat:43.4436,lon:-5.8506,t:"Monumento",
+  d:"Antigua iglesia convertida en pista de patinaje, con techo y muros pintados por Okuda San Miguel.",
+  v:"El interior desde la entrada, con la pista en primer plano y la bóveda de colores encima. Consulta antes horario y acceso.",
+  l:"Días de sol, cuando la luz de las ventanas enciende los colores.",
+  f:"S24 Ultra: 0,6x. Cámara: el angular más corto que tengas.",
+  e:"Todo el año."},
+ {id:"d25",n:"Elogio del Horizonte, Gijón",p:"Asturias",km:420,dv:0,lat:43.5475,lon:-5.6655,t:"Mirador",
+  d:"La escultura de hormigón de Chillida en el cerro de Santa Catalina, abierta al Cantábrico.",
+  v:"Desde el sendero que sube por el lado sur, en contrapicado, o con una persona debajo para dar escala.",
+  l:"Atardecer: en primavera y verano el sol cae sobre el mar. Contraluz con la silueta de la escultura.",
+  f:"S24 Ultra: 0,6x–1x. Cámara: 18–24 mm.",
+  e:"Primavera y verano."},
+ {id:"d26",n:"Playa de San Lorenzo",p:"Asturias",km:420,dv:1,lat:43.5418,lon:-5.6585,t:"Paisaje",
+  d:"La playa urbana de Gijón, con la iglesia de San Pedro en un extremo y el paseo del Muro.",
+  v:"Desde lo alto de la Escalerona o desde el atrio de San Pedro, siguiendo la curva de la playa.",
+  l:"Amanecer: el sol sale por el mar. Con marea baja, la arena mojada refleja el cielo.",
+  f:"S24 Ultra: 0,6x. Cámara: 18 mm. Consulta la tabla de mareas.",
+  e:"Todo el año; en invierno, oleaje."},
+ {id:"d27",n:"Parque de La Providencia",p:"Asturias",km:420,dv:5,lat:43.5555,lon:-5.6190,t:"Mirador",
+  d:"Parque sobre los acantilados al este de Gijón, con la bahía y la ciudad enteras.",
+  v:"Desde el mirador del extremo del parque, con la costa en primer plano y Gijón al fondo.",
+  l:"Atardecer: el sol se pone detrás de la ciudad.",
+  f:"S24 Ultra: 1x–3x. Cámara: 24–100 mm.",
+  e:"Todo el año."},
+
+ {id:"d42",n:"Campa Torres y Cabo Torres, Gijón",p:"Asturias",km:420,dv:6,lat:43.5690,lon:-5.6990,t:"Mirador",
+  d:"Castro prerromano sobre el acantilado, con vistas a toda la bahía de Gijón y el puerto de El Musel.",
+  v:"Desde el borde del cabo, junto al faro, mirando hacia la bahía.",
+  l:"Atardecer, con el sol cayendo sobre el mar al oeste.",
+  f:"S24 Ultra: 1x–3x. Cámara: 18–70 mm.",
+  e:"Todo el año."},
+ {id:"d43",n:"Candás y Cabo San Antonio",p:"Asturias",km:420,dv:13,lat:43.5920,lon:-5.7640,t:"Mirador",
+  d:"Villa marinera con puerto y casas de colores, vista desde el cabo de San Antonio.",
+  v:"Desde el mirador del Cabo San Antonio, con el puerto y la villa a tus pies.",
+  l:"Tarde y atardecer.",
+  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
+  e:"Todo el año."},
+ {id:"d44",n:"Cabo Peñas",p:"Asturias",km:420,dv:25,lat:43.6560,lon:-5.8490,t:"Paisaje",
+  d:"El punto más al norte de Asturias: faro y acantilados de más de 100 m sobre el Cantábrico.",
+  v:"Desde las pasarelas de los miradores, con el faro en el borde del acantilado.",
+  l:"Atardecer. Con temporal, el oleaje es espectacular (sujeta bien el móvil: sopla fuerte).",
+  f:"S24 Ultra: 0,6x–1x; 5x para el oleaje. Cámara: 18 mm y 100–200 mm.",
+  e:"Todo el año; otoño e invierno para el mar bravo."},
+ {id:"d28",n:"Universidad Laboral, Gijón",p:"Asturias",km:420,dv:4,lat:43.5245,lon:-5.6155,t:"Monumento",
+  d:"Uno de los mayores edificios de España, con un gran patio corintio y una torre con mirador.",
+  v:"El patio, desde uno de los extremos; la ciudad, desde el mirador de la torre (visitas guiadas).",
+  l:"Mañana para el patio; el mirador, en días claros.",
+  f:"S24 Ultra: 0,6x en el patio. Cámara: 18 mm.",
+  e:"Todo el año."}
+];
+
+const NOCHE = [
+ {id:"n1",n:"Acueducto iluminado",p:"Segovia",km:0,dv:18,lat:40.9481,lon:-4.1178,t:"Monumento",
+  d:"Los arcos iluminados contra el último azul del cielo.",
+  v:"Lo alto de la escalinata del Postigo del Consuelo, o a ras de suelo en el Azoguejo.",
+  l:"Hora azul: el cielo conserva color y los focos quedan equilibrados.",
+  f:"S24 Ultra: modo Noche, apoyado en algo firme. Cámara: trípode, ISO 100–200, f/8, 2–8 s."},
+ {id:"n2",n:"Alcázar iluminado",p:"Segovia",km:0,dv:20,lat:40.9546,lon:-4.1395,t:"Mirador",
+  d:"La proa iluminada flotando sobre la arboleda oscura del Eresma.",
+  v:"Mirador del Alcázar, en la carretera de Zamarramala.",
+  l:"Hora azul; más tarde, con el cielo negro, pierde fuerza.",
+  f:"S24 Ultra: 3x en modo Noche. Cámara: 55–150 mm, trípode, ISO 200, f/8, 4–10 s."},
+ {id:"n3",n:"Castillo de la Mota iluminado",p:"Valladolid",km:90,dv:2,lat:41.3068,lon:-4.9065,t:"Monumento",
+  d:"El ladrillo iluminado resalta la torre del homenaje sobre el foso.",
+  v:"Explanada exterior, a unos 150 m.",
+  l:"Hora azul.",
+  f:"S24 Ultra: modo Noche. Cámara: trípode, 18–35 mm, ISO 200, f/8, 5–10 s."},
+ {id:"n4",n:"Tordesillas reflejada en el Duero",p:"Valladolid",km:115,dv:1,lat:41.4975,lon:-5.0010,t:"Paisaje",
+  d:"El puente y la villa iluminados, duplicados en el agua.",
+  v:"Orilla sur del Duero, junto al paseo fluvial.",
+  l:"Hora azul, con el agua en calma.",
+  f:"S24 Ultra: modo Noche con trípode. Cámara: 24–50 mm, ISO 100, f/8, 10–20 s (la exposición larga alisa el agua)."},
+ {id:"n5",n:"Vía Láctea en Urueña",p:"Valladolid",km:150,dv:5,lat:41.7240,lon:-5.2050,t:"Cielo",
+  d:"Tierra de Campos tiene cielos muy oscuros: la Vía Láctea sobre la muralla o la Ermita de la Anunciada.",
+  v:"Fuera del pueblo, junto a la ermita, con la muralla recortada en el horizonte.",
+  l:"Noche sin luna, desde el final del crepúsculo. El centro de la Vía Láctea sale por el sur de abril a septiembre.",
+  f:"S24 Ultra: Expert RAW, modo Astro, en trípode. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s, enfoque manual a infinito."},
+ {id:"n6",n:"Estrellas en las Lagunas de Villafáfila",p:"Zamora",km:175,dv:18,lat:41.8300,lon:-5.6000,t:"Cielo",
+  d:"Si no hay viento, las estrellas se reflejan en la laguna en medio de la llanura.",
+  v:"Desde los caminos junto a la Laguna Grande. Es reserva natural: no salgas de los caminos.",
+  l:"Noche sin luna y sin viento.",
+  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s."},
+ {id:"n7",n:"Catedral de León iluminada",p:"León",km:275,dv:1,lat:42.5990,lon:-5.5680,t:"Monumento",
+  d:"La fachada iluminada en la Plaza de Regla. Tras la lluvia, el suelo mojado la duplica.",
+  v:"Fondo de la Plaza de Regla, bajo, cerca del suelo si está mojado.",
+  l:"Hora azul. En verano suele haber visitas nocturnas con las vidrieras iluminadas.",
+  f:"S24 Ultra: 0,6x en modo Noche. Cámara: angular, trípode, ISO 200, f/8, 4–8 s."},
+ {id:"n8",n:"San Marcos y el Bernesga",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5835,t:"Monumento",
+  d:"La fachada plateresca iluminada y su reflejo en el río.",
+  v:"Orilla opuesta del Bernesga, junto al puente de San Marcos.",
+  l:"Hora azul.",
+  f:"S24 Ultra: modo Noche. Cámara: 18–24 mm, trípode, ISO 100, f/8, 8–15 s."},
+
+ {id:"n14",n:"San Isidoro iluminada",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5705,t:"Monumento",
+  d:"La basílica y la muralla iluminadas, con la plaza casi vacía.",
+  v:"Plaza de San Isidoro, en diagonal hacia la puerta sur y la torre.",
+  l:"Hora azul.",
+  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 200, f/8, 4–8 s."},
+ {id:"n15",n:"Casa Botines de noche",p:"León",km:275,dv:1,lat:42.5985,lon:-5.5712,t:"Monumento",
+  d:"El edificio de Gaudí iluminado, con el Palacio de los Guzmanes al lado.",
+  v:"Esquina de la Plaza de San Marcelo, en diagonal.",
+  l:"Hora azul; después, las farolas le dan un tono cálido.",
+  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 200, f/8, 3–6 s."},
+ {id:"n9",n:"Cielo estrellado en Pajares y Arbas",p:"León",km:335,dv:1,lat:42.9930,lon:-5.7470,t:"Cielo",
+  d:"Montaña sin apenas luz artificial: estrellas sobre la colegiata o mar de nubes bajo la luna hacia Asturias.",
+  v:"Prado junto a la colegiata de Arbas, o el mirador del puerto mirando al norte.",
+  l:"Noche sin luna para las estrellas; con luna, el mar de nubes brilla.",
+  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s. Lleva abrigo: hace frío incluso en verano."},
+ {id:"n10",n:"Catedral de Oviedo",p:"Asturias",km:390,dv:1,lat:43.3625,lon:-5.8430,t:"Monumento",
+  d:"La torre gótica iluminada sobre la Plaza de Alfonso II el Casto.",
+  v:"Desde el fondo de la plaza, con la torre centrada y el empedrado delante.",
+  l:"Hora azul.",
+  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 200, f/8, 4–8 s."},
+
+ {id:"n16",n:"Estrellas sobre Peña Ubiña",p:"Asturias",km:350,dv:18,lat:43.0283,lon:-5.8911,t:"Cielo",
+  d:"Uno de los cielos más oscuros cerca de la ruta: la Vía Láctea sobre el macizo.",
+  v:"Prados de Tuiza de Arriba, con la silueta de la Ubiña al sur.",
+  l:"Noche sin luna. La Vía Láctea queda sobre la montaña de primavera a finales de verano.",
+  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s. Lleva linterna y abrigo."},
+ {id:"n17",n:"Plaza del Fontán y casco de Oviedo",p:"Asturias",km:390,dv:1,lat:43.3617,lon:-5.8467,t:"Monumento",
+  d:"Soportales y fachadas bajo las farolas, con las calles empedradas brillando.",
+  v:"Bajo los soportales, con los arcos como marco. Si ha llovido, busca reflejos en el suelo.",
+  l:"Hora azul y primeras horas de la noche.",
+  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 400, f/5,6, 2–4 s."},
+ {id:"n11",n:"Oviedo desde el Naranco",p:"Asturias",km:392,dv:7,lat:43.3830,lon:-5.8745,t:"Mirador",
+  d:"Toda la ciudad encendida a tus pies.",
+  v:"Explanada del monumento al Sagrado Corazón, mirando al sur.",
+  l:"Hora azul, en cuanto se encienden las luces de la ciudad.",
+  f:"S24 Ultra: 1x–3x en modo Noche. Cámara: 24–70 mm, trípode, ISO 100, f/8, 5–15 s."},
+ {id:"n12",n:"Gijón desde el Cerro de Santa Catalina",p:"Asturias",km:420,dv:0,lat:43.5475,lon:-5.6655,t:"Mirador",
+  d:"La bahía iluminada, la playa de San Lorenzo y la silueta del Elogio del Horizonte.",
+  v:"Junto a la escultura, mirando hacia la playa.",
+  l:"Hora azul, sobre todo con marea alta.",
+  f:"S24 Ultra: modo Noche. Cámara: 18–35 mm, trípode, ISO 100, f/8, 10–20 s (el mar queda sedoso)."},
+ {id:"n18",n:"Puerto deportivo y Cimadevilla, Gijón",p:"Asturias",km:420,dv:0,lat:43.5440,lon:-5.6640,t:"Paisaje",
+  d:"Los barcos y las casas de Cimadevilla iluminados, reflejados en el agua del puerto.",
+  v:"Desde el paseo del puerto deportivo, con los barcos en primer plano y el barrio detrás.",
+  l:"Hora azul, mejor con marea alta y sin viento.",
+  f:"S24 Ultra: modo Noche. Cámara: 24–35 mm, trípode, ISO 100, f/8, 10–20 s."},
+ {id:"n19",n:"Faro de Cabo Peñas bajo las estrellas",p:"Asturias",km:420,dv:25,lat:43.6560,lon:-5.8490,t:"Cielo",
+  d:"El haz del faro barriendo el cielo estrellado sobre el acantilado.",
+  v:"Desde las pasarelas, con el faro a un lado del encuadre y el mar abierto al norte.",
+  l:"Noche sin luna y despejada. Mucho cuidado con el borde del acantilado: no salgas de las pasarelas.",
+  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 1600–3200, 15–20 s."}
+];
+
+const RUTA = [[40.8167,-4.2083],[40.7797,-4.4136],[40.9450,-4.6050],[41.0650,-4.7200],[41.3100,-4.9300],[41.5000,-5.0000],[41.6330,-5.1750],[41.8660,-5.4130],[42.0020,-5.6780],[42.2300,-5.6100],[42.5990,-5.5670],[42.8000,-5.6200],[42.8530,-5.6700],[42.9200,-5.6600],[42.9930,-5.7470],[43.1600,-5.8200],[43.2500,-5.7700],[43.3620,-5.8440],[43.5320,-5.6610]];
+
+/* ---------- Estado ---------- */
+const hoy = new Date();
+const state = {tab:"dia", sentido:"ida", prov:"Todas", fecha:new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate(),12)};
+let visitados = {};
+try { visitados = JSON.parse(localStorage.getItem("rutaN6_visitados")||"{}")||{}; } catch(e){ visitados = {}; }
+function guardar(){ try{ localStorage.setItem("rutaN6_visitados", JSON.stringify(visitados)); }catch(e){} }
+
+/* ---------- Sol y luna ---------- */
+const RAD=Math.PI/180, J1970=2440588, J2000=2451545, DAYMS=864e5, E=RAD*23.4397;
+const toDays = d => d/DAYMS - 0.5 + J1970 - J2000;
+const fromJ = j => new Date((j + 0.5 - J1970)*DAYMS);
+function solar(date,lat,lng){
+  const lw=RAD*-lng, phi=RAD*lat, d=toDays(date);
+  const n=Math.round(d-0.0009-lw/(2*Math.PI));
+  const ds=0.0009+lw/(2*Math.PI)+n;
+  const M=RAD*(357.5291+0.98560028*ds);
+  const C=RAD*(1.9148*Math.sin(M)+0.02*Math.sin(2*M)+0.0003*Math.sin(3*M));
+  const L=M+C+RAD*102.9372+Math.PI;
+  const dec=Math.asin(Math.sin(L)*Math.sin(E));
+  const Jnoon=J2000+ds+0.0053*Math.sin(M)-0.0069*Math.sin(2*L);
+  function at(h){
+    const x=(Math.sin(h*RAD)-Math.sin(phi)*Math.sin(dec))/(Math.cos(phi)*Math.cos(dec));
+    if (x<-1||x>1) return [null,null];
+    const w=Math.acos(x);
+    const a=0.0009+(w+lw)/(2*Math.PI)+n;
+    const Jset=J2000+a+0.0053*Math.sin(M)-0.0069*Math.sin(2*L);
+    return [fromJ(Jnoon-(Jset-Jnoon)), fromJ(Jset)];
+  }
+  const az=Math.acos(Math.max(-1,Math.min(1,Math.sin(dec)/Math.cos(phi))))/RAD;
+  return {at, azRise:az, azSet:360-az};
+}
+function hora(d){ return d ? d.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Madrid"}) : "—"; }
+const RUMBOS=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
+const rumbo = a => RUMBOS[Math.round(a/22.5)%16];
+function luna(date){
+  const jd=date/DAYMS+2440587.5, S=29.530588853;
+  const edad=((jd-2451550.1)%S+S)%S;
+  const ilum=Math.round((1-Math.cos(2*Math.PI*edad/S))/2*100);
+  const nombres=[[1.84,"Luna nueva"],[5.53,"Creciente"],[9.22,"Cuarto creciente"],[12.91,"Gibosa creciente"],[16.61,"Luna llena"],[20.30,"Gibosa menguante"],[23.99,"Cuarto menguante"],[27.68,"Menguante"],[99,"Luna nueva"]];
+  return {nombre:nombres.find(x=>edad<x[0])[1], ilum};
+}
+
+/* ---------- Utilidades ---------- */
+const kmDe = p => state.sentido==="ida" ? p.km : TOTAL - p.km;
+function filtrar(arr){
+  const f = arr.map((p,i)=>({p,i})).filter(o => state.prov==="Todas" || o.p.p===state.prov);
+  f.sort((a,b)=> kmDe(a.p)-kmDe(b.p) || (state.sentido==="ida" ? a.i-b.i : b.i-a.i));
+  return f.map(o=>o.p);
+}
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- Fichas ---------- */
+function bloqueSol(p, noche){
+  const s = solar(state.fecha, p.lat, p.lon);
+  const fechaTxt = state.fecha.toLocaleDateString("es-ES",{day:"numeric",month:"long"});
+  if(!noche){
+    const [salida, puesta] = s.at(-0.833);
+    const [finDorada, iniDorada] = s.at(6);
+    return `<div class="sun"><h4>Luz el ${fechaTxt}</h4><div class="grid">
+      <span>Amanecer <b>${hora(salida)}</b></span>
+      <span>Luz dorada hasta <b>${hora(finDorada)}</b></span>
+      <span>Luz dorada desde <b>${hora(iniDorada)}</b></span>
+      <span>Puesta de sol <b>${hora(puesta)}</b></span></div>
+      <p>El sol sale por el ${rumbo(s.azRise)} (${Math.round(s.azRise)}°) y se pone por el ${rumbo(s.azSet)} (${Math.round(s.azSet)}°).</p></div>`;
+  }
+  const [, puesta] = s.at(-0.833);
+  const [, azulIni] = s.at(-4);
+  const [, azulFin] = s.at(-8);
+  const [, oscuro] = s.at(-18);
+  const noche22 = new Date(state.fecha.getTime()+10*3600e3);
+  const m = luna(noche22);
+  let consejo;
+  if (p.t==="Cielo") consejo = m.ilum<=25 ? "Buena noche para estrellas." : m.ilum>=60 ? "La luna aclara el cielo: mejor otra noche para estrellas, o aprovecha la luz lunar para el paisaje." : "Luna a medias: busca las horas en que no esté en el cielo.";
+  else consejo = m.ilum>=40 ? "Una luna visible puede completar el encuadre." : "Sin luna que moleste: todo el protagonismo para la iluminación.";
+  return `<div class="sun"><h4>Noche del ${fechaTxt}</h4><div class="grid">
+    <span>Puesta de sol <b>${hora(puesta)}</b></span>
+    <span>Hora azul <b>${hora(azulIni)}–${hora(azulFin)}</b></span>
+    <span>Noche cerrada desde <b>${hora(oscuro)}</b></span>
+    <span>${m.nombre} <b>${m.ilum}%</b></span></div>
+    <p>${consejo}</p></div>`;
+}
+function ficha(p, noche){
+  const hecho = !!visitados[p.id];
+  const off = p.dv<=1 ? "En ruta" : `Desvío ${p.dv} km`;
+  return `<article class="spot${hecho?" done":""}" id="card-${p.id}">
+    <div class="hito" aria-label="Kilómetro ${kmDe(p)}"><div class="top">${p.km>=205?"A-66":"N-VI"}</div><div class="k">km</div><b>${kmDe(p)}</b></div>
+    <div>
+      <h3>${esc(p.n)}</h3>
+      <p class="meta"><span>${p.p}</span><span>${p.t}</span><span class="off">${off}</span></p>
+      <p class="desc">${esc(p.d)}</p>
+      <dl>
+        <dt>Mejor punto de vista</dt><dd>${esc(p.v)}</dd>
+        <dt>${noche?"Mejor momento":"Mejor luz"}</dt><dd>${esc(p.l)}</dd>
+        <dt>Encuadre y ajustes</dt><dd>${esc(p.f)}</dd>
+        ${p.e?`<dt>Mejor época</dt><dd>${esc(p.e)}</dd>`:""}
+      </dl>
+      ${bloqueSol(p, noche)}
+      <div class="acts">
+        <a class="btn main" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving" target="_blank" rel="noopener">Cómo llegar</a>
+        <button class="btn" data-mapa="${p.id}">Ver en el mapa</button>
+        <button class="btn${hecho?" ok":""}" data-visto="${p.id}">${hecho?"✓ Visitado":"Marcar visitado"}</button>
+      </div>
+    </div></article>`;
+}
+
+function render(){
+  document.body.classList.toggle("night", state.tab==="noche");
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===state.tab));
+  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.sentido===state.sentido));
+  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.prov===state.prov));
+  const esMapa = state.tab==="mapa";
+  document.getElementById("listPanel").hidden = esMapa;
+  document.getElementById("mapPanel").hidden = !esMapa;
+  if (esMapa){ initMapa(); actualizarMapa(); return; }
+  const noche = state.tab==="noche";
+  const lista = filtrar(noche?NOCHE:DIA);
+  const origen = state.sentido==="ida" ? "Otero de Herreros" : "Gijón";
+  document.getElementById("intro").textContent = noche
+    ? "Para todas: trípode o apoyo firme, disparo con retardo de 2 s, estabilizador apagado en trípode y enfoque manual en las estrellas."
+    : "Las horas de luz se recalculan para cada lugar según la fecha del viaje.";
+  const vistos = lista.filter(p=>visitados[p.id]).length;
+  document.getElementById("count").textContent = lista.length
+    ? `${lista.length} lugares desde ${origen}${state.prov!=="Todas"?" en "+state.prov:""}${vistos?`, ${vistos} visitados`:""}`
+    : "";
+  document.getElementById("list").innerHTML = lista.length
+    ? lista.map(p=>ficha(p,noche)).join("")
+    : `<p class="empty">No hay lugares ${noche?"nocturnos":"diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
+}
+
+/* ---------- Mapa ---------- */
+let mapa=null, capa=null, marcas={};
+function initMapa(){
+  if (mapa) { setTimeout(()=>mapa.invalidateSize(),50); return; }
+  if (!window.L){ document.getElementById("map").innerHTML='<p class="nomap">El mapa necesita conexión a internet. Conéctate y vuelve a abrir esta pestaña; las fichas siguen funcionando sin conexión.</p>'; return; }
+  mapa = L.map("map");
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
+    maxZoom:19, subdomains:"abcd",
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+  }).addTo(mapa);
+  L.polyline(RUTA,{color:"#C8102E",weight:4,opacity:.8,dashArray:"8 6"}).addTo(mapa);
+  const fin = (ll,t)=>L.marker(ll,{icon:L.divIcon({className:"",html:'<span class="pin end"></span>',iconSize:[22,22],iconAnchor:[11,11]})}).bindTooltip(t).addTo(mapa);
+  fin(RUTA[0],"Otero de Herreros"); fin(RUTA[RUTA.length-1],"Gijón");
+  capa = L.layerGroup().addTo(mapa);
+  mapa.fitBounds(L.latLngBounds(RUTA).pad(0.05));
+  mapa.on("popupopen", e=>{
+    const b = e.popup.getElement().querySelector("[data-ficha]");
+    if (b) b.onclick = ()=>irAFicha(b.dataset.ficha);
+  });
+  setTimeout(()=>mapa.invalidateSize(),80);
+}
+function actualizarMapa(){
+  if (!mapa) return;
+  capa.clearLayers(); marcas={};
+  const grupos = [];
+  if (document.getElementById("showDia").checked) grupos.push(["dia",DIA]);
+  if (document.getElementById("showNoche").checked) grupos.push(["noche",NOCHE]);
+  grupos.forEach(([tipo,arr])=>{
+    filtrar(arr).forEach((p,i)=>{
+      const desfase = tipo==="noche" ? 0.0006 : 0;
+      const m = L.marker([p.lat+desfase,p.lon+desfase],{icon:L.divIcon({className:"",html:`<span class="pin ${tipo}">${i+1}</span>`,iconSize:[28,28],iconAnchor:[14,14]})});
+      m.bindPopup(`<b>${esc(p.n)}</b><br>${tipo==="noche"?"Nocturna":"Diurna"}, km ${kmDe(p)}${p.dv>1?`, desvío ${p.dv} km`:""}<br>${esc(p.l)}<br><button data-ficha="${p.id}">Ver ficha</button>`);
+      m.addTo(capa); marcas[p.id]=m;
+    });
+  });
+}
+function irAFicha(id){
+  state.tab = id.startsWith("n") ? "noche" : "dia";
+  render();
+  const el = document.getElementById("card-"+id);
+  if (el){ el.scrollIntoView({behavior:"smooth",block:"start"}); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+}
+function verEnMapa(id){
+  if (id.startsWith("n")) document.getElementById("showNoche").checked=true; else document.getElementById("showDia").checked=true;
+  state.tab="mapa"; render();
+  window.scrollTo({top:0});
+  if (!mapa) return;
+  const m = marcas[id];
+  if (m){ setTimeout(()=>{ mapa.setView(m.getLatLng(),14); m.openPopup(); },120); }
+}
+
+/* ---------- Eventos ---------- */
+const chips = document.getElementById("chips");
+chips.innerHTML = ["Todas",...PROVS].map(p=>`<button class="chip" data-prov="${p}" aria-pressed="false">${p}</button>`).join("");
+chips.addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; state.prov=b.dataset.prov; render(); });
+document.querySelector(".seg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.sentido=b.dataset.sentido; render(); });
+document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; render(); });
+document.getElementById("showDia").addEventListener("change", actualizarMapa);
+document.getElementById("showNoche").addEventListener("change", actualizarMapa);
+const fi = document.getElementById("fecha");
+const pad = n=>String(n).padStart(2,"0");
+fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
+fi.addEventListener("change", ()=>{ if(!fi.value) return; const [y,m,d]=fi.value.split("-").map(Number); state.fecha=new Date(y,m-1,d,12); render(); });
+document.getElementById("list").addEventListener("click", e=>{
+  const v = e.target.closest("[data-visto]");
+  if (v){ const id=v.dataset.visto; if(visitados[id]) delete visitados[id]; else visitados[id]=true; guardar(); render(); document.getElementById("card-"+id)?.scrollIntoView({block:"nearest"}); return; }
+  const m = e.target.closest("[data-mapa]");
+  if (m) verEnMapa(m.dataset.mapa);
+});
+render();
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
