@@ -14,7 +14,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 :root{
   --paper:#E7ECE2; --card:#F6F8F2; --ink:#1C2B39; --muted:#56666F;
@@ -54,6 +53,7 @@ h1{font-family:var(--head);font-weight:700;font-size:clamp(34px,8vw,52px);line-h
 .tabs{display:flex;gap:4px}
 .tabs button{flex:1;font-family:var(--head);font-size:19px;font-weight:700;padding:9px 4px;border:0;border-bottom:4px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--road)}
+.tabs a.tabmap{flex:1;text-align:center;font-family:var(--head);font-size:19px;font-weight:700;padding:9px 4px;color:#fff;background:var(--road);border-radius:8px 8px 0 0;text-decoration:none}
 body.night .tabs button[aria-selected="true"]{border-bottom-color:var(--gold)}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
@@ -94,23 +94,6 @@ dd{margin:0}
 body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
 .empty{padding:30px 0;font-size:17px}
 
-/* Mapa */
-#mapPanel{padding:12px 0 20px}
-.maprow{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-family:var(--head);font-size:17px;font-weight:600;margin-bottom:8px}
-.maprow label{display:flex;align-items:center;gap:6px;cursor:pointer}
-.maprow input{width:20px;height:20px}
-#map{height:68vh;min-height:380px;border-radius:10px;border:2px solid var(--ink);background:#dfe5da}
-.legend{font-size:14.5px;color:var(--muted);margin-top:8px}
-.legend i{display:inline-block;width:22px;height:4px;background:var(--road);vertical-align:middle;margin-right:4px}
-.pin{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:2px solid #fff;font-family:var(--head);font-weight:700;font-size:15px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
-.pin.dia{background:#C98420}
-.pin.noche{background:#2E4A86}
-.pin.end{background:#C8102E;width:22px;height:22px}
-.leaflet-popup-content{font-family:var(--body);font-size:15px}
-.leaflet-popup-content b{font-family:var(--head);font-size:18px}
-.leaflet-popup-content a.gm{display:inline-block;margin-top:6px;font-family:var(--head);font-size:16px;font-weight:600;padding:5px 12px;border-radius:6px;background:#C8102E;color:#fff;text-decoration:none}
-.leaflet-popup-content button{margin-top:6px;font-family:var(--head);font-size:16px;font-weight:600;padding:5px 12px;border-radius:6px;border:0;background:#1C2B39;color:#fff;cursor:pointer}
-.nomap{padding:24px;font-size:16px}
 footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
 [hidden]{display:none!important}
 </style>
@@ -140,7 +123,7 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="dia" aria-selected="true">☀ Diurnas</button>
       <button role="tab" data-tab="noche" aria-selected="false">☾ Nocturnas</button>
-      <button role="tab" data-tab="mapa" aria-selected="false">Mapa</button>
+      <a class="tabmap" id="rutaGM" href="#" target="_blank" rel="noopener">Mapa ↗</a>
     </div>
   </div>
 </div>
@@ -151,21 +134,11 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     <p class="count" id="count"></p>
     <div id="list"></div>
   </section>
-  <section id="mapPanel" hidden>
-    <div class="maprow">
-      <label><input type="checkbox" id="showDia" checked> <span class="pin dia" style="width:20px;height:20px;font-size:0"></span> Diurnas</label>
-      <label><input type="checkbox" id="showNoche" checked> <span class="pin noche" style="width:20px;height:20px;font-size:0"></span> Nocturnas</label>
-    </div>
-    <p><a class="btn main" id="rutaGM" target="_blank" rel="noopener" href="#">Abrir la ruta completa en Google Maps</a></p>
-    <div id="map"></div>
-    <p class="legend"><i></i> Trazado aproximado: N-VI / A-6 hasta Benavente, luego A-66 / N-630 por León y Pajares hasta Gijón. Los números siguen el orden del sentido elegido.</p>
-  </section>
   <footer>
-    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; del mapa se guardan las zonas que ya hayas visto con conexión.
+    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión.
   </footer>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const TOTAL = 420;
 const PROVS = ["Segovia","Ávila","Valladolid","Zamora","León","Asturias"];
@@ -641,7 +614,6 @@ function ficha(p, noche){
       <div class="acts">
         <a class="btn main" href="${gmRuta(p)}" target="_blank" rel="noopener">Cómo llegar</a>
         <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Ver en Google Maps</a>
-        <button class="btn" data-mapa="${p.id}">Mapa de la ruta</button>
         <button class="btn${hecho?" ok":""}" data-visto="${p.id}">${hecho?"✓ Visitado":"Marcar visitado"}</button>
       </div>
     </div></article>`;
@@ -652,11 +624,7 @@ function render(){
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===state.tab));
   document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.sentido===state.sentido));
   document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.prov===state.prov));
-  const esMapa = state.tab==="mapa";
-  document.getElementById("listPanel").hidden = esMapa;
-  document.getElementById("mapPanel").hidden = !esMapa;
   enlaceRuta();
-  if (esMapa){ initMapa(); actualizarMapa(); return; }
   const noche = state.tab==="noche";
   const lista = filtrar(noche?NOCHE:DIA);
   const origen = state.sentido==="ida" ? "Otero de Herreros" : "Gijón";
@@ -672,57 +640,6 @@ function render(){
     : `<p class="empty">No hay lugares ${noche?"nocturnos":"diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
 }
 
-/* ---------- Mapa ---------- */
-let mapa=null, capa=null, marcas={};
-function initMapa(){
-  if (mapa) { setTimeout(()=>mapa.invalidateSize(),50); return; }
-  if (!window.L){ document.getElementById("map").innerHTML='<p class="nomap">El mapa necesita conexión a internet. Conéctate y vuelve a abrir esta pestaña; las fichas siguen funcionando sin conexión.</p>'; return; }
-  mapa = L.map("map");
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
-    maxZoom:19, subdomains:"abcd",
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
-  }).addTo(mapa);
-  L.polyline(RUTA,{color:"#C8102E",weight:4,opacity:.8,dashArray:"8 6"}).addTo(mapa);
-  const fin = (ll,t)=>L.marker(ll,{icon:L.divIcon({className:"",html:'<span class="pin end"></span>',iconSize:[22,22],iconAnchor:[11,11]})}).bindTooltip(t).addTo(mapa);
-  fin(RUTA[0],"Otero de Herreros"); fin(RUTA[RUTA.length-1],"Gijón");
-  capa = L.layerGroup().addTo(mapa);
-  mapa.fitBounds(L.latLngBounds(RUTA).pad(0.05));
-  mapa.on("popupopen", e=>{
-    const b = e.popup.getElement().querySelector("[data-ficha]");
-    if (b) b.onclick = ()=>irAFicha(b.dataset.ficha);
-  });
-  setTimeout(()=>mapa.invalidateSize(),80);
-}
-function actualizarMapa(){
-  if (!mapa) return;
-  capa.clearLayers(); marcas={};
-  const grupos = [];
-  if (document.getElementById("showDia").checked) grupos.push(["dia",DIA]);
-  if (document.getElementById("showNoche").checked) grupos.push(["noche",NOCHE]);
-  grupos.forEach(([tipo,arr])=>{
-    filtrar(arr).forEach((p,i)=>{
-      const desfase = tipo==="noche" ? 0.0006 : 0;
-      const m = L.marker([p.lat+desfase,p.lon+desfase],{icon:L.divIcon({className:"",html:`<span class="pin ${tipo}">${i+1}</span>`,iconSize:[28,28],iconAnchor:[14,14]})});
-      m.bindPopup(`<b>${esc(p.n)}</b><br>${tipo==="noche"?"Nocturna":"Diurna"}, km ${kmDe(p)}${p.dv>1?`, desvío ${p.dv} km`:""}<br>${esc(p.l)}<br><button data-ficha="${p.id}">Ver ficha</button> <a class="gm" href="${gmLugar(p)}" target="_blank" rel="noopener">Google Maps</a>`);
-      m.addTo(capa); marcas[p.id]=m;
-    });
-  });
-}
-function irAFicha(id){
-  state.tab = id.startsWith("n") ? "noche" : "dia";
-  render();
-  const el = document.getElementById("card-"+id);
-  if (el){ el.scrollIntoView({behavior:"smooth",block:"start"}); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
-}
-function verEnMapa(id){
-  if (id.startsWith("n")) document.getElementById("showNoche").checked=true; else document.getElementById("showDia").checked=true;
-  state.tab="mapa"; render();
-  window.scrollTo({top:0});
-  if (!mapa) return;
-  const m = marcas[id];
-  if (m){ setTimeout(()=>{ mapa.setView(m.getLatLng(),14); m.openPopup(); },120); }
-}
-
 /* ---------- Eventos ---------- */
 function enlaceRuta(){
   const a="Otero de Herreros, Segovia", b="Gijón, Asturias", w="Benavente, Zamora|León";
@@ -734,8 +651,6 @@ chips.innerHTML = ["Todas",...PROVS].map(p=>`<button class="chip" data-prov="${p
 chips.addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; state.prov=b.dataset.prov; render(); });
 document.querySelector(".seg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.sentido=b.dataset.sentido; render(); });
 document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; render(); });
-document.getElementById("showDia").addEventListener("change", actualizarMapa);
-document.getElementById("showNoche").addEventListener("change", actualizarMapa);
 const fi = document.getElementById("fecha");
 const pad = n=>String(n).padStart(2,"0");
 fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
@@ -743,8 +658,6 @@ fi.addEventListener("change", ()=>{ if(!fi.value) return; const [y,m,d]=fi.value
 document.getElementById("list").addEventListener("click", e=>{
   const v = e.target.closest("[data-visto]");
   if (v){ const id=v.dataset.visto; if(visitados[id]) delete visitados[id]; else visitados[id]=true; guardar(); render(); document.getElementById("card-"+id)?.scrollIntoView({block:"nearest"}); return; }
-  const m = e.target.closest("[data-mapa]");
-  if (m) verEnMapa(m.dataset.mapa);
 });
 render();
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
