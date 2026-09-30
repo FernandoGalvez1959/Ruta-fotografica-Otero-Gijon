@@ -93,6 +93,21 @@ dd{margin:0}
 .btn.ok{border-color:#2E7D4F;color:#2E7D4F}
 body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
 .empty{padding:30px 0;font-size:17px}
+.fotos{margin-top:12px}
+.fotos h4{font-family:var(--head);font-size:17px;font-weight:700;margin:0 0 6px}
+.fotos h4 span{font-weight:500;color:var(--muted)}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:360px}
+.fgrid button.th{padding:0;border:2px solid var(--line);border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--card);cursor:pointer}
+.fgrid img{width:100%;height:100%;object-fit:cover;display:block}
+.fgrid label.add{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;border:2px dashed var(--muted);border-radius:8px;font-family:var(--head);font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;text-align:center;line-height:1.1}
+.fgrid label.add b{font-size:28px;line-height:1}
+.fgrid label.add.busy{opacity:.5;pointer-events:none}
+.visor{position:fixed;inset:0;z-index:3000;background:rgba(10,14,22,.96);display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px)}
+.visor img{flex:1;min-height:0;width:100%;object-fit:contain}
+.visor .vbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding-top:10px}
+.visor .vbar button{font-family:var(--head);font-size:18px;font-weight:600;padding:9px 18px;border-radius:8px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer}
+.visor .vbar button.del{border-color:#ff7a7a;color:#ff7a7a}
+.visor p{color:#fff;text-align:center;font-family:var(--head);font-size:18px;margin:0 0 8px}
 
 footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
 [hidden]{display:none!important}
@@ -135,7 +150,7 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     <div id="list"></div>
   </section>
   <footer>
-    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión.
+    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión. Tus fotos se guardan solo en este móvil, dentro de la app: si borras los datos de la app o de Chrome, se borran también.
   </footer>
 </main>
 
@@ -611,6 +626,7 @@ function ficha(p, noche){
         ${p.e?`<dt>Mejor época</dt><dd>${esc(p.e)}</dd>`:""}
       </dl>
       ${bloqueSol(p, noche)}
+      <div class="fotos" data-fotos="${p.id}"></div>
       <div class="acts">
         <a class="btn main" href="${gmRuta(p)}" target="_blank" rel="noopener">Cómo llegar</a>
         <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Ver en Google Maps</a>
@@ -638,6 +654,92 @@ function render(){
   document.getElementById("list").innerHTML = lista.length
     ? lista.map(p=>ficha(p,noche)).join("")
     : `<p class="empty">No hay lugares ${noche?"nocturnos":"diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
+  pintarTodasFotos();
+}
+
+/* ---------- Mis fotos (hasta 3 por lugar, guardadas en el móvil) ---------- */
+const MAXF = 3;
+let dbP = null;
+function db(){
+  if (dbP) return dbP;
+  dbP = new Promise((ok, ko)=>{
+    if (!("indexedDB" in window)) return ko(new Error("sin IndexedDB"));
+    const r = indexedDB.open("rutaN6_fotos", 1);
+    r.onupgradeneeded = ()=> r.result.createObjectStore("fotos");
+    r.onsuccess = ()=> ok(r.result);
+    r.onerror = ()=> ko(r.error);
+  });
+  return dbP;
+}
+async function leerFotos(id){
+  try{
+    const d = await db();
+    return await new Promise(ok=>{ const q=d.transaction("fotos").objectStore("fotos").get(id); q.onsuccess=()=>ok(q.result||[]); q.onerror=()=>ok([]); });
+  }catch(e){ return []; }
+}
+async function guardarFotos(id, arr){
+  const d = await db();
+  return new Promise((ok,ko)=>{ const tx=d.transaction("fotos","readwrite"); tx.objectStore("fotos").put(arr,id); tx.oncomplete=ok; tx.onerror=()=>ko(tx.error); });
+}
+async function reducir(file){
+  let src;
+  try { src = await createImageBitmap(file, {imageOrientation:"from-image"}); }
+  catch(e){
+    src = await new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=URL.createObjectURL(file); });
+  }
+  const w = src.width||src.naturalWidth, h = src.height||src.naturalHeight;
+  const k = Math.min(1, 1600/Math.max(w,h));
+  const c = document.createElement("canvas"); c.width=Math.round(w*k); c.height=Math.round(h*k);
+  c.getContext("2d").drawImage(src,0,0,c.width,c.height);
+  return new Promise(ok=>c.toBlob(b=>ok(b||file),"image/jpeg",0.85));
+}
+let urls = [];
+function pintarTodasFotos(){
+  urls.forEach(u=>URL.revokeObjectURL(u)); urls=[];
+  document.querySelectorAll("[data-fotos]").forEach(el=>pintarFotos(el));
+}
+async function pintarFotos(el){
+  const id = el.dataset.fotos;
+  const arr = await leerFotos(id);
+  const th = arr.map((f,i)=>{ const u=URL.createObjectURL(f.blob); urls.push(u);
+    return `<button class="th" data-ver="${id}" data-i="${i}" aria-label="Ver foto ${i+1}"><img src="${u}" alt="Foto ${i+1}"></button>`; }).join("");
+  const add = arr.length<MAXF ? `<label class="add"><b>+</b>Añadir foto<input type="file" accept="image/*" multiple data-add="${id}" hidden></label>` : "";
+  el.innerHTML = `<h4>Mis fotos <span>(${arr.length} de ${MAXF})</span></h4><div class="fgrid">${th}${add}</div>`;
+}
+async function anadirFotos(input){
+  const id = input.dataset.add, files=[...input.files];
+  if (!files.length) return;
+  const lab = input.closest("label"); lab.classList.add("busy");
+  try{
+    const arr = await leerFotos(id);
+    for (const f of files){
+      if (arr.length>=MAXF) { alert("Solo se pueden guardar "+MAXF+" fotos por lugar."); break; }
+      arr.push({blob: await reducir(f), t: Date.now()});
+    }
+    await guardarFotos(id, arr);
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+  }catch(e){ alert("No se ha podido guardar la foto."); }
+  pintarFotos(document.querySelector(`[data-fotos="${id}"]`));
+}
+async function verFoto(id, i){
+  const arr = await leerFotos(id); const f = arr[i]; if(!f) return;
+  const u = URL.createObjectURL(f.blob);
+  const lugar = (DIA.concat(NOCHE).find(x=>x.id===id)||{}).n||"";
+  const v = document.createElement("div"); v.className="visor"; v.setAttribute("role","dialog");
+  const puedeCompartir = navigator.canShare && navigator.canShare({files:[new File([f.blob],"foto.jpg",{type:"image/jpeg"})]});
+  v.innerHTML = `<p>${esc(lugar)} (${i+1} de ${arr.length})</p><img src="${u}" alt=""><div class="vbar">
+    <button data-v="cerrar">Cerrar</button>${puedeCompartir?'<button data-v="compartir">Compartir</button>':""}<button class="del" data-v="borrar">Borrar foto</button></div>`;
+  const cerrar = ()=>{ v.remove(); URL.revokeObjectURL(u); };
+  v.addEventListener("click", async e=>{
+    const a = e.target.dataset.v;
+    if (a==="cerrar" || e.target===v) cerrar();
+    if (a==="compartir") navigator.share({files:[new File([f.blob],`${lugar||"foto"}.jpg`,{type:"image/jpeg"})], title:lugar}).catch(()=>{});
+    if (a==="borrar" && confirm("¿Borrar esta foto?")){
+      arr.splice(i,1); await guardarFotos(id, arr); cerrar();
+      pintarFotos(document.querySelector(`[data-fotos="${id}"]`));
+    }
+  });
+  document.body.appendChild(v);
 }
 
 /* ---------- Eventos ---------- */
@@ -655,7 +757,10 @@ const fi = document.getElementById("fecha");
 const pad = n=>String(n).padStart(2,"0");
 fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
 fi.addEventListener("change", ()=>{ if(!fi.value) return; const [y,m,d]=fi.value.split("-").map(Number); state.fecha=new Date(y,m-1,d,12); render(); });
+document.getElementById("list").addEventListener("change", e=>{ if (e.target.matches("[data-add]")) anadirFotos(e.target); });
 document.getElementById("list").addEventListener("click", e=>{
+  const t = e.target.closest("[data-ver]");
+  if (t){ verFoto(t.dataset.ver, +t.dataset.i); return; }
   const v = e.target.closest("[data-visto]");
   if (v){ const id=v.dataset.visto; if(visitados[id]) delete visitados[id]; else visitados[id]=true; guardar(); render(); document.getElementById("card-"+id)?.scrollIntoView({block:"nearest"}); return; }
 });
