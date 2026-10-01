@@ -138,6 +138,7 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="dia" aria-selected="true">☀ Diurnas</button>
       <button role="tab" data-tab="noche" aria-selected="false">☾ Nocturnas</button>
+      <button role="tab" data-tab="comer" aria-selected="false">🍴 Comer</button>
       <a class="tabmap" id="rutaGM" href="#" target="_blank" rel="noopener">Mapa ↗</a>
     </div>
   </div>
@@ -514,6 +515,111 @@ const NOCHE = [
   f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 1600–3200, 15–20 s."}
 ];
 
+const COMER = [
+ {id:"c1",n:"Mesón de Cándido",p:"Segovia",pob:"Segovia capital",km:0,dv:19,lat:40.9482,lon:-4.1073,t:"Restaurante",
+  esp:"Cochinillo asado, cortado con el borde de un plato",
+  d:"Más de 100 años y quinta generación de la familia Cándido; ha recibido a Grace Kelly, Dalí o Lola Flores. Horno de leña, junto al Acueducto. Precio medio-alto."},
+ {id:"c2",n:"Casa Duque",p:"Segovia",pob:"Segovia capital",km:0,dv:19,lat:40.9495,lon:-4.1175,t:"Restaurante",
+  esp:"Cochinillo asado en horno de leña (3 horas de cocción)",
+  d:"Fundado en 1895, 130 años de historia en la misma familia; de los iniciadores del asador castellano en Segovia. Precio medio-alto."},
+ {id:"c3",n:"Asador José María",p:"Segovia",pob:"Segovia capital",km:0,dv:19,lat:40.9435,lon:-4.1092,t:"Restaurante",
+  esp:"Cochinillo de granja propia y judiones",
+  d:"Desde 1982, controla toda la cadena del cochinillo que sirve. Uno de los tres grandes clásicos segovianos, junto a Cándido y Duque. Precio medio-alto."},
+ {id:"c4",n:"Bar Taberna Rubí",p:"Segovia",pob:"Segovia capital",km:0,dv:19,lat:40.9432,lon:-4.1082,t:"Pinchos",
+  esp:"Croquetas caseras, patatas bravas",
+  d:"Bar de tapeo muy popular entre locales junto a la Plaza Mayor, ambiente castizo. Precio económico."},
+ {id:"c5",n:"Bar Socorro",p:"Segovia",pob:"Segovia capital",km:0,dv:19,lat:40.9508,lon:-4.1214,t:"Pinchos",
+  esp:"Ensaladilla rusa, patatas revolconas, boquerones en vinagre",
+  d:"Bar tradicional de barrio en la Judería, apreciado por los propios segovianos, lejos del circuito turístico. Precio económico."},
+ {id:"c6",n:"Casa Marcial",p:"Segovia",pob:"Villacastín",km:22,dv:1,lat:40.8323,lon:-4.4057,t:"Restaurante",
+  esp:"Cochinillo y lechazo asado (tostón)",
+  d:"Asador tradicional de carretera, parada clásica en la N-VI/N-110, bien valorado por su cochinillo y lechazo."},
+ {id:"c7",n:"Asador Las Cubas",p:"Ávila",pob:"Arévalo",km:62,dv:1,lat:41.0620,lon:-4.7135,t:"Restaurante",
+  esp:"Tostón (lechazo) de Arévalo asado en horno de leña propio",
+  d:"Con el Solete de la Guía Repsol; primer asador de Arévalo con horno de leña propio. Más de 50 referencias de Ribera de Duero."},
+ {id:"c8",n:"El Figón de Arévalo",p:"Ávila",pob:"Arévalo",km:62,dv:1,lat:41.0615,lon:-4.7140,t:"Restaurante",
+  esp:"Cochinillo, lechazo y croquetas",
+  d:"Uno de los mejor valorados de Arévalo; cocina castellano-leonesa muy recomendada."},
+ {id:"c9",n:"Taberna Mohino",p:"Valladolid",pob:"Medina del Campo",km:90,dv:2,lat:41.3086,lon:-4.9156,t:"Restaurante",
+  esp:"Lechazo asado castellano",
+  d:"Uno de los restaurantes mejor valorados de Medina del Campo; ambiente tradicional, conviene reservar."},
+ {id:"c10",n:"Bar Zamorano",p:"Valladolid",pob:"Medina del Campo",km:90,dv:2,lat:41.3086,lon:-4.9156,t:"Pinchos",
+  esp:"Bacalao rebozado, calamares a la andaluza, croquetas",
+  d:"Bar de tapeo muy popular entre locales, tapas caseras generosas y buena relación calidad-precio."},
+ {id:"c11",n:"Asador El Torreón",p:"Valladolid",pob:"Tordesillas",km:115,dv:1,lat:41.5011,lon:-5.0000,t:"Restaurante",
+  esp:"Carnes a la brasa, lechazo",
+  d:"Considerado de los mejores asadores de la zona; cocina tradicional a leña."},
+ {id:"c12",n:"Mesón Valderrey",p:"Valladolid",pob:"Tordesillas",km:115,dv:1,lat:41.4995,lon:-5.0050,t:"Restaurante",
+  esp:"Lechazo asado",
+  d:"Muy bien valorado; quien lo compara con otros asadores de Tordesillas lo señala como el mejor, con buena relación calidad-precio."},
+ {id:"c13",n:"Don Pancho",p:"Valladolid",pob:"Tordesillas",km:115,dv:1,lat:41.5011,lon:-5.0000,t:"Pinchos",
+  esp:"Tostas, raciones, pescaditos fritos, morcilla de piñones",
+  d:"Negocio familiar desde 1988 en la Plaza Mayor; el mejor valorado en tapeo de la localidad."},
+ {id:"c14",n:"Mesón Villa de Urueña",p:"Valladolid",pob:"Urueña",km:150,dv:5,lat:41.7203,lon:-5.0758,t:"Restaurante",
+  esp:"Queso, morcilla, revuelto, cecina, bacalao",
+  d:"En la Villa del Libro; muy bien valorado, con porciones abundantes y servicio atento."},
+ {id:"c15",n:"Bar El Arte",p:"Zamora",pob:"Villalpando",km:175,dv:1,lat:41.8756,lon:-5.4064,t:"Pinchos",
+  esp:"Tapas caseras, bocadillos",
+  d:"El mejor valorado del pueblo; comida casera sencilla a buen precio."},
+ {id:"c16",n:"El Ermitaño",p:"Zamora",pob:"Benavente",km:205,dv:1,lat:42.0000,lon:-5.6750,t:"Restaurante",
+  esp:"Lechazo al horno de leña, cocina de autor castellana",
+  d:"2 Soles de la Guía Repsol; el referente gastronómico de la zona desde 1989. Precio alto."},
+ {id:"c17",n:"Mesón El Pícaro",p:"Zamora",pob:"Benavente",km:205,dv:1,lat:42.0000,lon:-5.6750,t:"Restaurante",
+  esp:"Cocina tradicional zamorana",
+  d:"Opción más asequible que El Ermitaño, muy bien valorado y con buen trato."},
+ {id:"c18",n:"Taberna De Bode",p:"Zamora",pob:"Benavente",km:205,dv:1,lat:42.0000,lon:-5.6750,t:"Pinchos",
+  esp:"Costillas de lechazo, cecina, setas, tostas",
+  d:"Llamado por sus propios clientes «el mejor bar de tapas de Benavente»; local pequeño, conviene ir pronto."},
+ {id:"c19",n:"Restaurante Casa Alcón",p:"León",pob:"Valencia de Don Juan",km:235,dv:8,lat:42.2891,lon:-5.5194,t:"Restaurante",
+  esp:"Carnes, pescados y arroces con toques creativos",
+  d:"En la Plaza Mayor, junto al Ayuntamiento; de los mejor valorados de la localidad, buena parada de camino."},
+ {id:"c20",n:"ConMimo",p:"León",pob:"León capital",km:275,dv:1,lat:42.5993,lon:-5.5701,t:"Restaurante",
+  esp:"Cocina leonesa de mercado: cecina, legumbres, caza",
+  d:"Único restaurante de León con Bib Gourmand de la Guía Michelin; tradición leonesa con un toque moderno."},
+ {id:"c21",n:"Casa Mando",p:"León",pob:"León capital",km:275,dv:1,lat:42.5982,lon:-5.5697,t:"Restaurante",
+  esp:"Cecina, embutidos y guisos de legumbres leonesas",
+  d:"Clásico a las puertas del Barrio Húmedo, recomendado por la Guía Repsol; raciones generosas."},
+ {id:"c22",n:"La Bicha",p:"León",pob:"León capital",km:275,dv:1,lat:42.5988,lon:-5.5711,t:"Pinchos",
+  esp:"Morcilla de León a la plancha con pan de hogaza",
+  d:"Bar histórico del Barrio Húmedo desde 1977, en la Plaza de San Martín; para muchos, la mejor morcilla de la ciudad."},
+ {id:"c23",n:"El Rebote",p:"León",pob:"León capital",km:275,dv:1,lat:42.5989,lon:-5.5709,t:"Pinchos",
+  esp:"Croquetas caseras",
+  d:"Bar mítico de la Plaza de San Martín, en las rutas de tapeo de la Guía Repsol; ambiente muy animado."},
+ {id:"c24",n:"Café Bar Rúa 11",p:"León",pob:"León capital",km:275,dv:1,lat:42.5991,lon:-5.5703,t:"Pinchos",
+  esp:"Cecina, croquetas y tostas de producto local",
+  d:"En el casco antiguo, muy bien valorado; ambiente informal, ideal para tapeo sin pretensiones."},
+ {id:"c25",n:"Roble by Jairo Rodríguez",p:"Asturias",pob:"Pola de Lena",km:345,dv:1,lat:43.1618,lon:-5.8296,t:"Restaurante",
+  esp:"Cocina asturiana de producto, menús degustación",
+  d:"Seleccionado en la Guía Michelin; referente gastronómico de la comarca de Lena."},
+ {id:"c26",n:"Casa Nando",p:"Asturias",pob:"Urbiés, valle de Turón (Mieres)",km:368,dv:10,lat:43.1930,lon:-5.7900,t:"Restaurante",
+  esp:"Fabada asturiana y pote, guisos caseros",
+  d:"Muy bien valorado, ambiente de casa de pueblo en pleno valle de Turón."},
+ {id:"c27",n:"La Caleyuca",p:"Asturias",pob:"Urbiés, valle de Turón (Mieres)",km:368,dv:10,lat:43.1927,lon:-5.7903,t:"Restaurante",
+  esp:"Tortos con picadillo y cabrales, callos con patatas",
+  d:"Producto de proximidad y postres caseros, muy bien valorado."},
+ {id:"c28",n:"Casa Fermín",p:"Asturias",pob:"Oviedo",km:390,dv:1,lat:43.3603,lon:-5.8448,t:"Restaurante",
+  esp:"Fabada asturiana, casadielles",
+  d:"Abierto desde 1924; fue el primer restaurante con estrella Michelin de Asturias. Alta cocina tradicional, precio alto."},
+ {id:"c29",n:"El Raitán",p:"Asturias",pob:"Oviedo",km:390,dv:1,lat:43.3616,lon:-5.8457,t:"Restaurante",
+  esp:"Pote asturiano, cebollas rellenas, menú con entrantes ilimitados",
+  d:"Desde 1988, junto al Mercado del Fontán; ambiente rústico y castizo, muy popular."},
+ {id:"c30",n:"Sidrería Tierra Astur Gascona",p:"Asturias",pob:"Oviedo",km:390,dv:1,lat:43.3636,lon:-5.8412,t:"Sidrería",
+  esp:"Tabla de quesos asturianos, chorizo a la sidra, cachopo",
+  d:"La sidrería más emblemática de la calle Gascona, el «Bulevar de la Sidra»; ambiente auténtico con escanciado."},
+ {id:"c31",n:"La Corte de Pelayo",p:"Asturias",pob:"Oviedo",km:390,dv:1,lat:43.3601,lon:-5.8452,t:"Restaurante",
+  esp:"Cachopo (Mejor Cachopo de Asturias 2025), fabada",
+  d:"Recomendado en la Guía Repsol 2026; zona de barra y tapeo con mesas altas."},
+ {id:"c32",n:"La Galana",p:"Asturias",pob:"Gijón",km:420,dv:0,lat:43.5410,lon:-5.6635,t:"Sidrería",
+  esp:"Fabada, arroz con leche, calamares de la bahía",
+  d:"Sidrería histórica y muy popular en la Plaza Mayor de Cimadevilla, con terraza."},
+ {id:"c33",n:"El Arca de Noé",p:"Asturias",pob:"Gijón",km:420,dv:0,lat:43.5443,lon:-5.6625,t:"Pinchos",
+  esp:"Tabla de quesos y embutidos, pinchos y raciones selectas",
+  d:"Clásico renovado de Cimadevilla, con buena selección de conservas y sidra."},
+ {id:"c34",n:"Casa Trabanco",p:"Asturias",pob:"Lavandera (Gijón)",km:420,dv:8,lat:43.4900,lon:-5.6450,t:"Sidrería",
+  esp:"Cachopo (de los mejor valorados de Gijón), cecina con queso de cabra",
+  d:"Llagar-sidrería tradicional con espicha, a unos 10 minutos en coche del centro de Gijón; muy recomendado para cachopo."}
+];
+
 const RUTA = [[40.8167,-4.2083],[40.7797,-4.4136],[40.9450,-4.6050],[41.0650,-4.7200],[41.3100,-4.9300],[41.5000,-5.0000],[41.6330,-5.1750],[41.8660,-5.4130],[42.0020,-5.6780],[42.2300,-5.6100],[42.5990,-5.5670],[42.8000,-5.6200],[42.8530,-5.6700],[42.9200,-5.6600],[42.9930,-5.7470],[43.1600,-5.8200],[43.2500,-5.7700],[43.3620,-5.8440],[43.5320,-5.6610]];
 
 /* ---------- Estado ---------- */
@@ -635,25 +741,65 @@ function ficha(p, noche){
     </div></article>`;
 }
 
+function fichaComer(p){
+  const hecho = !!visitados[p.id];
+  const off = p.dv<=1 ? "En ruta"
+    : p.km===0 ? `A ${p.dv} km de Otero de Herreros`
+    : p.km===TOTAL ? `A ${p.dv} km de Gijón`
+    : `Desvío de ${p.dv} km desde la ruta`;
+  return `<article class="spot${hecho?" done":""}" id="card-${p.id}">
+    ${hito(p)}
+    <div>
+      <h3>${esc(p.n)}</h3>
+      <p class="meta"><span>${esc(p.pob)}</span><span>${p.t}</span><span class="off">${off}</span></p>
+      <p class="desc">${esc(p.d)}</p>
+      <dl>
+        <dt>Qué pedir</dt><dd>${esc(p.esp)}</dd>
+      </dl>
+      <div class="fotos" data-fotos="${p.id}"></div>
+      <div class="acts">
+        <a class="btn main" href="${gmRuta(p)}" target="_blank" rel="noopener">Cómo llegar</a>
+        <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Ver en Google Maps</a>
+        <button class="btn${hecho?" ok":""}" data-visto="${p.id}">${hecho?"✓ Probado":"Marcar probado"}</button>
+      </div>
+    </div></article>`;
+}
+
 function render(){
   document.body.classList.toggle("night", state.tab==="noche");
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===state.tab));
   document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.sentido===state.sentido));
   document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.prov===state.prov));
   enlaceRuta();
-  const noche = state.tab==="noche";
-  const lista = filtrar(noche?NOCHE:DIA);
+  const tab = state.tab;
   const origen = state.sentido==="ida" ? "Otero de Herreros" : "Gijón";
-  document.getElementById("intro").textContent = noche
-    ? "Para todas: trípode o apoyo firme, disparo con retardo de 2 s, estabilizador apagado en trípode y enfoque manual en las estrellas."
-    : "Las horas de luz se recalculan para cada lugar según la fecha del viaje.";
+  let lista, introTxt, emptyTxt, pintar;
+  if (tab==="noche"){
+    lista = filtrar(NOCHE);
+    introTxt = "Para todas: trípode o apoyo firme, disparo con retardo de 2 s, estabilizador apagado en trípode y enfoque manual en las estrellas.";
+    emptyTxt = `No hay lugares nocturnos en ${state.prov}. Elige otra provincia o pulsa «Todas».`;
+    pintar = p=>ficha(p,true);
+  } else if (tab==="comer"){
+    lista = filtrar(COMER);
+    introTxt = "Solo los mejores: restaurantes y bares de pinchos cerca de la ruta, elegidos por su reputación real (Guía Repsol, Michelin, reseñas muy valoradas).";
+    emptyTxt = `No hay sitios para comer en ${state.prov}. Elige otra provincia o pulsa «Todas».`;
+    pintar = p=>fichaComer(p);
+  } else {
+    lista = filtrar(DIA);
+    introTxt = "Las horas de luz se recalculan para cada lugar según la fecha del viaje.";
+    emptyTxt = `No hay lugares diurnos en ${state.prov}. Elige otra provincia o pulsa «Todas».`;
+    pintar = p=>ficha(p,false);
+  }
   const vistos = lista.filter(p=>visitados[p.id]).length;
+  const palabra = tab==="comer" ? "sitios" : "lugares";
+  const vistosPalabra = tab==="comer" ? "probados" : "visitados";
+  document.getElementById("intro").textContent = introTxt;
   document.getElementById("count").textContent = lista.length
-    ? `${lista.length} lugares desde ${origen}${state.prov!=="Todas"?" en "+state.prov:""}${vistos?`, ${vistos} visitados`:""}`
+    ? `${lista.length} ${palabra} desde ${origen}${state.prov!=="Todas"?" en "+state.prov:""}${vistos?`, ${vistos} ${vistosPalabra}`:""}`
     : "";
   document.getElementById("list").innerHTML = lista.length
-    ? lista.map(p=>ficha(p,noche)).join("")
-    : `<p class="empty">No hay lugares ${noche?"nocturnos":"diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
+    ? lista.map(pintar).join("")
+    : `<p class="empty">${emptyTxt}</p>`;
   pintarTodasFotos();
 }
 
@@ -724,7 +870,7 @@ async function anadirFotos(input){
 async function verFoto(id, i){
   const arr = await leerFotos(id); const f = arr[i]; if(!f) return;
   const u = URL.createObjectURL(f.blob);
-  const lugar = (DIA.concat(NOCHE).find(x=>x.id===id)||{}).n||"";
+  const lugar = (DIA.concat(NOCHE).concat(COMER).find(x=>x.id===id)||{}).n||"";
   const v = document.createElement("div"); v.className="visor"; v.setAttribute("role","dialog");
   const puedeCompartir = navigator.canShare && navigator.canShare({files:[new File([f.blob],"foto.jpg",{type:"image/jpeg"})]});
   v.innerHTML = `<p>${esc(lugar)} (${i+1} de ${arr.length})</p><img src="${u}" alt=""><div class="vbar">
