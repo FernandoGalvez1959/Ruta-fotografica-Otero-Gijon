@@ -99,11 +99,36 @@ body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
 .yo .acts{margin-top:8px}
 .yo .seg{margin-top:10px}
 .cerca{color:var(--blue);font-weight:600}
-.yo .acts .btn{flex:1 1 45%;text-align:center}
+.yo .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.yo .acts .btn{text-align:center}
 .spot.siguiente{background:rgba(46,74,134,.10);box-shadow:0 0 0 3px var(--blue);border-radius:10px;padding:18px 10px;margin:6px -10px}
 .spot .marca{display:inline-block;background:var(--blue);color:#fff;font-family:var(--head);font-size:15px;font-weight:700;padding:2px 10px;border-radius:12px;margin-bottom:6px}
 body.night .spot .marca{color:#111A2C}
 .fotos{margin-top:12px}
+.titulo{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.titulo h3{flex:1}
+.mio{display:inline-block;vertical-align:middle;background:#E8C547;color:#1C2B39;font-size:14px;padding:1px 8px;border-radius:10px}
+.visto{flex:none;font-family:var(--head);font-size:15px;font-weight:600;padding:3px 10px;border-radius:14px;border:1.5px solid var(--muted);background:transparent;color:var(--muted);cursor:pointer;margin-top:3px}
+.visto.on{border-color:#2E7D4F;background:#2E7D4F;color:#fff}
+.acts.tres,.acts.dos{display:grid;gap:6px}
+.acts.tres{grid-template-columns:repeat(3,1fr)}
+.acts.dos{grid-template-columns:repeat(2,1fr)}
+.acts.tres .btn,.acts.dos .btn{font-size:15.5px;padding:8px 4px;text-align:center;line-height:1.15}
+.acts.mias{margin-top:8px}
+.acts.mias .btn{font-size:15px;padding:5px 12px}
+.btn.del{border-color:var(--road);color:var(--road)}
+.anadir{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:1500;font-family:var(--head);font-size:19px;font-weight:700;padding:12px 18px;border:0;border-radius:30px;background:var(--road);color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer}
+.capa{position:fixed;inset:0;z-index:2500;background:rgba(10,14,22,.55);display:flex;align-items:flex-end;justify-content:center}
+.hoja{background:var(--paper);color:var(--ink);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:0 16px calc(env(safe-area-inset-bottom,0px) + 18px)}
+.hoja header{position:sticky;top:0;background:var(--paper);display:flex;align-items:center;justify-content:space-between;padding:14px 0 8px;border-bottom:1px solid var(--line)}
+.hoja h2{font-family:var(--head);font-size:24px;margin:0}
+.hoja .cerrar{font-size:30px;line-height:1;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.hoja label{display:block;font-family:var(--head);font-size:17px;font-weight:600;margin-top:12px}
+.hoja input,.hoja textarea,.hoja select{display:block;width:100%;margin-top:4px;font:16px var(--body);padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:#1C2B39}
+.hoja #fMiPos{margin-top:8px}
+.pista{font-size:14px;color:var(--muted);margin:6px 0 0}
+.calc{font-size:15px;font-weight:600;color:var(--blue);margin:8px 0 0}
+#list{padding-bottom:80px}
 .fotos h4{font-family:var(--head);font-size:17px;font-weight:700;margin:0 0 6px}
 .fotos h4 span{font-weight:500;color:var(--muted)}
 .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:360px}
@@ -165,6 +190,41 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión. Los restaurantes son una selección de los más recomendados; horarios y precios pueden cambiar. Tus fotos se guardan solo en este móvil, dentro de la app: si borras los datos de la app o de Chrome, se borran también.
   </footer>
 </main>
+
+<button class="anadir" id="btnAnadir">+ Añadir sitio</button>
+
+<datalist id="tiposSitio"><option value="Paisaje"><option value="Mirador"><option value="Monumento"><option value="Naturaleza"><option value="Cielo"></datalist>
+<datalist id="tiposComer"><option value="Restaurante"><option value="Pinchos"><option value="Asador"><option value="Sidrería"><option value="Carretera"><option value="Desayuno"><option value="Dulces"></datalist>
+
+<div class="capa" id="capaForm" hidden>
+  <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="tituloForm">
+    <header><h2 id="tituloForm">Nuevo sitio</h2><button class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
+    <div class="contenido">
+      <label>Nombre<input id="fNombre" type="text" placeholder="Nombre del lugar"></label>
+      <label>Tipo<input id="fTipo" type="text" placeholder="Elige o escribe"></label>
+      <label>Ubicación (coordenadas o enlace de Google Maps)
+        <input id="fCoords" type="text" inputmode="decimal" placeholder="43.5475, -5.6655"></label>
+      <button class="btn" type="button" id="fMiPos">📍 Usar mi posición</button>
+      <p class="pista">Si no estás allí: en Google Maps mantén pulsado el punto y copia las coordenadas que aparecen arriba.</p>
+      <p class="calc" id="fCalc"></p>
+      <label>Provincia<select id="fProv"><option value="">(automática)</option><option>Segovia</option><option>Ávila</option><option>Valladolid</option><option>Zamora</option><option>León</option><option>Asturias</option></select></label>
+      <label>Dirección o nombre para Google Maps (opcional)<input id="fDir" type="text" placeholder="Casa Pepe, Pola de Lena"></label>
+      <label>Descripción<textarea id="fDesc" rows="2"></textarea></label>
+      <div id="bloqueSitio">
+        <label>Mejor punto de vista<textarea id="fVista" rows="2"></textarea></label>
+        <label><span id="fLuzTxt">Mejor luz</span><textarea id="fLuz" rows="2"></textarea></label>
+        <label>Encuadre y ajustes<textarea id="fAjustes" rows="2"></textarea></label>
+        <label>Mejor época<input id="fEpoca" type="text"></label>
+      </div>
+      <div id="bloqueComer" hidden>
+        <label>Qué pedir<textarea id="fPide" rows="2"></textarea></label>
+        <label>A tener en cuenta<textarea id="fOjo" rows="2" placeholder="Horario, reservas, precio…"></textarea></label>
+      </div>
+      <p class="pista">Las fotos se añaden después, desde la propia ficha.</p>
+      <div class="acts"><button class="btn main" type="button" id="fGuardar">Guardar</button><button class="btn" type="button" data-cerrar>Cancelar</button></div>
+    </div>
+  </div>
+</div>
 
 <script>
 const TOTAL = 420;
@@ -595,7 +655,7 @@ const RUTA = [[40.8167,-4.2083],[40.7797,-4.4136],[40.9450,-4.6050],[41.0650,-4.
 /* ---------- Estado ---------- */
 const hoy = new Date();
 const state = {tab:"dia", sentido:"ida", prov:"Todas", fecha:new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate(),12)};
-state.yo = null; state.yoMsg = "Buscando tu ubicación…"; state.marca = null;
+state.yo = null; state.yoMsg = "Buscando tu ubicación…"; state.marca = null; state.marcaTxt = "";
 let visitados = {};
 try { visitados = JSON.parse(localStorage.getItem("rutaN6_visitados")||"{}")||{}; } catch(e){ visitados = {}; }
 function guardar(){ try{ localStorage.setItem("rutaN6_visitados", JSON.stringify(visitados)); }catch(e){} }
@@ -692,61 +752,143 @@ function hito(p){
 }
 const gmLugar = p => `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}`;
 const gmRuta = p => `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving`;
-function ficha(p, noche){
+function cabecera(p){
   const hecho = !!visitados[p.id];
   const off = p.dv<=1 ? "En ruta"
     : p.km===0 ? `A ${p.dv} km de Otero de Herreros`
     : p.km===TOTAL ? `A ${p.dv} km de Gijón`
     : `Desvío de ${p.dv} km desde la ruta`;
-  return `<article class="spot${hecho?" done":""}${state.marca===p.id?" siguiente":""}" id="card-${p.id}">
+  const marca = state.marca===p.id ? `<span class="marca">${esc(state.marcaTxt||"▶ Siguiente en tu ruta")}</span>` : "";
+  return `${marca}<div class="titulo"><h3>${esc(p.n)}${p.mio?' <span class="mio">Mío</span>':""}</h3>
+      <button class="visto${hecho?" on":""}" data-visto="${p.id}" aria-pressed="${hecho}" title="Marcar como visitado">${hecho?"✓ Visto":"Visto"}</button></div>
+      <p class="meta"><span>${esc(p.p)}</span><span>${esc(p.t)}</span><span class="off">${off}</span>${state.yo?`<span class="cerca">📍 a ${kmTxt(aMi(p))} de ti</span>`:""}</p>
+      ${p.d?`<p class="desc">${esc(p.d)}</p>`:""}`;
+}
+const dd = (t,v) => v ? `<dt>${t}</dt><dd>${esc(v)}</dd>` : "";
+const misBotones = p => p.mio ? `<div class="acts mias"><button class="btn" data-editar="${p.id}">Editar</button><button class="btn del" data-borrar="${p.id}">Borrar</button></div>` : "";
+function ficha(p, noche){
+  return `<article class="spot${visitados[p.id]?" done":""}${state.marca===p.id?" siguiente":""}" id="card-${p.id}">
     ${hito(p)}
     <div>
-      ${state.marca===p.id?'<span class="marca">▶ Siguiente en tu ruta</span>':""}
-      <h3>${esc(p.n)}</h3>
-      <p class="meta"><span>${p.p}</span><span>${p.t}</span><span class="off">${off}</span>${state.yo?`<span class="cerca">📍 a ${kmTxt(aMi(p))} de ti</span>`:""}</p>
-      <p class="desc">${esc(p.d)}</p>
+      ${cabecera(p)}
       <dl>
-        <dt>Mejor punto de vista</dt><dd>${esc(p.v)}</dd>
-        <dt>${noche?"Mejor momento":"Mejor luz"}</dt><dd>${esc(p.l)}</dd>
-        <dt>Encuadre y ajustes</dt><dd>${esc(p.f)}</dd>
-        ${p.e?`<dt>Mejor época</dt><dd>${esc(p.e)}</dd>`:""}
+        ${dd("Mejor punto de vista",p.v)}
+        ${dd(noche?"Mejor momento":"Mejor luz",p.l)}
+        ${dd("Encuadre y ajustes",p.f)}
+        ${dd("Mejor época",p.e)}
       </dl>
       ${bloqueSol(p, noche)}
       <div class="fotos" data-fotos="${p.id}"></div>
-      <div class="acts">
+      <div class="acts tres">
         <a class="btn main" href="${gmRuta(p)}" target="_blank" rel="noopener">Cómo llegar</a>
-        <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Ver en Google Maps</a>
-        <a class="btn" href="${gmComer(p.lat,p.lon)}" target="_blank" rel="noopener">Dónde comer cerca</a>
-        <button class="btn${hecho?" ok":""}" data-visto="${p.id}">${hecho?"✓ Visitado":"Marcar visitado"}</button>
+        <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Google Maps</a>
+        <button class="btn" data-comer="${p.id}">Comer cerca</button>
       </div>
+      ${misBotones(p)}
     </div></article>`;
 }
 
-const gmSitio = r => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.q)}`;
-const gmIrSitio = r => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.q)}&travelmode=driving`;
+const gmSitio = r => r.q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.q)}` : gmLugar(r);
+const gmIrSitio = r => r.q ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.q)}&travelmode=driving` : gmRuta(r);
 function fichaComer(r){
-  const hecho = !!visitados[r.id];
-  const off = r.dv<=1 ? "En ruta"
-    : r.km===0 ? `A ${r.dv} km de Otero de Herreros`
-    : r.km===TOTAL ? `A ${r.dv} km de Gijón`
-    : `Desvío de ${r.dv} km desde la ruta`;
-  return `<article class="spot${hecho?" done":""}${state.marca===r.id?" siguiente":""}" id="card-${r.id}">
+  return `<article class="spot${visitados[r.id]?" done":""}${state.marca===r.id?" siguiente":""}" id="card-${r.id}">
     ${hito(r)}
     <div>
-      ${state.marca===r.id?'<span class="marca">▶ El más cercano en tu ruta</span>':""}
-      <h3>${esc(r.n)}</h3>
-      <p class="meta"><span>${r.p}</span><span>${r.t}</span><span class="off">${off}</span>${state.yo?`<span class="cerca">📍 a ${kmTxt(aMi(r))} de ti</span>`:""}</p>
-      <p class="desc">${esc(r.d)}</p>
+      ${cabecera(r)}
       <dl>
-        <dt>Qué pedir</dt><dd>${esc(r.pide)}</dd>
-        ${r.ojo?`<dt>A tener en cuenta</dt><dd>${esc(r.ojo)}</dd>`:""}
+        ${dd("Qué pedir",r.pide)}
+        ${dd("A tener en cuenta",r.ojo)}
       </dl>
-      <div class="acts">
+      <div class="acts dos">
         <a class="btn main" href="${gmIrSitio(r)}" target="_blank" rel="noopener">Cómo llegar</a>
-        <a class="btn" href="${gmSitio(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
-        <button class="btn${hecho?" ok":""}" data-visto="${r.id}">${hecho?"✓ He estado":"Marcar como visitado"}</button>
+        <a class="btn" href="${gmSitio(r)}" target="_blank" rel="noopener">Google Maps</a>
       </div>
+      ${misBotones(r)}
     </div></article>`;
+}
+
+/* ---------- Mis sitios y restaurantes propios ---------- */
+let propios = {dia:[], noche:[], comer:[]};
+try { const g = JSON.parse(localStorage.getItem("rutaN6_propios")||"null"); if (g) propios = Object.assign(propios, g); } catch(e){}
+function guardarPropios(){ try{ localStorage.setItem("rutaN6_propios", JSON.stringify(propios)); }catch(e){ alert("No se ha podido guardar."); } }
+const BASE = {dia:DIA, noche:NOCHE, comer:COMER};
+const todos = tab => BASE[tab].concat(propios[tab]);
+const buscarId = id => ["dia","noche","comer"].map(t=>todos(t).find(x=>x.id===id)).find(Boolean);
+function provinciaDeKm(k){ return k<35?"Segovia":k<80?"Ávila":k<170?"Valladolid":k<232?"Zamora":k<337?"León":"Asturias"; }
+function leerCoords(txt){
+  if(!txt) return null;
+  const t = txt.replace(/\s+/g," ");
+  let m = t.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) || t.match(/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/) || t.match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);
+  if(!m) return null;
+  const lat=+m[1], lon=+m[2];
+  return (Math.abs(lat)<=90 && Math.abs(lon)<=180) ? {lat,lon} : null;
+}
+const capa = document.getElementById("capaForm");
+let editando = null, formTab = "dia";
+function abrirForm(tab, item){
+  formTab = tab; editando = item||null;
+  const f = id => document.getElementById(id);
+  f("tituloForm").textContent = (item?"Editar ":"Nuevo ") + (tab==="comer"?"restaurante":tab==="noche"?"sitio nocturno":"sitio");
+  f("bloqueSitio").hidden = tab==="comer";
+  f("bloqueComer").hidden = tab!=="comer";
+  f("fEpoca").closest("label").hidden = tab!=="dia";
+  f("fLuzTxt").textContent = tab==="noche" ? "Mejor momento" : "Mejor luz";
+  f("fTipo").setAttribute("list", tab==="comer" ? "tiposComer" : "tiposSitio");
+  const v = item||{};
+  f("fNombre").value=v.n||""; f("fTipo").value=v.t||""; f("fDesc").value=v.d||"";
+  f("fCoords").value = v.lat!=null ? `${v.lat.toFixed(6)}, ${v.lon.toFixed(6)}` : "";
+  f("fDir").value=v.q||""; f("fVista").value=v.v||""; f("fLuz").value=v.l||""; f("fAjustes").value=v.f||""; f("fEpoca").value=v.e||"";
+  f("fPide").value=v.pide||""; f("fOjo").value=v.ojo||"";
+  f("fProv").value = v.p || "";
+  actualizarCalculo();
+  capa.hidden=false; document.body.style.overflow="hidden";
+  setTimeout(()=>f("fNombre").focus(),50);
+}
+function cerrarForm(){ capa.hidden=true; document.body.style.overflow=""; editando=null; }
+function actualizarCalculo(){
+  const c = leerCoords(document.getElementById("fCoords").value);
+  const out = document.getElementById("fCalc");
+  if(!c){ out.textContent = "Pon las coordenadas o pulsa «Usar mi posición» para situarlo en la ruta."; return; }
+  const r = kmEnRuta(c.lat,c.lon);
+  const k = Math.round(r.km);
+  out.textContent = `Queda en el km ${k} de la ruta (desde Otero), a unos ${Math.round(r.fuera)} km de la carretera.`;
+  const pv = document.getElementById("fProv"); if(!pv.value) pv.value = provinciaDeKm(k);
+}
+function guardarForm(){
+  const g = id => document.getElementById(id).value.trim();
+  const n = g("fNombre");
+  if(!n){ alert("Pon un nombre."); return; }
+  const c = leerCoords(g("fCoords"));
+  if(!c){ alert("Falta la ubicación: pulsa «Usar mi posición» o pega las coordenadas de Google Maps."); return; }
+  const r = kmEnRuta(c.lat,c.lon);
+  const k = Math.max(1, Math.min(TOTAL-1, Math.round(r.km)));
+  const item = {id: editando?editando.id:"u"+Date.now(), mio:true, n, lat:c.lat, lon:c.lon, km:k, dv:Math.round(r.fuera),
+    p: g("fProv") || provinciaDeKm(k), t: g("fTipo")||(formTab==="comer"?"Restaurante":"Mi sitio"), d:g("fDesc"), q:g("fDir")};
+  if(formTab==="comer"){ item.pide=g("fPide"); item.ojo=g("fOjo"); }
+  else { item.v=g("fVista"); item.l=g("fLuz"); item.f=g("fAjustes"); if(formTab==="dia") item.e=g("fEpoca"); }
+  const lista = propios[formTab];
+  const i = lista.findIndex(x=>x.id===item.id);
+  if(i>=0) lista[i]=item; else lista.push(item);
+  guardarPropios(); cerrarForm();
+  state.tab=formTab; state.marca=item.id; state.marcaTxt="✚ Guardado"; if(state.prov!=="Todas" && state.prov!==item.p) state.prov="Todas";
+  render();
+  setTimeout(()=>document.getElementById("card-"+item.id)?.scrollIntoView({behavior:"smooth",block:"center"}),60);
+}
+function borrarPropio(id){
+  for(const t of ["dia","noche","comer"]){
+    const i = propios[t].findIndex(x=>x.id===id);
+    if(i>=0 && confirm(`¿Borrar «${propios[t][i].n}»?`)){ propios[t].splice(i,1); guardarPropios(); delete visitados[id]; guardar(); render(); }
+  }
+}
+function comerCerca(id){
+  const p = buscarId(id); if(!p) return;
+  const r = todos("comer").reduce((m,x)=> !m || dist(p.lat,p.lon,x.lat,x.lon) < dist(p.lat,p.lon,m.lat,m.lon) ? x : m, null);
+  if(!r) return;
+  const d = dist(p.lat,p.lon,r.lat,r.lon);
+  state.tab="comer"; state.marca=r.id; state.marcaTxt=`🍴 El más cercano a ${p.n} (${kmTxt(d)})`;
+  if(state.prov!=="Todas" && state.prov!==r.p) state.prov="Todas";
+  render(); window.scrollTo({top:0});
+  setTimeout(()=>document.getElementById("card-"+r.id)?.scrollIntoView({behavior:"smooth",block:"center"}),80);
 }
 
 function render(){
@@ -756,7 +898,7 @@ function render(){
   document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.prov===state.prov));
   enlaceRuta();
   const noche = state.tab==="noche", comer = state.tab==="comer";
-  const lista = filtrar(comer?COMER:noche?NOCHE:DIA);
+  const lista = filtrar(todos(state.tab));
   pintarYo();
   const origen = state.sentido==="ida" ? "Otero de Herreros" : "Gijón";
   document.getElementById("intro").textContent = comer
@@ -772,6 +914,7 @@ function render(){
     ? lista.map(p=> comer ? fichaComer(p) : ficha(p,noche)).join("")
     : `<p class="empty">No hay ${comer?"sitios para comer":noche?"lugares nocturnos":"lugares diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
   pintarTodasFotos();
+  if (typeof textoBotonAnadir==="function") textoBotonAnadir();
 }
 
 /* ---------- Mi ubicación ---------- */
@@ -803,6 +946,7 @@ function marcar(tab, arr){
   state.tab = tab;
   if (p && state.prov!=="Todas" && p.p!==state.prov) state.prov="Todas";
   state.marca = p ? p.id : null;
+  state.marcaTxt = tab==="comer" ? "▶ El más cercano en tu ruta" : "▶ Siguiente en tu ruta";
   render();
   if (p){
     const el=document.getElementById("card-"+p.id);
@@ -916,7 +1060,7 @@ async function anadirFotos(input){
 async function verFoto(id, i){
   const arr = await leerFotos(id); const f = arr[i]; if(!f) return;
   const u = URL.createObjectURL(f.blob);
-  const lugar = (DIA.concat(NOCHE).find(x=>x.id===id)||{}).n||"";
+  const lugar = (buscarId(id)||{}).n||"";
   const v = document.createElement("div"); v.className="visor"; v.setAttribute("role","dialog");
   const puedeCompartir = navigator.canShare && navigator.canShare({files:[new File([f.blob],"foto.jpg",{type:"image/jpeg"})]});
   v.innerHTML = `<p>${esc(lugar)} (${i+1} de ${arr.length})</p><img src="${u}" alt=""><div class="vbar">
@@ -944,7 +1088,7 @@ const chips = document.getElementById("chips");
 chips.innerHTML = ["Todas",...PROVS].map(p=>`<button class="chip" data-prov="${p}" aria-pressed="false">${p}</button>`).join("");
 chips.addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; state.prov=b.dataset.prov; render(); });
 document.querySelector(".seg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.sentido=b.dataset.sentido; render(); });
-document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; state.marca=null; render(); });
+document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; state.marca=null; render(); window.scrollTo({top:0}); });
 const fi = document.getElementById("fecha");
 const pad = n=>String(n).padStart(2,"0");
 fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
@@ -955,11 +1099,11 @@ document.getElementById("yo").addEventListener("click", e=>{
   if (a==="buscar") buscarYo();
   if (a==="ver"){
     const url = `https://www.google.com/maps/search/?api=1&query=${state.yo.lat},${state.yo.lon}`;
-    marcar(state.tab==="comer" ? "dia" : state.tab, state.tab==="noche" ? NOCHE : DIA);
+    marcar(state.tab==="comer" ? "dia" : state.tab, todos(state.tab==="noche" ? "noche" : "dia"));
     window.open(url, "_blank", "noopener");
   }
   if (a==="comer-ruta"){
-    if (state.yo) marcar("comer", COMER);
+    if (state.yo) marcar("comer", todos("comer"));
     else { state.tab="comer"; state.marca=null; render(); }
   }
 });
@@ -967,9 +1111,24 @@ document.getElementById("list").addEventListener("change", e=>{ if (e.target.mat
 document.getElementById("list").addEventListener("click", e=>{
   const t = e.target.closest("[data-ver]");
   if (t){ verFoto(t.dataset.ver, +t.dataset.i); return; }
+  const cm = e.target.closest("[data-comer]"); if (cm){ comerCerca(cm.dataset.comer); return; }
+  const ed = e.target.closest("[data-editar]"); if (ed){ const it=buscarId(ed.dataset.editar); if(it) abrirForm(state.tab, it); return; }
+  const bo = e.target.closest("[data-borrar]"); if (bo){ borrarPropio(bo.dataset.borrar); return; }
   const v = e.target.closest("[data-visto]");
   if (v){ const id=v.dataset.visto; if(visitados[id]) delete visitados[id]; else visitados[id]=true; guardar(); render(); document.getElementById("card-"+id)?.scrollIntoView({block:"nearest"}); return; }
 });
+document.getElementById("btnAnadir").addEventListener("click", ()=> abrirForm(state.tab));
+capa.addEventListener("click", e=>{ if(e.target===capa || e.target.closest("[data-cerrar]")) cerrarForm(); });
+document.getElementById("fGuardar").addEventListener("click", guardarForm);
+document.getElementById("fCoords").addEventListener("input", ()=>{ document.getElementById("fProv").value=""; actualizarCalculo(); });
+document.getElementById("fMiPos").addEventListener("click", ()=>{
+  const b=document.getElementById("fMiPos"); b.textContent="Buscando…";
+  navigator.geolocation.getCurrentPosition(pos=>{
+    document.getElementById("fCoords").value = `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
+    document.getElementById("fProv").value=""; actualizarCalculo(); b.textContent="📍 Usar mi posición";
+  }, ()=>{ b.textContent="📍 Usar mi posición"; alert("No se ha podido obtener tu posición."); }, {enableHighAccuracy:true,timeout:20000,maximumAge:30000});
+});
+function textoBotonAnadir(){ document.getElementById("btnAnadir").textContent = state.tab==="comer" ? "+ Añadir restaurante" : "+ Añadir sitio"; }
 render();
 buscarYo();
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
