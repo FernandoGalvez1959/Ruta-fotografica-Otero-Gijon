@@ -51,9 +51,9 @@ h1{font-family:var(--head);font-weight:700;font-size:clamp(34px,8vw,52px);line-h
 .date{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:17px;font-weight:600}
 .date input{font:inherit;font-family:var(--body);font-size:16px;padding:4px 8px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
 .tabs{display:flex;gap:4px}
-.tabs button{flex:1;font-family:var(--head);font-size:19px;font-weight:700;padding:9px 4px;border:0;border-bottom:4px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button{flex:1;font-family:var(--head);font-size:18px;font-weight:700;padding:9px 4px;border:0;border-bottom:4px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--road)}
-.tabs a.tabmap{flex:1;text-align:center;font-family:var(--head);font-size:19px;font-weight:700;padding:9px 4px;color:#fff;background:var(--road);border-radius:8px 8px 0 0;text-decoration:none}
+.tabs a.tabmap{flex:1;text-align:center;font-family:var(--head);font-size:18px;font-weight:700;padding:9px 4px;color:#fff;background:var(--road);border-radius:8px 8px 0 0;text-decoration:none}
 body.night .tabs button[aria-selected="true"]{border-bottom-color:var(--gold)}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
@@ -99,6 +99,10 @@ body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
 .yo .acts{margin-top:8px}
 .yo .seg{margin-top:10px}
 .cerca{color:var(--blue);font-weight:600}
+.yo .acts .btn{flex:1 1 45%;text-align:center}
+.spot.siguiente{background:rgba(46,74,134,.10);box-shadow:0 0 0 3px var(--blue);border-radius:10px;padding:18px 10px;margin:6px -10px}
+.spot .marca{display:inline-block;background:var(--blue);color:#fff;font-family:var(--head);font-size:15px;font-weight:700;padding:2px 10px;border-radius:12px;margin-bottom:6px}
+body.night .spot .marca{color:#111A2C}
 .fotos{margin-top:12px}
 .fotos h4{font-family:var(--head);font-size:17px;font-weight:700;margin:0 0 6px}
 .fotos h4 span{font-weight:500;color:var(--muted)}
@@ -144,6 +148,7 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="dia" aria-selected="true">☀ Diurnas</button>
       <button role="tab" data-tab="noche" aria-selected="false">☾ Nocturnas</button>
+      <button role="tab" data-tab="comer" aria-selected="false">🍴 Comer</button>
       <a class="tabmap" id="rutaGM" href="#" target="_blank" rel="noopener">Mapa ↗</a>
     </div>
   </div>
@@ -157,7 +162,7 @@ footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
     <div id="list"></div>
   </section>
   <footer>
-    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión. Tus fotos se guardan solo en este móvil, dentro de la app: si borras los datos de la app o de Chrome, se borran también.
+    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión. Los restaurantes son una selección de los más recomendados; horarios y precios pueden cambiar. Tus fotos se guardan solo en este móvil, dentro de la app: si borras los datos de la app o de Chrome, se borran también.
   </footer>
 </main>
 
@@ -521,12 +526,76 @@ const NOCHE = [
   f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 1600–3200, 15–20 s."}
 ];
 
+const COMER = [
+ {id:"r1",n:"Churrería de San Rafael",p:"Segovia",km:0,dv:10,lat:40.7225,lon:-4.2140,t:"Desayuno",q:"Churrería San Rafael, El Espinar",
+  d:"Un santuario del desayuno a la salida de la sierra.",pide:"Churros con chocolate o café.",ojo:"Ideal para empezar la ida o como última parada a la vuelta."},
+ {id:"r2",n:"Mesón de Cándido",p:"Segovia",km:0,dv:18,lat:40.9480,lon:-4.1176,t:"Asador",q:"Mesón de Cándido, Segovia",
+  d:"El mesón histórico al pie del Acueducto.",pide:"Cochinillo asado y judiones de La Granja.",ojo:"Reserva en fin de semana."},
+ {id:"r3",n:"Restaurante José María",p:"Segovia",km:0,dv:18,lat:40.9505,lon:-4.1230,t:"Asador y barra",q:"Restaurante José María, Segovia",
+  d:"Clásico segoviano junto a la Plaza Mayor, con barra muy animada.",pide:"Cochinillo; en la barra, raciones y pinchos.",ojo:"Reserva para el comedor."},
+ {id:"r4",n:"Restaurante Montesol",p:"Segovia",km:22,dv:1,lat:40.7760,lon:-4.4000,t:"Carretera",q:"Restaurante Montesol, Villacastín",
+  d:"Mesón de carretera de los de siempre en la N-VI, a la altura de Villacastín.",pide:"Menú casero del día, amplio y a buen precio.",ojo:"Suele llenarse: reserva en fin de semana."},
+ {id:"r5",n:"Restaurante Marcial",p:"Segovia",km:22,dv:1,lat:40.7800,lon:-4.4050,t:"Desayuno",q:"Restaurante Marcial, Villacastín",
+  d:"A las afueras de Villacastín, parada clásica para un alto rápido.",pide:"Pincho de tortilla de patatas.",ojo:""},
+ {id:"r6",n:"D'Ramos",p:"Ávila",km:45,dv:0,lat:40.8940,lon:-4.5830,t:"Carretera",q:"D'Ramos Restaurante, Sanchidrián",
+  d:"Mesón en la N-VI en Sanchidrián, con aparcamiento amplio y acceso directo.",pide:"Menú del día; también raciones.",ojo:"Abre de martes a domingo."},
+ {id:"r7",n:"El Figón de Arévalo",p:"Ávila",km:62,dv:1,lat:41.0640,lon:-4.7180,t:"Asador",q:"El Figón de Arévalo",
+  d:"El decano de los asadores de Ávila y referencia del tostón (cochinillo) en Castilla.",pide:"Tostón asado en horno de leña, lechazo y bacalao.",ojo:"Reserva siempre; los asados, por encargo."},
+ {id:"r8",n:"Asador Las Cubas",p:"Ávila",km:62,dv:1,lat:41.0650,lon:-4.7200,t:"Asador",q:"Asador Las Cubas, Arévalo",
+  d:"Templo del cochinillo en Arévalo, muy valorado.",pide:"Cochinillo y lechazo en horno de leña; níscalos con jamón en temporada.",ojo:"Reserva con antelación."},
+ {id:"r9",n:"Asador Siboney",p:"Ávila",km:62,dv:1,lat:41.0630,lon:-4.7170,t:"Asador",q:"Asador Siboney, Arévalo",
+  d:"Asador en un palacete de arquitectura cubana lleno de obras de arte.",pide:"Cochinillo, cordero y bacalao.",ojo:"Reserva en fin de semana."},
+ {id:"r10",n:"Pastelería Ribón",p:"Valladolid",km:90,dv:2,lat:41.3110,lon:-4.9150,t:"Desayuno",q:"Pastelería Ribón, Medina del Campo",
+  d:"Pastelería de Medina del Campo para desayunar bien y barato.",pide:"Hojaldres y café.",ojo:""},
+ {id:"r11",n:"Panadería Raúl",p:"Valladolid",km:105,dv:2,lat:41.4120,lon:-4.9580,t:"Dulces",q:"Panadería Raúl, Rueda",
+  d:"Panadería artesana en Rueda.",pide:"Pastas de piñones, rosquillas y pan para el viaje.",ojo:""},
+ {id:"r12",n:"El Torreón",p:"Valladolid",km:115,dv:1,lat:41.5020,lon:-5.0050,t:"Asador",q:"El Torreón, Tordesillas",
+  d:"El asador de referencia de Tordesillas, con más de cuarenta años y decoración castellana.",pide:"Carnes rojas a la brasa de carbón, lechazo; de entrante, cecina y queso frito con pimientos.",ojo:"No es barato; reserva."},
+ {id:"r13",n:"Mesón Villa de Urueña",p:"Valladolid",km:150,dv:5,lat:41.7268,lon:-5.2040,t:"Mesón",q:"Mesón Villa de Urueña",
+  d:"El mesón de la plaza de siempre, a pocos metros de la muralla.",pide:"Platos de cuchara y empanada de morcilla con manzana.",ojo:"Encaja con el atardecer en la muralla."},
+ {id:"r14",n:"Las Brasas de San Esteban",p:"Zamora",km:190,dv:1,lat:41.9400,lon:-5.5500,t:"Parrilla",q:"Las Brasas de San Esteban, San Esteban del Molar",
+  d:"Asador en la salida 251 de la A-6: eliges la carne en el mostrador.",pide:"Carne a la parrilla; menú con bebida y postre.",ojo:"Fácil de aparcar; tienda de productos."},
+ {id:"r15",n:"La Despensa",p:"Zamora",km:190,dv:0,lat:41.9420,lon:-5.5530,t:"Bocadillos",q:"La Despensa, San Esteban del Molar",
+  d:"Bar-tienda de culto en el km 250 de la A-6.",pide:"Bocadillos de embutido casero en pan de pueblo.",ojo:"Para un alto rápido; venden quesos y legumbres."},
+ {id:"r16",n:"El Ermitaño",p:"Zamora",km:205,dv:2,lat:42.0105,lon:-5.6625,t:"Estrella Michelin",q:"El Ermitaño, Benavente",
+  d:"La gran parada gastronómica de la ruta, con estrella Michelin.",pide:"Lechazo, cecina, cocochas; en la barra, croquetas y tortilla.",ojo:"Comedor con reserva obligatoria; la barra, sin reserva."},
+ {id:"r17",n:"La Trébede",p:"Zamora",km:215,dv:12,lat:42.1000,lon:-5.7300,t:"Cocina creativa",q:"La Trébede, Pobladura del Valle",
+  d:"Pequeño restaurante rural de cocina tradicional con un toque creativo.",pide:"Tortillita de camarones, oreja confitada, bacalao.",ojo:"Unas 30 plazas: reserva."},
+ {id:"r18",n:"La Bicha",p:"León",km:275,dv:1,lat:42.5972,lon:-5.5692,t:"Pinchos",q:"La Bicha, León",
+  d:"Taberna mítica del Barrio Húmedo, con mucho carácter.",pide:"La tapa de morcilla.",ojo:"En León la tapa viene con la bebida."},
+ {id:"r19",n:"El Rebote",p:"León",km:275,dv:1,lat:42.5975,lon:-5.5700,t:"Pinchos",q:"El Rebote, Plaza de San Martín, León",
+  d:"Croquetería de la Plaza de San Martín, en pleno Barrio Húmedo.",pide:"Croquetas: jamón, pizza o la picante Jalisco.",ojo:"Suele estar lleno; sin comedor."},
+ {id:"r20",n:"El Flechazo",p:"León",km:275,dv:1,lat:42.5970,lon:-5.5695,t:"Pinchos",q:"El Flechazo, Barrio Húmedo, León",
+  d:"Otro imprescindible de la ruta de tapas del Húmedo.",pide:"Sus patatas.",ojo:""},
+ {id:"r21",n:"Restaurante Pablo",p:"León",km:275,dv:1,lat:42.5995,lon:-5.5655,t:"Estrella Michelin",q:"Restaurante Pablo, Avenida de los Cubos, León",
+  d:"Cocina leonesa de autor junto a la muralla y la catedral.",pide:"Menú degustación.",ojo:"Reserva con antelación."},
+ {id:"r22",n:"Cocinandos",p:"León",km:275,dv:1,lat:42.6010,lon:-5.5830,t:"Estrella Michelin",q:"Cocinandos, Plaza de San Marcos, León",
+  d:"Alta cocina en la Plaza de San Marcos.",pide:"Menú degustación de temporada.",ojo:"Reserva con antelación."},
+ {id:"r23",n:"Roble by Jairo Rodríguez",p:"Asturias",km:360,dv:1,lat:43.1550,lon:-5.8280,t:"Guía Michelin",q:"Roble by Jairo Rodríguez, Pola de Lena",
+  d:"Cocina asturiana actualizada en las afueras de Pola de Lena.",pide:"Pescado de la rula de Avilés y el carro de quesos.",ojo:"Cierra lunes y martes; cenas solo viernes y sábado (comprueba)."},
+ {id:"r24",n:"Vía Carisa",p:"Asturias",km:365,dv:5,lat:43.1830,lon:-5.8020,t:"Cocina asturiana",q:"Vía Carisa, Carabanzo, Lena",
+  d:"Casa de comidas rural muy valorada en Carabanzo.",pide:"Pote de berzas, fabada y cordero.",ojo:"Raciones generosas."},
+ {id:"r25",n:"Calle Gascona (Bulevar de la Sidra)",p:"Asturias",km:390,dv:1,lat:43.3640,lon:-5.8455,t:"Sidrerías",q:"Calle Gascona, Oviedo",
+  d:"La calle de las sidrerías de Oviedo, una detrás de otra.",pide:"Sidra escanciada, cachopo, tortos con picadillo.",ojo:"Para ir de una en otra sin reservar."},
+ {id:"r26",n:"Casa Fermín",p:"Asturias",km:390,dv:1,lat:43.3618,lon:-5.8470,t:"Clásico",q:"Casa Fermín, Oviedo",
+  d:"Restaurante clásico de Oviedo, junto al Campo de San Francisco.",pide:"Cocina asturiana de producto.",ojo:"Reserva."},
+ {id:"r27",n:"Confitería Camilo de Blas",p:"Asturias",km:390,dv:1,lat:43.3626,lon:-5.8462,t:"Dulces",q:"Camilo de Blas, Oviedo",
+  d:"Confitería histórica de Oviedo.",pide:"Carbayones.",ojo:"Buen recuerdo para llevar."},
+ {id:"r28",n:"Sidrería El Planeta",p:"Asturias",km:420,dv:0,lat:43.5445,lon:-5.6640,t:"Sidrería",q:"Sidrería El Planeta, Gijón",
+  d:"En Cimadevilla, frente al puerto deportivo.",pide:"Pescado y marisco con sidra.",ojo:"Terraza muy buscada con buen tiempo."},
+ {id:"r29",n:"La Galana",p:"Asturias",km:420,dv:0,lat:43.5440,lon:-5.6625,t:"Sidrería y pinchos",q:"La Galana, Plaza Mayor, Gijón",
+  d:"Sidrería-restaurante en la Plaza Mayor de Gijón.",pide:"Pinchos en la barra y sidra; comedor de cocina asturiana.",ojo:""},
+ {id:"r30",n:"Casa Gerardo",p:"Asturias",km:420,dv:12,lat:43.5345,lon:-5.7650,t:"Estrella Michelin",q:"Casa Gerardo, Prendes",
+  d:"Casa de comidas centenaria convertida en referencia de la cocina asturiana.",pide:"Fabada y arroz con leche.",ojo:"Reserva con antelación."}
+];
+
+const RUTA_KM = [0,22,45,62,90,115,140,175,205,232,275,295,305,318,335,360,372,390,420];
 const RUTA = [[40.8167,-4.2083],[40.7797,-4.4136],[40.9450,-4.6050],[41.0650,-4.7200],[41.3100,-4.9300],[41.5000,-5.0000],[41.6330,-5.1750],[41.8660,-5.4130],[42.0020,-5.6780],[42.2300,-5.6100],[42.5990,-5.5670],[42.8000,-5.6200],[42.8530,-5.6700],[42.9200,-5.6600],[42.9930,-5.7470],[43.1600,-5.8200],[43.2500,-5.7700],[43.3620,-5.8440],[43.5320,-5.6610]];
 
 /* ---------- Estado ---------- */
 const hoy = new Date();
 const state = {tab:"dia", sentido:"ida", prov:"Todas", fecha:new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate(),12)};
-state.yo = null; state.yoMsg = "Buscando tu ubicación…"; state.orden = "ruta";
+state.yo = null; state.yoMsg = "Buscando tu ubicación…"; state.marca = null;
 let visitados = {};
 try { visitados = JSON.parse(localStorage.getItem("rutaN6_visitados")||"{}")||{}; } catch(e){ visitados = {}; }
 function guardar(){ try{ localStorage.setItem("rutaN6_visitados", JSON.stringify(visitados)); }catch(e){} }
@@ -578,8 +647,7 @@ const kmTxt = d => d<1 ? `${Math.round(d*1000)} m` : d<10 ? `${d.toFixed(1).repl
 const gmComer = (lat,lon) => `https://www.google.com/maps/search/restaurantes/@${lat},${lon},15z`;
 function filtrar(arr){
   const f = arr.map((p,i)=>({p,i})).filter(o => state.prov==="Todas" || o.p.p===state.prov);
-  if (state.orden==="cerca" && state.yo) f.sort((a,b)=> aMi(a.p)-aMi(b.p));
-  else f.sort((a,b)=> kmDe(a.p)-kmDe(b.p) || (state.sentido==="ida" ? a.i-b.i : b.i-a.i));
+  f.sort((a,b)=> kmDe(a.p)-kmDe(b.p) || (state.sentido==="ida" ? a.i-b.i : b.i-a.i));
   return f.map(o=>o.p);
 }
 const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -630,9 +698,10 @@ function ficha(p, noche){
     : p.km===0 ? `A ${p.dv} km de Otero de Herreros`
     : p.km===TOTAL ? `A ${p.dv} km de Gijón`
     : `Desvío de ${p.dv} km desde la ruta`;
-  return `<article class="spot${hecho?" done":""}" id="card-${p.id}">
+  return `<article class="spot${hecho?" done":""}${state.marca===p.id?" siguiente":""}" id="card-${p.id}">
     ${hito(p)}
     <div>
+      ${state.marca===p.id?'<span class="marca">▶ Siguiente en tu ruta</span>':""}
       <h3>${esc(p.n)}</h3>
       <p class="meta"><span>${p.p}</span><span>${p.t}</span><span class="off">${off}</span>${state.yo?`<span class="cerca">📍 a ${kmTxt(aMi(p))} de ti</span>`:""}</p>
       <p class="desc">${esc(p.d)}</p>
@@ -653,59 +722,124 @@ function ficha(p, noche){
     </div></article>`;
 }
 
+const gmSitio = r => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.q)}`;
+const gmIrSitio = r => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.q)}&travelmode=driving`;
+function fichaComer(r){
+  const hecho = !!visitados[r.id];
+  const off = r.dv<=1 ? "En ruta"
+    : r.km===0 ? `A ${r.dv} km de Otero de Herreros`
+    : r.km===TOTAL ? `A ${r.dv} km de Gijón`
+    : `Desvío de ${r.dv} km desde la ruta`;
+  return `<article class="spot${hecho?" done":""}${state.marca===r.id?" siguiente":""}" id="card-${r.id}">
+    ${hito(r)}
+    <div>
+      ${state.marca===r.id?'<span class="marca">▶ El más cercano en tu ruta</span>':""}
+      <h3>${esc(r.n)}</h3>
+      <p class="meta"><span>${r.p}</span><span>${r.t}</span><span class="off">${off}</span>${state.yo?`<span class="cerca">📍 a ${kmTxt(aMi(r))} de ti</span>`:""}</p>
+      <p class="desc">${esc(r.d)}</p>
+      <dl>
+        <dt>Qué pedir</dt><dd>${esc(r.pide)}</dd>
+        ${r.ojo?`<dt>A tener en cuenta</dt><dd>${esc(r.ojo)}</dd>`:""}
+      </dl>
+      <div class="acts">
+        <a class="btn main" href="${gmIrSitio(r)}" target="_blank" rel="noopener">Cómo llegar</a>
+        <a class="btn" href="${gmSitio(r)}" target="_blank" rel="noopener">Ver en Google Maps</a>
+        <button class="btn${hecho?" ok":""}" data-visto="${r.id}">${hecho?"✓ He estado":"Marcar como visitado"}</button>
+      </div>
+    </div></article>`;
+}
+
 function render(){
   document.body.classList.toggle("night", state.tab==="noche");
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===state.tab));
   document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.sentido===state.sentido));
   document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.prov===state.prov));
   enlaceRuta();
-  const noche = state.tab==="noche";
-  const lista = filtrar(noche?NOCHE:DIA);
-  pintarYo(noche);
+  const noche = state.tab==="noche", comer = state.tab==="comer";
+  const lista = filtrar(comer?COMER:noche?NOCHE:DIA);
+  pintarYo();
   const origen = state.sentido==="ida" ? "Otero de Herreros" : "Gijón";
-  document.getElementById("intro").textContent = noche
+  document.getElementById("intro").textContent = comer
+    ? "Selección de restaurantes, asadores y bares de pinchos de los más recomendados a lo largo de la ruta. Comprueba horarios y reserva antes de ir."
+    : noche
     ? "Para todas: trípode o apoyo firme, disparo con retardo de 2 s, estabilizador apagado en trípode y enfoque manual en las estrellas."
     : "Las horas de luz se recalculan para cada lugar según la fecha del viaje.";
   const vistos = lista.filter(p=>visitados[p.id]).length;
   document.getElementById("count").textContent = lista.length
-    ? `${lista.length} lugares desde ${origen}${state.prov!=="Todas"?" en "+state.prov:""}${vistos?`, ${vistos} visitados`:""}`
+    ? `${lista.length} ${comer?"sitios para comer":"lugares"} desde ${origen}${state.prov!=="Todas"?" en "+state.prov:""}${vistos?`, ${vistos} visitados`:""}`
     : "";
   document.getElementById("list").innerHTML = lista.length
-    ? lista.map(p=>ficha(p,noche)).join("")
-    : `<p class="empty">No hay lugares ${noche?"nocturnos":"diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
+    ? lista.map(p=> comer ? fichaComer(p) : ficha(p,noche)).join("")
+    : `<p class="empty">No hay ${comer?"sitios para comer":noche?"lugares nocturnos":"lugares diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
   pintarTodasFotos();
 }
 
 /* ---------- Mi ubicación ---------- */
-function pintarYo(noche){
+function kmEnRuta(lat,lon){
+  const r=Math.PI/180, c=Math.cos(lat*r);
+  const xy=(a,o)=>[o*111.32*c, a*110.57];
+  const P=xy(lat,lon); let mejor={d:1e9,km:0};
+  for(let i=0;i<RUTA.length-1;i++){
+    const A=xy(...RUTA[i]), B=xy(...RUTA[i+1]);
+    const vx=B[0]-A[0], vy=B[1]-A[1], wx=P[0]-A[0], wy=P[1]-A[1];
+    const t=Math.max(0,Math.min(1,(vx*wx+vy*wy)/(vx*vx+vy*vy||1)));
+    const d=Math.hypot(P[0]-(A[0]+t*vx), P[1]-(A[1]+t*vy));
+    if(d<mejor.d) mejor={d, km:RUTA_KM[i]+t*(RUTA_KM[i+1]-RUTA_KM[i])};
+  }
+  return {km: mejor.km, fuera: mejor.d};
+}
+function siguiente(arr){
+  if(!state.yo) return null;
+  const u = kmEnRuta(state.yo.lat,state.yo.lon).km;
+  const uK = state.sentido==="ida" ? u : TOTAL-u;
+  const orden = arr.map((p,i)=>({p,i})).sort((a,b)=> kmDe(a.p)-kmDe(b.p) || (state.sentido==="ida"?a.i-b.i:b.i-a.i)).map(o=>o.p);
+  const delante = orden.filter(p=> kmDe(p) >= uK-2);
+  if(!delante.length) return null;
+  const k = kmDe(delante[0]);
+  return delante.filter(p=>kmDe(p)===k).sort((a,b)=>aMi(a)-aMi(b))[0];
+}
+function marcar(tab, arr){
+  const p = siguiente(arr);
+  state.tab = tab;
+  if (p && state.prov!=="Todas" && p.p!==state.prov) state.prov="Todas";
+  state.marca = p ? p.id : null;
+  render();
+  if (p){
+    const el=document.getElementById("card-"+p.id);
+    if(el) setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"center"}),60);
+  } else {
+    alert("No quedan lugares por delante en este sentido de la ruta.");
+  }
+}
+function pintarYo(){
   const el = document.getElementById("yo");
   if (!state.yo){
-    el.innerHTML = `<h4>📍 Mi ubicación</h4><p>${state.yoMsg}</p><div class="acts"><button class="btn main" data-yo="buscar">Buscar mi ubicación</button></div>`;
+    el.innerHTML = `<h4>📍 Mi situación</h4><p>${state.yoMsg}</p>
+      <div class="acts"><button class="btn main" data-yo="buscar">Actualizar posición</button>
+      <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button></div>`;
     return;
   }
-  const y = state.yo, todos = noche?NOCHE:DIA;
-  const cerca = todos.reduce((m,p)=> !m || aMi(p)<aMi(m) ? p : m, null);
+  const y = state.yo;
   const hora = new Date(y.t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
-  el.innerHTML = `<h4>📍 Estás aquí</h4>
-    <p>Latitud ${y.lat.toFixed(5).replace(".",",")} / Longitud ${y.lon.toFixed(5).replace(".",",")} (precisión ±${Math.round(y.acc)} m, a las ${hora})</p>
-    <p>Lugar más cercano: <b>${esc(cerca.n)}</b>, a ${kmTxt(aMi(cerca))} en línea recta.</p>
+  const r = kmEnRuta(y.lat,y.lon);
+  const kmR = Math.round(state.sentido==="ida" ? r.km : TOTAL-r.km);
+  const donde = r.fuera>25 ? `Estás a unos ${Math.round(r.fuera)} km de la ruta.`
+    : `Vas por el km ${kmR} de la ruta (${state.sentido==="ida"?"ida, desde Otero":"vuelta, desde Gijón"}).`;
+  el.innerHTML = `<h4>📍 Mi situación</h4>
+    <p>${donde}</p>
+    <p>Latitud ${y.lat.toFixed(5).replace(".",",")} / Longitud ${y.lon.toFixed(5).replace(".",",")} (±${Math.round(y.acc)} m, a las ${hora})</p>
     <div class="acts">
-      <a class="btn main" href="${gmComer(y.lat,y.lon)}" target="_blank" rel="noopener">Restaurantes cerca de mí</a>
-      <a class="btn" href="https://www.google.com/maps/search/?api=1&query=${y.lat},${y.lon}" target="_blank" rel="noopener">Ver dónde estoy</a>
-      <button class="btn" data-yo="buscar">Actualizar</button>
-    </div>
-    <div class="seg" role="group" aria-label="Orden de la lista">
-      <button data-orden="ruta" aria-pressed="${state.orden==="ruta"}">Orden de la ruta</button>
-      <button data-orden="cerca" aria-pressed="${state.orden==="cerca"}">Más cerca de mí</button>
+      <button class="btn main" data-yo="buscar">Actualizar posición</button>
+      <button class="btn main" data-yo="ver">Ver</button>
+      <a class="btn" href="${gmComer(y.lat,y.lon)}" target="_blank" rel="noopener">Restaurantes Google</a>
+      <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button>
     </div>`;
 }
 function buscarYo(){
   if (!("geolocation" in navigator)){ state.yoMsg="Este móvil no permite obtener la ubicación desde la app."; render(); return; }
   state.yoMsg = "Buscando tu ubicación…"; if(!state.yo) render();
   navigator.geolocation.getCurrentPosition(pos=>{
-    const nuevo = !state.yo;
     state.yo = {lat:pos.coords.latitude, lon:pos.coords.longitude, acc:pos.coords.accuracy, t:Date.now()};
-    if (nuevo) state.orden = "cerca";
     render();
   }, err=>{
     state.yoMsg = err.code===1
@@ -810,15 +944,24 @@ const chips = document.getElementById("chips");
 chips.innerHTML = ["Todas",...PROVS].map(p=>`<button class="chip" data-prov="${p}" aria-pressed="false">${p}</button>`).join("");
 chips.addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; state.prov=b.dataset.prov; render(); });
 document.querySelector(".seg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.sentido=b.dataset.sentido; render(); });
-document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; render(); });
+document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; state.marca=null; render(); });
 const fi = document.getElementById("fecha");
 const pad = n=>String(n).padStart(2,"0");
 fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
 fi.addEventListener("change", ()=>{ if(!fi.value) return; const [y,m,d]=fi.value.split("-").map(Number); state.fecha=new Date(y,m-1,d,12); render(); });
 document.getElementById("yo").addEventListener("click", e=>{
-  if (e.target.closest("[data-yo]")) buscarYo();
-  const o = e.target.closest("[data-orden]");
-  if (o){ state.orden=o.dataset.orden; render(); }
+  const b = e.target.closest("[data-yo]"); if(!b) return;
+  const a = b.dataset.yo;
+  if (a==="buscar") buscarYo();
+  if (a==="ver"){
+    const url = `https://www.google.com/maps/search/?api=1&query=${state.yo.lat},${state.yo.lon}`;
+    marcar(state.tab==="comer" ? "dia" : state.tab, state.tab==="noche" ? NOCHE : DIA);
+    window.open(url, "_blank", "noopener");
+  }
+  if (a==="comer-ruta"){
+    if (state.yo) marcar("comer", COMER);
+    else { state.tab="comer"; state.marca=null; render(); }
+  }
 });
 document.getElementById("list").addEventListener("change", e=>{ if (e.target.matches("[data-add]")) anadirFotos(e.target); });
 document.getElementById("list").addEventListener("click", e=>{
