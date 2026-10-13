@@ -99,6 +99,9 @@ body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
 .yo .acts{margin-top:8px}
 .yo .seg{margin-top:10px}
 .cerca{color:var(--blue);font-weight:600}
+.navsel{margin-top:12px}
+.navsel span{display:block;font-family:var(--head);font-size:16px;font-weight:600;margin-bottom:4px}
+.navsel .seg{margin:0}
 .yo .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .yo .acts .btn{text-align:center}
 .spot.siguiente{background:rgba(46,74,134,.10);box-shadow:0 0 0 3px var(--blue);border-radius:10px;padding:18px 10px;margin:6px -10px}
@@ -752,6 +755,12 @@ function hito(p){
 }
 const gmLugar = p => `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}`;
 const gmRuta = p => `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving`;
+let nav = "google";
+try { nav = localStorage.getItem("rutaN6_nav") || "google"; } catch(e){}
+const wazeIr = p => p.q && !p.mio ? `https://waze.com/ul?q=${encodeURIComponent(p.q)}&navigate=yes` : `https://waze.com/ul?ll=${p.lat},${p.lon}&navigate=yes`;
+const irA = p => nav==="waze" ? wazeIr(p) : (p.q ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.q)}&travelmode=driving` : gmRuta(p));
+const navSel = () => `<div class="navsel"><span>Navegar con</span><div class="seg" role="group" aria-label="Navegador">
+  <button data-nav="google" aria-pressed="${nav==="google"}">Google Maps</button><button data-nav="waze" aria-pressed="${nav==="waze"}">Waze</button></div></div>`;
 function cabecera(p){
   const hecho = !!visitados[p.id];
   const off = p.dv<=1 ? "En ruta"
@@ -780,7 +789,7 @@ function ficha(p, noche){
       ${bloqueSol(p, noche)}
       <div class="fotos" data-fotos="${p.id}"></div>
       <div class="acts tres">
-        <a class="btn main" href="${gmRuta(p)}" target="_blank" rel="noopener">Cómo llegar</a>
+        <a class="btn main" href="${irA(p)}" target="_blank" rel="noopener">Cómo llegar</a>
         <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Google Maps</a>
         <button class="btn" data-comer="${p.id}">Comer cerca</button>
       </div>
@@ -800,7 +809,7 @@ function fichaComer(r){
         ${dd("A tener en cuenta",r.ojo)}
       </dl>
       <div class="acts dos">
-        <a class="btn main" href="${gmIrSitio(r)}" target="_blank" rel="noopener">Cómo llegar</a>
+        <a class="btn main" href="${irA(r)}" target="_blank" rel="noopener">Cómo llegar</a>
         <a class="btn" href="${gmSitio(r)}" target="_blank" rel="noopener">Google Maps</a>
       </div>
       ${misBotones(r)}
@@ -960,7 +969,7 @@ function pintarYo(){
   if (!state.yo){
     el.innerHTML = `<h4>📍 Mi situación</h4><p>${state.yoMsg}</p>
       <div class="acts"><button class="btn main" data-yo="buscar">Actualizar posición</button>
-      <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button></div>`;
+      <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button></div>${navSel()}`;
     return;
   }
   const y = state.yo;
@@ -977,7 +986,7 @@ function pintarYo(){
       <button class="btn main" data-yo="ver">Ver</button>
       <a class="btn" href="${gmComer(y.lat,y.lon)}" target="_blank" rel="noopener">Restaurantes Google</a>
       <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button>
-    </div>`;
+    </div>${navSel()}`;
 }
 function buscarYo(){
   if (!("geolocation" in navigator)){ state.yoMsg="Este móvil no permite obtener la ubicación desde la app."; render(); return; }
@@ -1094,6 +1103,8 @@ const pad = n=>String(n).padStart(2,"0");
 fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
 fi.addEventListener("change", ()=>{ if(!fi.value) return; const [y,m,d]=fi.value.split("-").map(Number); state.fecha=new Date(y,m-1,d,12); render(); });
 document.getElementById("yo").addEventListener("click", e=>{
+  const nb = e.target.closest("[data-nav]");
+  if (nb){ nav = nb.dataset.nav; try{ localStorage.setItem("rutaN6_nav", nav); }catch(err){} render(); return; }
   const b = e.target.closest("[data-yo]"); if(!b) return;
   const a = b.dataset.yo;
   if (a==="buscar") buscarYo();
