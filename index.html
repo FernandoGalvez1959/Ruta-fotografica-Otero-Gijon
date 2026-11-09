@@ -1183,7 +1183,7 @@ async function guardarCopia(){
     const datos = {app:"ruta-foto-n6", version:1, fecha:new Date().toISOString(), visitados, propios, nav, fotos};
     const blob = new Blob([JSON.stringify(datos)],{type:"application/json"});
     const hoy = new Date(); const pad2=n=>String(n).padStart(2,"0");
-    const nombre = `ruta-foto-copia-${hoy.getFullYear()}-${pad2(hoy.getMonth()+1)}-${pad2(hoy.getDate())}.json`;
+    const nombre = `${hoy.getFullYear()}${pad2(hoy.getMonth()+1)}${pad2(hoy.getDate())} Ruta fotográfica.json`;
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nombre;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
     try{ localStorage.setItem("rutaN6_ultimaCopia", String(Date.now())); }catch(e){}
