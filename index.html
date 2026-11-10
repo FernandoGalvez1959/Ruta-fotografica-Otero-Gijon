@@ -1,1248 +1,997 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1C2B39">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Ruta foto N-VI">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
-<title>Ruta fotográfica Otero de Herreros – Gijón</title>
-<link rel="icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#7A3E5A"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}[hidden]{display:none!important}</style><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script><script src="firebase-config.js"></script></head><body>
+<title>Gijón</title>
 <style>
-:root{
-  --paper:#E7ECE2; --card:#F6F8F2; --ink:#1C2B39; --muted:#56666F;
-  --road:#C8102E; --gold:#C98420; --blue:#2E4A86; --line:#C9D2C4;
-  --head:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
-  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-*,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 120px)}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;transition:background .3s,color .3s}
-body.night{--paper:#111A2C;--card:#1A2640;--ink:#E7EAF1;--muted:#9EA9BE;--gold:#E8AA4C;--blue:#8FB0F0;--line:#2C3A58}
-.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+  /* Layout: cabecera fija con pestañas de estancias que se desplazan; debajo, secciones tipo lista de la compra con precio por producto */
+  :root{
+    --bg:#F8F5F2;
+    --surface:#FFFFFF;
+    --surface-soft:#F1ECE8;
+    --ink:#2A2226;
+    --ink-soft:#75686E;
+    --ink-faint:#B2A6AB;
+    --border:#E6DDD9;
+    --accent:#7A3E5A;
+    --accent-ink:#FFFFFF;
+    --ok:#2F8A4E;
+    --warn:#B7791F;
+    --danger:#B0483F;
+    --shadow:0 1px 2px rgba(42,34,38,.06),0 4px 14px rgba(42,34,38,.05);
+    --font-display:"Fraunces",Georgia,serif;
+    --font-body:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1A1618;--surface:#241F22;--surface-soft:#2D272A;--ink:#F1E9EC;--ink-soft:#B6A9AE;--ink-faint:#6E6267;
+      --border:#3B3337;--accent:#D394B2;--accent-ink:#2A1420;--ok:#6FCF8E;--warn:#E6B45A;--danger:#E58A80;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1A1618;--surface:#241F22;--surface-soft:#2D272A;--ink:#F1E9EC;--ink-soft:#B6A9AE;--ink-faint:#6E6267;
+    --border:#3B3337;--accent:#D394B2;--accent-ink:#2A1420;--ok:#6FCF8E;--warn:#E6B45A;--danger:#E58A80;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);color-scheme:dark;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);padding-inline:16px;padding-block:0 40px;}
+  h1,h2,h3{font-family:var(--font-display);}
+  .wrap{max-width:640px;margin:0 auto;}
 
-/* Cabecera */
-header{padding:22px 0 10px}
-.plates{display:flex;gap:8px;margin-bottom:10px}
-.plate{font-family:var(--head);font-weight:700;font-size:18px;color:#fff;padding:2px 10px;border-radius:5px;border:2px solid #fff;box-shadow:0 0 0 2px var(--road);background:var(--road);letter-spacing:.02em}
-.plate.b{background:#1D5FAF;box-shadow:0 0 0 2px #1D5FAF}
-h1{font-family:var(--head);font-weight:700;font-size:clamp(34px,8vw,52px);line-height:.95;margin:0}
-.sub{font-family:var(--head);font-weight:500;font-size:22px;margin:4px 0 6px;color:var(--muted)}
-.note{font-size:15px;color:var(--muted);margin:0}
+  /* tono de color por estancia */
+  .tinted{--c:var(--cl,var(--accent));}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tinted{--c:var(--cd,var(--cl,var(--accent)));}}
+  :root[data-theme="dark"] .tinted{--c:var(--cd,var(--cl,var(--accent)));}
 
-/* Controles */
-.controls{position:sticky;top:0;z-index:1000;background:var(--paper);padding:10px 0 8px;border-bottom:1px solid var(--line)}
-.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
-.seg{display:flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden;flex:1 1 100%}
-.seg button{flex:1;font-family:var(--head);font-size:17px;font-weight:600;background:transparent;color:var(--ink);border:0;padding:8px 6px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;flex:1 1 100%;scrollbar-width:none}
-.chip{font-family:var(--head);font-size:16px;font-weight:600;white-space:nowrap;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:4px 13px;cursor:pointer}
-.chip[aria-pressed="true"]{border-color:var(--road);background:var(--road);color:#fff}
-.date{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:17px;font-weight:600}
-.date input{font:inherit;font-family:var(--body);font-size:16px;padding:4px 8px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
-.tabs{display:flex;gap:4px}
-.tabs button{flex:1;font-family:var(--head);font-size:18px;font-weight:700;padding:9px 4px;border:0;border-bottom:4px solid transparent;background:transparent;color:var(--muted);cursor:pointer}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--road)}
-.tabs a.tabmap{flex:1;text-align:center;font-family:var(--head);font-size:18px;font-weight:700;padding:9px 4px;color:#fff;background:var(--road);border-radius:8px 8px 0 0;text-decoration:none}
-body.night .tabs button[aria-selected="true"]{border-bottom-color:var(--gold)}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  header.top{background:var(--bg);padding-block:16px 6px;}
+  header.top h1{font-size:1.75rem;font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance;flex:1;min-width:0;}
+  .head-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  button.sync-badge{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:600 .8rem var(--font-body);padding:6px 12px 6px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;}
+  button.sync-badge i{width:10px;height:10px;border-radius:50%;background:var(--ink-faint);flex-shrink:0;}
+  button.sync-badge.ok{border-color:var(--ok);color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--surface));}
+  button.sync-badge.ok i{background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent);}
+  button.sync-badge.saving i{background:var(--warn);animation:pulse 1s ease-in-out infinite;}
+  button.sync-badge.saving{color:var(--warn);border-color:var(--warn);}
+  button.sync-badge.login i{background:var(--warn);}
+  button.sync-badge.login{color:var(--warn);border-color:var(--warn);}
+  button.sync-badge.error i{background:var(--danger);}
+  button.sync-badge.error{color:var(--danger);border-color:var(--danger);}
+  @keyframes pulse{50%{opacity:.35;}}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:6px;}
+  nav.tabs button{flex-shrink:0;border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);font:500 .84rem var(--font-body);padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap;}
+  nav.tabs button.on{background:var(--c);border-color:var(--c);color:var(--accent-ink);}
+  nav.tabs button.fixed{border-color:var(--ink-faint);color:var(--ink);font-weight:600;}
+  nav.tabs button.fixed.on{color:var(--accent-ink);}
+  nav.tabs button.new{border-style:dashed;color:var(--ink-soft);padding-inline:12px;font-size:1rem;line-height:1;}
+  .title-row{display:flex;align-items:center;gap:6px;}
+  .title-row h2{flex:1;min-width:0;}
+  .type-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+  .type-pick label{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:var(--surface);cursor:pointer;font-size:.88rem;display:flex;gap:8px;align-items:flex-start;}
+  .type-pick label small{display:block;color:var(--ink-soft);font-size:.76rem;margin-top:2px;}
+  .type-pick input{margin-top:3px;accent-color:var(--accent);}
 
-/* Lista */
-.intro{margin:16px 0 4px;font-size:15.5px;color:var(--muted)}
-.count{font-family:var(--head);font-size:18px;font-weight:600;margin:14px 0 6px}
-.spot{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
-.spot.flash{animation:flash 1.6s ease}
-@keyframes flash{0%,40%{background:rgba(201,132,32,.18)}100%{background:transparent}}
-@media (prefers-reduced-motion:reduce){.spot.flash{animation:none}body{transition:none}}
+  .page-head{margin:8px 0 14px;}
+  .page-head h2{font-size:1.45rem;margin:0 0 4px;color:var(--c);text-wrap:balance;}
+  .page-head .sub{color:var(--ink-soft);font-size:.9rem;margin:0 0 10px;}
+  .money-line{font-variant-numeric:tabular-nums;font-size:.92rem;color:var(--ink-soft);margin:0 0 10px;}
+  .money-line strong{color:var(--ink);}
+  .bar{height:7px;border-radius:99px;background:var(--surface-soft);overflow:hidden;border:1px solid var(--border);}
+  .bar i{display:block;height:100%;background:var(--c,var(--accent));border-radius:99px;}
 
-/* Hito kilométrico: el elemento de la ruta */
-.hito{width:58px;align-self:start;background:#fff;border:2px solid #1C2B39;border-radius:14px 14px 3px 3px;text-align:center;overflow:hidden;color:#1C2B39}
-.hito .top{background:var(--road);height:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--head);font-size:12px;font-weight:700}
-.hito .k{font-family:var(--head);font-size:12px;font-weight:600;line-height:1;margin-top:5px}
-.hito b{display:block;font-family:var(--head);font-size:26px;line-height:1.05;padding-bottom:6px}
-.hito .k.fin{margin:-4px 0 6px}
-.hito .dv{background:#1C2B39;color:#fff;font-family:var(--head);font-size:13px;font-weight:700;padding:2px 0}
-.spot.done .hito{opacity:.55}
+  button.pill{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:.84rem;color:var(--ink-soft);background:var(--surface-soft);border:1px solid var(--border);padding:7px 14px;border-radius:999px;cursor:pointer;font-variant-numeric:tabular-nums;}
+  button.pill strong{color:var(--c);}
+  button.pill.active{background:var(--c);border-color:var(--c);color:var(--accent-ink);}
+  button.pill.active strong{color:var(--accent-ink);}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
 
-.spot h3{font-family:var(--head);font-size:25px;font-weight:700;line-height:1.1;margin:0 0 3px}
-.meta{font-family:var(--head);font-size:16px;font-weight:500;color:var(--muted);margin:0 0 8px;display:flex;flex-wrap:wrap;gap:4px 12px}
-.meta .off{color:var(--road);font-weight:600}
-body.night .meta .off{color:var(--gold)}
-.desc{margin:0 0 10px}
-dl{margin:0}
-dt{font-family:var(--head);font-weight:700;font-size:17px;margin-top:8px}
-dd{margin:0}
-.sun{margin-top:12px;padding:10px 12px;border-left:4px solid var(--gold);background:var(--card);border-radius:0 8px 8px 0;font-size:15.5px}
-.sun h4{font-family:var(--head);font-size:16px;font-weight:700;margin:0 0 4px;color:var(--gold)}
-.sun .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2px 16px}
-.sun .grid span b{font-family:var(--head);font-size:18px}
-.sun p{margin:6px 0 0}
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.btn{font-family:var(--head);font-size:17px;font-weight:600;padding:7px 14px;border-radius:8px;border:2px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;cursor:pointer}
-.btn.main{background:var(--ink);color:var(--paper)}
-.btn.ok{border-color:#2E7D4F;color:#2E7D4F}
-body.night .btn.ok{border-color:#6FCF97;color:#6FCF97}
-.empty{padding:30px 0;font-size:17px}
-.yo{margin:14px 0 4px;padding:12px 14px;background:var(--card);border:2px solid var(--line);border-radius:10px}
-.yo h4{font-family:var(--head);font-size:19px;font-weight:700;margin:0 0 4px}
-.yo p{margin:0 0 6px;font-size:15.5px}
-.yo .acts{margin-top:8px}
-.yo .seg{margin-top:10px}
-.cerca{color:var(--blue);font-weight:600}
-.navsel{margin-top:12px}
-.navsel span{display:block;font-family:var(--head);font-size:16px;font-weight:600;margin-bottom:4px}
-.navsel .seg{margin:0}
-.yo .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.yo .acts .btn{text-align:center}
-.spot.siguiente{background:rgba(46,74,134,.10);box-shadow:0 0 0 3px var(--blue);border-radius:10px;padding:18px 10px;margin:6px -10px}
-.spot .marca{display:inline-block;background:var(--blue);color:#fff;font-family:var(--head);font-size:15px;font-weight:700;padding:2px 10px;border-radius:12px;margin-bottom:6px}
-body.night .spot .marca{color:#111A2C}
-.fotos{margin-top:12px}
-.titulo{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
-.titulo h3{flex:1}
-.mio{display:inline-block;vertical-align:middle;background:#E8C547;color:#1C2B39;font-size:14px;padding:1px 8px;border-radius:10px}
-.visto{flex:none;font-family:var(--head);font-size:15px;font-weight:600;padding:3px 10px;border-radius:14px;border:1.5px solid var(--muted);background:transparent;color:var(--muted);cursor:pointer;margin-top:3px}
-.visto.on{border-color:#2E7D4F;background:#2E7D4F;color:#fff}
-.acts.tres,.acts.dos{display:grid;gap:6px}
-.acts.tres{grid-template-columns:repeat(3,1fr)}
-.acts.dos{grid-template-columns:repeat(2,1fr)}
-.acts.tres .btn,.acts.dos .btn{font-size:15.5px;padding:8px 4px;text-align:center;line-height:1.15}
-.acts.mias{margin-top:8px}
-.acts.mias .btn{font-size:15px;padding:5px 12px}
-.btn.del{border-color:var(--road);color:var(--road)}
-.anadir{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:1500;font-family:var(--head);font-size:19px;font-weight:700;padding:12px 18px;border:0;border-radius:30px;background:var(--road);color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.35);cursor:pointer}
-.capa{position:fixed;inset:0;z-index:2500;background:rgba(10,14,22,.55);display:flex;align-items:flex-end;justify-content:center}
-.hoja{background:var(--paper);color:var(--ink);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:0 16px calc(env(safe-area-inset-bottom,0px) + 18px)}
-.hoja header{position:sticky;top:0;background:var(--paper);display:flex;align-items:center;justify-content:space-between;padding:14px 0 8px;border-bottom:1px solid var(--line)}
-.hoja h2{font-family:var(--head);font-size:24px;margin:0}
-.hoja .cerrar{font-size:30px;line-height:1;border:0;background:transparent;color:var(--ink);cursor:pointer}
-.hoja label{display:block;font-family:var(--head);font-size:17px;font-weight:600;margin-top:12px}
-.hoja input,.hoja textarea,.hoja select{display:block;width:100%;margin-top:4px;font:16px var(--body);padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:#1C2B39}
-.hoja #fMiPos{margin-top:8px}
-.pista{font-size:14px;color:var(--muted);margin:6px 0 0}
-.calc{font-size:15px;font-weight:600;color:var(--blue);margin:8px 0 0}
-#list{padding-bottom:20px}
-.copia{margin:14px 0 0;padding:12px 14px;background:var(--card);border:2px solid var(--line);border-radius:10px}
-.version{font-family:var(--head);font-size:16px;font-weight:600;color:var(--muted);text-align:center;margin:16px 0 0}
-.copia summary{font-family:var(--head);font-size:19px;font-weight:700;cursor:pointer}
-.copia[open] summary{margin-bottom:8px}
-.copia #copiaLista{margin-top:10px}
-.copia a.btn{text-align:center}
-.copia p{margin:0 0 8px;font-size:15.5px}
-.copia .estado{font-weight:600;color:var(--blue)}
-.copia label.btn{text-align:center;cursor:pointer}
-footer{padding-bottom:90px!important}
-.fotos h4{font-family:var(--head);font-size:17px;font-weight:700;margin:0 0 6px}
-.fotos h4 span{font-weight:500;color:var(--muted)}
-.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:360px}
-.fgrid button.th{padding:0;border:2px solid var(--line);border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--card);cursor:pointer}
-.fgrid img{width:100%;height:100%;object-fit:cover;display:block}
-.fgrid label.add{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;border:2px dashed var(--muted);border-radius:8px;font-family:var(--head);font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;text-align:center;line-height:1.1}
-.fgrid label.add b{font-size:28px;line-height:1}
-.fgrid label.add.busy{opacity:.5;pointer-events:none}
-.visor{position:fixed;inset:0;z-index:3000;background:rgba(10,14,22,.96);display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px)}
-.visor img{flex:1;min-height:0;width:100%;object-fit:contain}
-.visor .vbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding-top:10px}
-.visor .vbar button{font-family:var(--head);font-size:18px;font-weight:600;padding:9px 18px;border-radius:8px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer}
-.visor .vbar button.del{border-color:#ff7a7a;color:#ff7a7a}
-.visor p{color:#fff;text-align:center;font-family:var(--head);font-size:18px;margin:0 0 8px}
+  main{display:flex;flex-direction:column;gap:16px;}
+  section.group{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--c);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .g-head{display:flex;align-items:center;gap:8px;padding:11px 10px 4px 16px;}
+  .g-head h3{font-size:1.05rem;font-weight:600;margin:0;color:var(--c);flex:1;min-width:0;}
+  .g-sum{font-size:.78rem;color:var(--ink-faint);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  button.icon{border:none;background:transparent;color:var(--ink-faint);font-size:1.05rem;line-height:1;padding:5px 7px;border-radius:7px;cursor:pointer;flex-shrink:0;}
+  button.icon:hover{background:var(--surface-soft);color:var(--ink);}
+  button.icon.del:hover{color:var(--danger);}
 
-footer{font-size:14px;color:var(--muted);padding:24px 0 30px}
-[hidden]{display:none!important}
+  ul.items{list-style:none;margin:0;padding:0 6px 4px;}
+  ul.items:empty::after{content:"Sin elementos todavía";display:block;color:var(--ink-faint);font-size:.88rem;padding:8px 10px 12px;font-style:italic;}
+  li.item{display:flex;align-items:center;gap:2px;padding:2px 2px;border-radius:8px;}
+  li.item:hover{background:var(--surface-soft);}
+  li.item.dragging{background:var(--surface-soft);box-shadow:0 6px 16px rgba(0,0,0,.18);}
+  li.item.done{background:color-mix(in srgb,var(--c) 11%,transparent);}
+  li.item.done .t{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--ink-faint);}
+  .chk{display:grid;place-items:center;padding:6px;cursor:pointer;}
+  input[type="checkbox"]{appearance:none;width:20px;height:20px;min-width:20px;border-radius:6px;border:1.6px solid var(--border);background:var(--surface);display:grid;place-content:center;cursor:pointer;margin:0;}
+  input[type="checkbox"]::after{content:"";width:10px;height:10px;clip-path:polygon(14% 44%,0 65%,50% 100%,100% 16%,80% 0%,43% 62%);background:var(--accent-ink);transform:scale(0);transition:transform .12s;}
+  input[type="checkbox"]:checked{background:var(--c);border-color:var(--c);}
+  input[type="checkbox"]:checked::after{transform:scale(1);}
+  button.txt{flex:1;min-width:0;text-align:left;background:none;border:none;font:inherit;color:var(--ink);padding:6px 4px;cursor:pointer;display:flex;align-items:baseline;gap:8px;}
+  .t{font-size:.96rem;line-height:1.25;overflow-wrap:anywhere;flex:1;min-width:0;}
+  .q{font-size:.78rem;color:var(--ink-soft);white-space:nowrap;}
+  .p{font-size:.88rem;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap;}
+  .p.zero{color:var(--ink-faint);}
+  button.drag{border:none;background:transparent;color:var(--ink-faint);width:26px;height:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;border-radius:7px;cursor:grab;touch-action:none;flex-shrink:0;}
+  button.drag span{width:14px;height:2px;border-radius:1px;background:currentColor;}
+
+  form.add{display:flex;gap:6px;padding:8px 12px 12px 16px;border-top:1px solid var(--border);margin-top:2px;}
+  form.add input{min-width:0;background:var(--surface-soft);border:1px solid var(--border);border-radius:9px;padding:9px 10px;font:inherit;font-size:.9rem;color:var(--ink);}
+  form.add input.name{flex:1;}
+  form.add input.price{width:92px;text-align:right;}
+  form.add button{border:none;background:var(--c);color:var(--accent-ink);width:38px;border-radius:9px;font-size:1.15rem;cursor:pointer;flex-shrink:0;}
+  input::placeholder{color:var(--ink-faint);}
+
+  form.newgroup{display:flex;gap:8px;}
+  form.newgroup input{flex:1;min-width:0;background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:11px 14px;font:inherit;font-size:.9rem;color:var(--ink);}
+  form.newgroup button,.btn{border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);padding:9px 15px;border-radius:12px;font:inherit;font-size:.86rem;cursor:pointer;white-space:nowrap;}
+  form.newgroup button:hover,.btn:hover{border-color:var(--c,var(--accent));color:var(--c,var(--accent));}
+  .btn.primary{background:var(--c,var(--accent));border-color:var(--c,var(--accent));color:var(--accent-ink);}
+  .btn.primary:hover{color:var(--accent-ink);filter:brightness(1.06);}
+  .btn.danger{color:var(--danger);}
+  .btn.danger.armed{background:var(--danger);border-color:var(--danger);color:var(--surface);}
+
+  p.empty{color:var(--ink-soft);font-size:.92rem;background:var(--surface);border:1px dashed var(--border);border-radius:14px;padding:18px;text-align:center;margin:0;}
+
+  /* resumen */
+  .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:6px;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px;}
+  .kpi .l{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);}
+  .kpi .v{font-family:var(--font-display);font-size:1.15rem;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px;overflow-wrap:anywhere;}
+  .kpi.spent .v{color:var(--accent);}
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow-x:auto;box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums;}
+  th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;}
+  th:first-child,td:first-child{text-align:left;white-space:normal;}
+  th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600;}
+  tr:last-child td{border-bottom:none;}
+  tfoot td{font-weight:600;border-top:2px solid var(--border);}
+  td .room{display:flex;align-items:center;gap:8px;color:var(--ink);background:none;border:none;font:inherit;padding:0;cursor:pointer;text-align:left;}
+  td .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex-shrink:0;}
+  td .mini{height:4px;margin-top:5px;}
+  h3.block{font-size:1.05rem;margin:14px 0 8px;}
+  .rooms-admin{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 8px;}
+  .rooms-admin .row{display:flex;align-items:center;gap:6px;padding:5px 4px;border-bottom:1px solid var(--border);}
+  .rooms-admin .row:last-of-type{border-bottom:none;}
+  .rooms-admin .row .name{flex:1;min-width:0;display:flex;align-items:center;gap:8px;}
+  .rooms-admin form{display:flex;gap:8px;padding:8px 4px 4px;}
+  .rooms-admin form input{flex:1;min-width:0;background:var(--surface-soft);border:1px solid var(--border);border-radius:9px;padding:9px 10px;font:inherit;font-size:.9rem;color:var(--ink);}
+
+  section.backup{margin-top:22px;padding:14px 16px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;}
+  section.backup h3{font-size:.98rem;margin:0 0 4px;}
+  section.backup p{font-size:.82rem;color:var(--ink-soft);margin:0 0 10px;}
+  .row-btns{display:flex;gap:8px;flex-wrap:wrap;}
+
+  /* hoja de edición */
+  .sheet-bg{position:fixed;inset:0;background:rgba(20,14,17,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center;}
+  .sheet{background:var(--bg);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
+  @media (min-width:560px){.sheet-bg{align-items:center;}.sheet{border-radius:18px;}}
+  .sheet h3{margin:0 0 12px;font-size:1.15rem;}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+  .field label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);}
+  .field input,.field select{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font:inherit;font-size:.95rem;color:var(--ink);width:100%;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .sheet .row-btns{margin-top:6px;justify-content:space-between;}
+  .sheet .row-btns div{display:flex;gap:8px;}
+  .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:.86rem;z-index:30;}
+
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  @media (max-width:420px){header.top h1{font-size:1.5rem;}table{font-size:.8rem;}th,td{padding:8px 6px;}th{font-size:.64rem;letter-spacing:.02em;}.kpi .v{font-size:1rem;}form.add input.price{width:80px;}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
-</head>
-<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600&display=swap">
+
 <div class="wrap">
-  <header>
-    <div class="plates"><span class="plate">N-VI</span><span class="plate">N-630</span><span class="plate b">A-66</span></div>
-    <h1>Ruta fotográfica</h1>
-    <p class="sub">Otero de Herreros ⇄ Gijón</p>
-    <p class="note">Paisajes, miradores y lugares especiales a menos de 25 km de la carretera, con el mejor punto de vista y la mejor luz de cada uno.</p>
+  <header class="top">
+    <div class="head-row"><h1>Gijón</h1><button type="button" class="sync-badge" id="syncBadge" hidden><i></i><span id="syncLabel"></span></button></div>
+    <nav class="tabs" id="tabs" aria-label="Estancias"></nav>
   </header>
-</div>
-
-<div class="controls">
-  <div class="wrap">
-    <div class="row">
-      <div class="seg" role="group" aria-label="Sentido del viaje">
-        <button data-sentido="ida" aria-pressed="true">Ida: Otero → Gijón</button>
-        <button data-sentido="vuelta" aria-pressed="false">Vuelta: Gijón → Otero</button>
-      </div>
+  <div id="view"></div>
+  <section class="backup">
+    <h3>Copia de seguridad</h3>
+    <p>Descarga un archivo con todas las listas, precios y pendientes, o recupéralo en otro dispositivo.</p>
+    <div class="row-btns">
+      <button type="button" class="btn" id="exportBackup">Descargar copia</button>
+      <button type="button" class="btn" id="importBackupBtn">Restaurar copia</button>
+      <input type="file" id="importBackupInput" accept="application/json,.json" hidden>
     </div>
-    <div class="row"><div class="chips" id="chips" role="group" aria-label="Provincia"></div></div>
-    <div class="row">
-      <label class="date">Fecha del viaje <input type="date" id="fecha"></label>
-    </div>
-    <div class="tabs" role="tablist">
-      <button role="tab" data-tab="dia" aria-selected="true">☀ Diurnas</button>
-      <button role="tab" data-tab="noche" aria-selected="false">☾ Nocturnas</button>
-      <button role="tab" data-tab="comer" aria-selected="false">🍴 Comer</button>
-      <a class="tabmap" id="rutaGM" href="#" target="_blank" rel="noopener">Mapa ↗</a>
-    </div>
-  </div>
-</div>
-
-<main class="wrap">
-  <section id="listPanel">
-    <details class="copia" id="copia">
-      <summary>💾 Copia de seguridad</summary>
-      <p>Guarda en un archivo tus sitios y restaurantes propios, los vistos, el navegador elegido y tus fotos.</p>
-      <p class="estado" id="copiaEstado"></p>
-      <div class="acts dos">
-        <button class="btn main" id="copiaGuardar">Hacer copia</button>
-        <label class="btn">Recuperar copia<input type="file" id="copiaRecuperar" accept=".json,application/json,text/plain,*/*" hidden></label>
-      </div>
-      <div id="copiaLista" hidden>
-        <p class="estado" id="copiaNombre"></p>
-        <div class="acts dos">
-          <a class="btn main" id="copiaDescargar" href="#">Guardar en el móvil</a>
-          <button class="btn" id="copiaCompartir">Enviar o subir a Drive</button>
-        </div>
-      </div>
-      <p class="pista">«Guardar en el móvil» la deja en Descargas. «Enviar o subir a Drive» abre el menú de compartir del móvil.</p>
-    </details>
-    <div class="yo" id="yo"></div>
-    <p class="intro" id="intro"></p>
-    <p class="count" id="count"></p>
-    <div id="list"></div>
   </section>
-  <p class="version">Versión 13 · 9 de noviembre de 2026</p>
-  <footer>
-    Horarios de sol y luna calculados para la fecha elegida, en hora de España. El mojón indica el kilómetro aproximado de la ruta desde Otero de Herreros (ida) o desde Gijón (vuelta); la franja oscura, los kilómetros de desvío. Los lugares cercanos a Segovia o a Gijón muestran su distancia desde esa población. Las coordenadas marcan el punto desde el que fotografiar. Las fichas funcionan sin conexión; Google Maps necesita conexión. Los restaurantes son una selección de los más recomendados; horarios y precios pueden cambiar. Tus fotos se guardan solo en este móvil, dentro de la app: si borras los datos de la app o de Chrome, se borran también.
-  </footer>
-</main>
-
-<button class="anadir" id="btnAnadir">+ Añadir sitio</button>
-
-<datalist id="tiposSitio"><option value="Paisaje"><option value="Mirador"><option value="Monumento"><option value="Naturaleza"><option value="Cielo"></datalist>
-<datalist id="tiposComer"><option value="Restaurante"><option value="Pinchos"><option value="Asador"><option value="Sidrería"><option value="Carretera"><option value="Desayuno"><option value="Dulces"></datalist>
-
-<div class="capa" id="capaForm" hidden>
-  <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="tituloForm">
-    <header><h2 id="tituloForm">Nuevo sitio</h2><button class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
-    <div class="contenido">
-      <label>Nombre<input id="fNombre" type="text" placeholder="Nombre del lugar"></label>
-      <label>Tipo<input id="fTipo" type="text" placeholder="Elige o escribe"></label>
-      <label>Ubicación (coordenadas o enlace de Google Maps)
-        <input id="fCoords" type="text" inputmode="decimal" placeholder="43.5475, -5.6655"></label>
-      <button class="btn" type="button" id="fMiPos">📍 Usar mi posición</button>
-      <p class="pista">Si no estás allí: en Google Maps mantén pulsado el punto y copia las coordenadas que aparecen arriba.</p>
-      <p class="calc" id="fCalc"></p>
-      <label>Provincia<select id="fProv"><option value="">(automática)</option><option>Segovia</option><option>Ávila</option><option>Valladolid</option><option>Zamora</option><option>León</option><option>Asturias</option></select></label>
-      <label>Dirección o nombre para Google Maps (opcional)<input id="fDir" type="text" placeholder="Casa Pepe, Pola de Lena"></label>
-      <label>Descripción<textarea id="fDesc" rows="2"></textarea></label>
-      <div id="bloqueSitio">
-        <label>Mejor punto de vista<textarea id="fVista" rows="2"></textarea></label>
-        <label><span id="fLuzTxt">Mejor luz</span><textarea id="fLuz" rows="2"></textarea></label>
-        <label>Encuadre y ajustes<textarea id="fAjustes" rows="2"></textarea></label>
-        <label>Mejor época<input id="fEpoca" type="text"></label>
-      </div>
-      <div id="bloqueComer" hidden>
-        <label>Qué pedir<textarea id="fPide" rows="2"></textarea></label>
-        <label>A tener en cuenta<textarea id="fOjo" rows="2" placeholder="Horario, reservas, precio…"></textarea></label>
-      </div>
-      <p class="pista">Las fotos se añaden después, desde la propia ficha.</p>
-      <div class="acts"><button class="btn main" type="button" id="fGuardar">Guardar</button><button class="btn" type="button" data-cerrar>Cancelar</button></div>
-    </div>
-  </div>
 </div>
+<div id="sheetRoot"></div>
+
+<script id="app-state" type="application/json">null</script>
 
 <script>
-const TOTAL = 420;
-const PROVS = ["Segovia","Ávila","Valladolid","Zamora","León","Asturias"];
+(function(){
+"use strict";
+var PRISTINE_BODY = document.body.innerHTML;
+var STORE_KEY = "casa-nueva-v1";
 
-const DIA = [
- {id:"d1",n:"Acueducto de Segovia",p:"Segovia",km:0,dv:18,lat:40.9481,lon:-4.1178,t:"Monumento",
-  d:"Dos mil años de granito sin argamasa, con casi 29 m de altura en la plaza del Azoguejo.",
-  v:"Desde lo alto de la escalinata del Postigo del Consuelo, junto a la muralla: los arcos en diagonal con la plaza a los pies. Para la perspectiva de la hilera de arcos, baja a la avenida de Fernández Ladreda y encuadra a ras de suelo.",
-  l:"Primera hora de la mañana: luz rasante que marca los sillares y plaza casi vacía. Por la tarde, la última hora dora la cara oeste.",
-  f:"S24 Ultra: 1x, o 0,6x desde abajo. Cámara (a6600 / 2000D): 18–24 mm; para aislar arcos, 55 mm.",
-  e:"Todo el año; con nieve, excepcional."},
- {id:"d2",n:"Alcázar de Segovia",p:"Segovia",km:0,dv:20,lat:40.9546,lon:-4.1395,t:"Mirador",
-  d:"La proa del Alcázar sobre la unión del Eresma y el Clamores: la imagen más reconocible de Segovia.",
-  v:"Mirador del Alcázar, en la carretera que sube a Zamarramala desde la Fuencisla. De frente a la proa, con el valle y la sierra detrás.",
-  l:"Atardecer: la proa mira al oeste y recibe la última luz directa. Quédate hasta que se encienden los focos (ver pestaña Nocturnas).",
-  f:"S24 Ultra: 3x–5x. Cámara: 55–150 mm.",
-  e:"Otoño por el color de la arboleda del Eresma; invierno con nieve en la sierra."},
- {id:"d3",n:"Segovia desde la Cuesta de los Hoyos",p:"Segovia",km:0,dv:19,lat:40.9463,lon:-4.1296,t:"Mirador",
-  d:"El perfil completo del casco: la catedral asomando sobre la muralla y el Alcázar a un lado.",
-  v:"Mirador de la Cuesta de los Hoyos, en la carretera del valle del Clamores, al sur del casco.",
-  l:"Última hora de la tarde, con luz lateral dorada sobre la muralla y la catedral.",
-  f:"S24 Ultra: 2x–3x. Cámara: 35–70 mm; una panorámica de tres fotos funciona muy bien.",
-  e:"Todo el año."},
- {id:"d4",n:"La Mujer Muerta desde la Canaleja",p:"Segovia",km:0,dv:18,lat:40.9470,lon:-4.1235,t:"Paisaje",
-  d:"La silueta de la sierra con forma de mujer tendida, vista desde la ciudad.",
-  v:"Mirador de la Canaleja, en el borde sur del casco; la sierra ocupa el horizonte sobre el valle del Clamores.",
-  l:"Amanecer y atardecer, con luz rasante que perfila las cumbres. Con nieve, se tiñe de rosa justo antes de salir y después de ponerse el sol.",
-  f:"S24 Ultra: 3x. Cámara: 70–150 mm para acercar la sierra.",
-  e:"Invierno y primavera, con nieve."},
- {id:"d5",n:"Iglesia de San Sebastián, Villacastín",p:"Segovia",km:22,dv:1,lat:40.7797,lon:-4.4136,t:"Monumento",
-  d:"La llamada «catedral de la sierra»: un templo enorme para un pueblo pequeño, junto a la N-VI.",
-  v:"Desde las afueras, a unos cientos de metros, para que la iglesia domine sobre los tejados. De cerca, la fachada en contrapicado.",
-  l:"Última hora de la tarde.",
-  f:"S24 Ultra: 3x de lejos, 0,6x de cerca. Cámara: 70–100 mm de lejos, 18 mm de cerca.",
-  e:"Todo el año."},
- {id:"d6",n:"Castillo de Arévalo y puente de Medina",p:"Ávila",km:62,dv:1,lat:41.0685,lon:-4.7225,t:"Monumento",
-  d:"Castillo sobre la unión del Adaja y el Arevalillo, con puentes mudéjares de ladrillo a sus pies.",
-  v:"Desde la vega del Arevalillo, junto al puente de Medina: el puente en primer plano y el castillo arriba.",
-  l:"Atardecer, cuando el ladrillo se vuelve anaranjado. Por la mañana, niebla de río en otoño.",
-  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
-  e:"Otoño e invierno, por las nieblas."},
- {id:"d7",n:"Plaza de la Villa, Arévalo",p:"Ávila",km:62,dv:1,lat:41.0632,lon:-4.7195,t:"Monumento",
-  d:"Una de las plazas mudéjares más completas de Castilla, con soportales y la iglesia de Santa María la Mayor.",
-  v:"Desde el extremo opuesto a Santa María, dejando que los soportales lleven la vista hacia la torre.",
-  l:"Primera hora de la mañana o última de la tarde; evita el mediodía.",
-  f:"S24 Ultra: 0,6x–1x. Cámara: 18–24 mm.",
-  e:"Todo el año."},
- {id:"d8",n:"Castillo de la Mota, Medina del Campo",p:"Valladolid",km:90,dv:2,lat:41.3068,lon:-4.9065,t:"Monumento",
-  d:"Fortaleza de ladrillo del siglo XV con torre del homenaje de unos 40 m; aquí estuvo preso César Borgia.",
-  v:"Desde la explanada exterior, a unos 150 m, para meter foso, barrera y torre del homenaje en un solo encuadre.",
-  l:"Atardecer, con luz cálida sobre el ladrillo.",
-  f:"S24 Ultra: 1x. Cámara: 18–35 mm.",
-  e:"Todo el año; los cielos con nubes dan mucho juego."},
- {id:"d9",n:"Tordesillas y el Duero",p:"Valladolid",km:115,dv:1,lat:41.4975,lon:-5.0010,t:"Paisaje",
-  d:"La villa del Tratado, asomada al Duero sobre su largo puente medieval.",
-  v:"Desde la orilla sur, junto al paseo fluvial: el puente en diagonal y la iglesia de San Antolín en lo alto.",
-  l:"Amanecer con bruma sobre el río (otoño e invierno) o atardecer con reflejo dorado.",
-  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm. Con el agua quieta, busca el reflejo completo.",
-  e:"Otoño e invierno."},
- {id:"d10",n:"Castillo de Simancas",p:"Valladolid",km:115,dv:20,lat:41.5925,lon:-4.8285,t:"Monumento",
-  d:"El castillo que guarda el Archivo General de Simancas, sobre el Pisuerga.",
-  v:"Desde el puente medieval sobre el Pisuerga, con la villa escalonada subiendo hasta el castillo.",
-  l:"Media tarde a atardecer.",
-  f:"S24 Ultra: 2x–3x. Cámara: 50–85 mm.",
-  e:"Primavera y otoño."},
- {id:"d11",n:"Mota del Marqués",p:"Valladolid",km:140,dv:1,lat:41.6365,lon:-5.1720,t:"Paisaje",
-  d:"Restos de castillo sobre un cerro que domina la autovía, con la iglesia de San Martín a sus pies.",
-  v:"Desde la ladera baja del cerro, con la iglesia en primer plano y el torreón arriba.",
-  l:"Atardecer. Los días de tormenta, los cielos de Tierra de Campos son espectaculares.",
-  f:"S24 Ultra: 1x–3x. Cámara: 24–70 mm.",
-  e:"Primavera, con el cereal verde."},
- {id:"d12",n:"Urueña: murallas y Ermita de la Anunciada",p:"Valladolid",km:150,dv:5,lat:41.7275,lon:-5.2055,t:"Mirador",
-  d:"Villa amurallada sobre el páramo, con más librerías que bares. Desde el adarve se domina toda Tierra de Campos.",
-  v:"Paseo de ronda de la muralla, lado oeste, mirando a la llanura. Abajo, la ermita románica de la Anunciada con el pueblo al fondo.",
-  l:"Atardecer: el sol se pone sobre la llanura sin obstáculos. Uno de los mejores ocasos de toda la ruta.",
-  f:"S24 Ultra: 1x para la llanura, 3x–5x para la ermita. Cámara: 18 mm y 70–200 mm.",
-  e:"Primavera (verde) y verano (cereal dorado)."},
- {id:"d13",n:"Puerta de San Andrés, Villalpando",p:"Zamora",km:175,dv:1,lat:41.8665,lon:-5.4135,t:"Monumento",
-  d:"Puerta monumental de la antigua muralla, flanqueada por dos torres semicirculares.",
-  v:"De frente, desde la plaza exterior, con el arco centrado.",
-  l:"Tarde; un cielo con nubes le da fondo.",
-  f:"S24 Ultra: 1x. Cámara: 24–35 mm.",
-  e:"Todo el año."},
- {id:"d14",n:"Lagunas de Villafáfila",p:"Zamora",km:175,dv:18,lat:41.8300,lon:-5.6000,t:"Naturaleza",
-  d:"Lagunas salobres en plena estepa cerealista: miles de ánsares en invierno y una de las mayores poblaciones de avutardas del mundo.",
-  v:"Observatorios junto a la Laguna Grande y Casa del Parque. Fotografía desde dentro del observatorio: las aves se espantan si te ven.",
-  l:"Amanecer y atardecer, con reflejos en el agua y bandos en vuelo.",
-  f:"S24 Ultra: 10x. Cámara: 300 mm o más, con trípode.",
-  e:"Noviembre a febrero para los ánsares; abril para el cortejo de las avutardas."},
- {id:"d15",n:"Benavente: Torre del Caracol",p:"Zamora",km:205,dv:1,lat:42.0015,lon:-5.6815,t:"Mirador",
-  d:"La torre renacentista del antiguo castillo, hoy parador, sobre la vega del Esla y el Órbigo.",
-  v:"Desde el mirador junto al parador, con la vega a tus pies; la torre se ve mejor desde el parque de la Mota, al pie.",
-  l:"Atardecer sobre la vega.",
-  f:"S24 Ultra: 1x–3x. Cámara: 18–70 mm.",
-  e:"Primavera y otoño."},
-
- {id:"d31",n:"Castillo de Coyanza, Valencia de Don Juan",p:"León",km:235,dv:8,lat:42.2950,lon:-5.5185,t:"Monumento",
-  d:"Castillo del siglo XV de torres esbeltas y almenadas, asomado al río Esla.",
-  v:"Desde la orilla opuesta del Esla, junto al puente, con el castillo en lo alto del talud y el río delante.",
-  l:"Atardecer: la cara que mira al río recibe la última luz del oeste.",
-  f:"S24 Ultra: 2x–3x. Cámara: 35–85 mm.",
-  e:"Primavera y otoño, con la chopera del río verde o dorada."},
- {id:"d32",n:"Santuario de la Virgen del Camino",p:"León",km:270,dv:5,lat:42.5810,lon:-5.6400,t:"Monumento",
-  d:"Santuario moderno de Coello de Portugal, con una fachada presidida por las grandes esculturas de bronce de Subirachs.",
-  v:"De frente desde la explanada, alejándote para que entren las figuras completas y la torre.",
-  l:"Luz lateral de primera o última hora; el mediodía aplana el bronce.",
-  f:"S24 Ultra: 0,6x–1x; 3x para detalles de las figuras. Cámara: 18–24 mm y 55–85 mm.",
-  e:"Todo el año."},
- {id:"d16",n:"Catedral de León",p:"León",km:275,dv:1,lat:42.5990,lon:-5.5680,t:"Monumento",
-  d:"La Pulchra Leonina, con cerca de 1.800 m² de vidrieras medievales.",
-  v:"Exterior: desde el fondo de la Plaza de Regla, algo desplazado a la izquierda para ver fachada y torre. Interior: las vidrieras del ábside.",
-  l:"Exterior: tarde, con sol en la fachada oeste. Interior: mañana soleada para el ábside (este), tarde para el rosetón (oeste).",
-  f:"S24 Ultra: 0,6x para la fachada entera. Cámara: el angular más corto que tengas.",
-  e:"Todo el año; días soleados para el interior."},
-
- {id:"d33",n:"Basílica de San Isidoro, León",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5705,t:"Monumento",
-  d:"Joya del románico junto a la muralla romana. Dentro está el Panteón de los Reyes, donde no se permite fotografiar.",
-  v:"Desde la Plaza de San Isidoro, en diagonal hacia la Puerta del Cordero, con la torre detrás.",
-  l:"De mediodía a media tarde, con el sol sobre la fachada sur.",
-  f:"S24 Ultra: 0,6x para el conjunto, 3x para los relieves. Cámara: 18 mm y 55 mm.",
-  e:"Todo el año."},
- {id:"d34",n:"Casa Botines de Gaudí",p:"León",km:275,dv:1,lat:42.5985,lon:-5.5712,t:"Monumento",
-  d:"Edificio neogótico de Gaudí, con el Palacio de los Guzmanes al lado y la estatua de Gaudí sentado en un banco.",
-  v:"Desde la esquina de la Plaza de San Marcelo, en diagonal, para ver dos fachadas y las torres de las esquinas.",
-  l:"Mañana o media tarde, con luz lateral sobre la piedra.",
-  f:"S24 Ultra: 0,6x. Cámara: 18 mm, cuidando que las verticales queden rectas.",
-  e:"Todo el año."},
- {id:"d17",n:"San Marcos, León",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5835,t:"Monumento",
-  d:"Fachada plateresca de un centenar de metros junto al río Bernesga, hoy parador.",
-  v:"Desde la plaza, en diagonal, para que la fachada fugue; o desde la orilla opuesta, con el puente de San Marcos.",
-  l:"Luz suave de última hora; evita el mediodía.",
-  f:"S24 Ultra: 0,6x. Cámara: 18 mm.",
-  e:"Todo el año."},
-
- {id:"d35",n:"Faedo de Ciñera",p:"León",km:310,dv:2,lat:42.8650,lon:-5.6620,t:"Naturaleza",
-  d:"Hayedo de cuento junto al arroyo, premiado como bosque mejor cuidado de España, con hayas centenarias de formas retorcidas.",
-  v:"Desde la senda que remonta el arroyo, con el agua en primer plano y las hayas enmarcando el camino.",
-  l:"Días nublados o de niebla, o primera hora de la mañana: la luz suave evita manchas de sol y sombra.",
-  f:"S24 Ultra: 0,6x; para sedar el agua, modo Pro 1/2 s apoyado. Cámara: 18–24 mm, trípode, f/11, 0,5–1 s.",
-  e:"Finales de octubre y principios de noviembre, con el color del otoño."},
- {id:"d36",n:"Pozo Ibarra, Ciñera",p:"León",km:310,dv:2,lat:42.8580,lon:-5.6690,t:"Monumento",
-  d:"El castillete del pozo minero, emblema de la minería de la montaña leonesa.",
-  v:"Desde la explanada frente al pozo, en contrapicado, con el castillete recortado contra el cielo.",
-  l:"Atardecer o cielo de tormenta; en blanco y negro gana mucho.",
-  f:"S24 Ultra: 0,6x en contrapicado. Cámara: 18 mm.",
-  e:"Todo el año."},
- {id:"d18",n:"Hoces de Vegacervera",p:"León",km:300,dv:18,lat:42.8790,lon:-5.5310,t:"Paisaje",
-  d:"Desfiladero estrecho excavado por el río Torío entre paredes de caliza. Muy cerca, la Cueva de Valporquero.",
-  v:"Desde los apartaderos de la carretera dentro de la hoz, mirando aguas arriba con el río en primer plano.",
-  l:"Alrededor del mediodía, único momento en que entra el sol al fondo; o días nublados, que suavizan el contraste.",
-  f:"S24 Ultra: 0,6x. Cámara: 18 mm en vertical.",
-  e:"Otoño por el color; primavera por el caudal."},
- {id:"d19",n:"Embalse y viaducto de Barrios de Luna",p:"León",km:305,dv:18,lat:42.8565,lon:-5.8680,t:"Paisaje",
-  d:"El viaducto atirantado Fernández Casado cruza el embalse con un vano central de 440 m. Está en la AP-66, alternativa de peaje a la N-630.",
-  v:"Desde las carreteras que bordean el embalse, con el puente de perfil sobre el agua.",
-  l:"Atardecer, con el agua quieta para el reflejo.",
-  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
-  e:"Primavera, con el embalse lleno."},
- {id:"d20",n:"Colegiata de Arbas",p:"León",km:335,dv:1,lat:42.9930,lon:-5.7470,t:"Monumento",
-  d:"Colegiata románica del siglo XII en lo alto del puerto de Pajares, antiguo refugio de caminantes.",
-  v:"Desde el prado del sur, con la cabecera y las montañas detrás.",
-  l:"Tarde. Con niebla o nieve es muy fotogénica.",
-  f:"S24 Ultra: 1x. Cámara: 24–35 mm.",
-  e:"Otoño e invierno."},
- {id:"d21",n:"Mirador del Puerto de Pajares",p:"Asturias",km:338,dv:0,lat:42.9985,lon:-5.7625,t:"Mirador",
-  d:"La bajada a Asturias: las curvas de la N-630 descendiendo entre montañas hacia el valle de Pajares.",
-  v:"Desde el mirador en la parte alta del puerto, vertiente asturiana, mirando al norte hacia el valle.",
-  l:"Primera hora, con mar de nubes en el valle; o atardecer, con luz lateral desde el oeste.",
-  f:"S24 Ultra: 1x, y 3x para las curvas. Cámara: 18–70 mm.",
-  e:"Otoño y primavera. En invierno, consulta antes el estado del puerto."},
- {id:"d22",n:"Santa Cristina de Lena",p:"Asturias",km:360,dv:3,lat:43.1283,lon:-5.8157,t:"Monumento",
-  d:"Iglesia prerrománica del siglo IX, Patrimonio de la Humanidad, sobre una loma encima del valle.",
-  v:"Desde el camino de subida, un poco por debajo, recortándola contra las montañas.",
-  l:"Media mañana o tarde, con los prados en luz lateral.",
-  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
-  e:"Primavera y otoño."},
-
- {id:"d37",n:"Peña Ubiña desde Tuiza",p:"Asturias",km:350,dv:18,lat:43.0283,lon:-5.8911,t:"Paisaje",
-  d:"El gran macizo calizo de Las Ubiñas (2.417 m), Reserva de la Biosfera, sobre los prados y cabañas de Tuiza.",
-  v:"Desde Tuiza de Arriba, con los prados y las cabañas en primer plano y la Ubiña al fondo.",
-  l:"Primera y última hora del día, con luz lateral sobre la roca. Carretera estrecha: sube con tiempo.",
-  f:"S24 Ultra: 1x y 3x para la cumbre. Cámara: 18–24 mm y 70–150 mm.",
-  e:"Finales de primavera (prados verdes, nieve en cumbres) y otoño."},
- {id:"d38",n:"Pozo Santa Bárbara pintado por Okuda, Turón",p:"Asturias",km:368,dv:10,lat:43.2000,lon:-5.7250,t:"Monumento",
-  d:"Un castillete minero convertido en obra de arte con los colores geométricos de Okuda San Miguel.",
-  v:"Desde la carretera del valle, un poco retirado, para que el castillete se recorte contra la montaña verde.",
-  l:"Días de cielo cubierto claro, que hacen saltar los colores; o luz de tarde.",
-  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
-  e:"Todo el año."},
- {id:"d23",n:"Santa María del Naranco",p:"Asturias",km:392,dv:4,lat:43.3787,lon:-5.8667,t:"Monumento",
-  d:"Palacio prerrománico de Ramiro I en la ladera del Naranco, sobre Oviedo. San Miguel de Lillo está a pocos metros, subiendo.",
-  v:"Desde el prado inferior, para ver el palacio con sus arcos y Oviedo detrás.",
-  l:"Tarde y atardecer, con luz cálida sobre la piedra.",
-  f:"S24 Ultra: 1x. Cámara: 24–35 mm.",
-  e:"Todo el año."},
- {id:"d24",n:"Mirador del Naranco",p:"Asturias",km:392,dv:7,lat:43.3830,lon:-5.8745,t:"Mirador",
-  d:"Junto al monumento al Sagrado Corazón: Oviedo a tus pies y la Cordillera al fondo.",
-  v:"Explanada junto al monumento, mirando al sur.",
-  l:"Atardecer; los días claros tras lluvia se ven las cumbres nevadas.",
-  f:"S24 Ultra: 3x–5x para las montañas. Cámara: 70–200 mm.",
-  e:"Días despejados, sobre todo en invierno y primavera."},
-
- {id:"d39",n:"San Julián de los Prados (Santullano), Oviedo",p:"Asturias",km:388,dv:1,lat:43.3688,lon:-5.8372,t:"Monumento",
-  d:"La mayor iglesia prerrománica que se conserva, del siglo IX, con pinturas murales en su interior. Patrimonio de la Humanidad.",
-  v:"Desde el prado del lado sur, con la iglesia completa y el pórtico lateral.",
-  l:"Mañana, con luz suave sobre la piedra.",
-  f:"S24 Ultra: 1x. Cámara: 18–35 mm.",
-  e:"Todo el año."},
- {id:"d40",n:"Plaza del Fontán, Oviedo",p:"Asturias",km:390,dv:1,lat:43.3617,lon:-5.8467,t:"Monumento",
-  d:"Plaza porticada del siglo XVIII con mercado y casas de colores, en el corazón del casco antiguo.",
-  v:"Desde bajo los soportales, usando los arcos como marco de la plaza.",
-  l:"Mañana, con ambiente de mercado; por la tarde, luz cálida en las fachadas.",
-  f:"S24 Ultra: 0,6x. Cámara: 18–24 mm.",
-  e:"Todo el año."},
- {id:"d41",n:"La Iglesia Skate, Llanera",p:"Asturias",km:400,dv:5,lat:43.4436,lon:-5.8506,t:"Monumento",
-  d:"Antigua iglesia convertida en pista de patinaje, con techo y muros pintados por Okuda San Miguel.",
-  v:"El interior desde la entrada, con la pista en primer plano y la bóveda de colores encima. Consulta antes horario y acceso.",
-  l:"Días de sol, cuando la luz de las ventanas enciende los colores.",
-  f:"S24 Ultra: 0,6x. Cámara: el angular más corto que tengas.",
-  e:"Todo el año."},
- {id:"d25",n:"Elogio del Horizonte, Gijón",p:"Asturias",km:420,dv:0,lat:43.5475,lon:-5.6655,t:"Mirador",
-  d:"La escultura de hormigón de Chillida en el cerro de Santa Catalina, abierta al Cantábrico.",
-  v:"Desde el sendero que sube por el lado sur, en contrapicado, o con una persona debajo para dar escala.",
-  l:"Atardecer: en primavera y verano el sol cae sobre el mar. Contraluz con la silueta de la escultura.",
-  f:"S24 Ultra: 0,6x–1x. Cámara: 18–24 mm.",
-  e:"Primavera y verano."},
- {id:"d26",n:"Playa de San Lorenzo",p:"Asturias",km:420,dv:1,lat:43.5418,lon:-5.6585,t:"Paisaje",
-  d:"La playa urbana de Gijón, con la iglesia de San Pedro en un extremo y el paseo del Muro.",
-  v:"Desde lo alto de la Escalerona o desde el atrio de San Pedro, siguiendo la curva de la playa.",
-  l:"Amanecer: el sol sale por el mar. Con marea baja, la arena mojada refleja el cielo.",
-  f:"S24 Ultra: 0,6x. Cámara: 18 mm. Consulta la tabla de mareas.",
-  e:"Todo el año; en invierno, oleaje."},
- {id:"d27",n:"Parque de La Providencia",p:"Asturias",km:420,dv:5,lat:43.5555,lon:-5.6190,t:"Mirador",
-  d:"Parque sobre los acantilados al este de Gijón, con la bahía y la ciudad enteras.",
-  v:"Desde el mirador del extremo del parque, con la costa en primer plano y Gijón al fondo.",
-  l:"Atardecer: el sol se pone detrás de la ciudad.",
-  f:"S24 Ultra: 1x–3x. Cámara: 24–100 mm.",
-  e:"Todo el año."},
-
- {id:"d42",n:"Campa Torres y Cabo Torres, Gijón",p:"Asturias",km:420,dv:6,lat:43.5690,lon:-5.6990,t:"Mirador",
-  d:"Castro prerromano sobre el acantilado, con vistas a toda la bahía de Gijón y el puerto de El Musel.",
-  v:"Desde el borde del cabo, junto al faro, mirando hacia la bahía.",
-  l:"Atardecer, con el sol cayendo sobre el mar al oeste.",
-  f:"S24 Ultra: 1x–3x. Cámara: 18–70 mm.",
-  e:"Todo el año."},
- {id:"d43",n:"Candás y Cabo San Antonio",p:"Asturias",km:420,dv:13,lat:43.5920,lon:-5.7640,t:"Mirador",
-  d:"Villa marinera con puerto y casas de colores, vista desde el cabo de San Antonio.",
-  v:"Desde el mirador del Cabo San Antonio, con el puerto y la villa a tus pies.",
-  l:"Tarde y atardecer.",
-  f:"S24 Ultra: 1x–2x. Cámara: 24–50 mm.",
-  e:"Todo el año."},
- {id:"d44",n:"Cabo Peñas",p:"Asturias",km:420,dv:25,lat:43.6560,lon:-5.8490,t:"Paisaje",
-  d:"El punto más al norte de Asturias: faro y acantilados de más de 100 m sobre el Cantábrico.",
-  v:"Desde las pasarelas de los miradores, con el faro en el borde del acantilado.",
-  l:"Atardecer. Con temporal, el oleaje es espectacular (sujeta bien el móvil: sopla fuerte).",
-  f:"S24 Ultra: 0,6x–1x; 5x para el oleaje. Cámara: 18 mm y 100–200 mm.",
-  e:"Todo el año; otoño e invierno para el mar bravo."},
- {id:"d28",n:"Universidad Laboral, Gijón",p:"Asturias",km:420,dv:4,lat:43.5245,lon:-5.6155,t:"Monumento",
-  d:"Uno de los mayores edificios de España, con un gran patio corintio y una torre con mirador.",
-  v:"El patio, desde uno de los extremos; la ciudad, desde el mirador de la torre (visitas guiadas).",
-  l:"Mañana para el patio; el mirador, en días claros.",
-  f:"S24 Ultra: 0,6x en el patio. Cámara: 18 mm.",
-  e:"Todo el año."}
+var PALETTE = [
+  {l:"#B5652B",d:"#E59A63"},{l:"#7A3E5A",d:"#D394B2"},{l:"#8A6A1F",d:"#D8B866"},{l:"#3D6E9C",d:"#86B4DE"},
+  {l:"#2E8577",d:"#6CCABA"},{l:"#6A5BA8",d:"#AFA3E6"},{l:"#A8475A",d:"#E790A0"},{l:"#4F7A3A",d:"#9ACB7E"},
+  {l:"#5E6A75",d:"#A9B4BF"},{l:"#9C5A2E",d:"#DDA073"}
 ];
 
-const NOCHE = [
- {id:"n1",n:"Acueducto iluminado",p:"Segovia",km:0,dv:18,lat:40.9481,lon:-4.1178,t:"Monumento",
-  d:"Los arcos iluminados contra el último azul del cielo.",
-  v:"Lo alto de la escalinata del Postigo del Consuelo, o a ras de suelo en el Azoguejo.",
-  l:"Hora azul: el cielo conserva color y los focos quedan equilibrados.",
-  f:"S24 Ultra: modo Noche, apoyado en algo firme. Cámara: trípode, ISO 100–200, f/8, 2–8 s."},
- {id:"n2",n:"Alcázar iluminado",p:"Segovia",km:0,dv:20,lat:40.9546,lon:-4.1395,t:"Mirador",
-  d:"La proa iluminada flotando sobre la arboleda oscura del Eresma.",
-  v:"Mirador del Alcázar, en la carretera de Zamarramala.",
-  l:"Hora azul; más tarde, con el cielo negro, pierde fuerza.",
-  f:"S24 Ultra: 3x en modo Noche. Cámara: 55–150 mm, trípode, ISO 200, f/8, 4–10 s."},
- {id:"n3",n:"Castillo de la Mota iluminado",p:"Valladolid",km:90,dv:2,lat:41.3068,lon:-4.9065,t:"Monumento",
-  d:"El ladrillo iluminado resalta la torre del homenaje sobre el foso.",
-  v:"Explanada exterior, a unos 150 m.",
-  l:"Hora azul.",
-  f:"S24 Ultra: modo Noche. Cámara: trípode, 18–35 mm, ISO 200, f/8, 5–10 s."},
- {id:"n4",n:"Tordesillas reflejada en el Duero",p:"Valladolid",km:115,dv:1,lat:41.4975,lon:-5.0010,t:"Paisaje",
-  d:"El puente y la villa iluminados, duplicados en el agua.",
-  v:"Orilla sur del Duero, junto al paseo fluvial.",
-  l:"Hora azul, con el agua en calma.",
-  f:"S24 Ultra: modo Noche con trípode. Cámara: 24–50 mm, ISO 100, f/8, 10–20 s (la exposición larga alisa el agua)."},
- {id:"n5",n:"Vía Láctea en Urueña",p:"Valladolid",km:150,dv:5,lat:41.7240,lon:-5.2050,t:"Cielo",
-  d:"Tierra de Campos tiene cielos muy oscuros: la Vía Láctea sobre la muralla o la Ermita de la Anunciada.",
-  v:"Fuera del pueblo, junto a la ermita, con la muralla recortada en el horizonte.",
-  l:"Noche sin luna, desde el final del crepúsculo. El centro de la Vía Láctea sale por el sur de abril a septiembre.",
-  f:"S24 Ultra: Expert RAW, modo Astro, en trípode. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s, enfoque manual a infinito."},
- {id:"n6",n:"Estrellas en las Lagunas de Villafáfila",p:"Zamora",km:175,dv:18,lat:41.8300,lon:-5.6000,t:"Cielo",
-  d:"Si no hay viento, las estrellas se reflejan en la laguna en medio de la llanura.",
-  v:"Desde los caminos junto a la Laguna Grande. Es reserva natural: no salgas de los caminos.",
-  l:"Noche sin luna y sin viento.",
-  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s."},
- {id:"n7",n:"Catedral de León iluminada",p:"León",km:275,dv:1,lat:42.5990,lon:-5.5680,t:"Monumento",
-  d:"La fachada iluminada en la Plaza de Regla. Tras la lluvia, el suelo mojado la duplica.",
-  v:"Fondo de la Plaza de Regla, bajo, cerca del suelo si está mojado.",
-  l:"Hora azul. En verano suele haber visitas nocturnas con las vidrieras iluminadas.",
-  f:"S24 Ultra: 0,6x en modo Noche. Cámara: angular, trípode, ISO 200, f/8, 4–8 s."},
- {id:"n8",n:"San Marcos y el Bernesga",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5835,t:"Monumento",
-  d:"La fachada plateresca iluminada y su reflejo en el río.",
-  v:"Orilla opuesta del Bernesga, junto al puente de San Marcos.",
-  l:"Hora azul.",
-  f:"S24 Ultra: modo Noche. Cámara: 18–24 mm, trípode, ISO 100, f/8, 8–15 s."},
-
- {id:"n14",n:"San Isidoro iluminada",p:"León",km:275,dv:1,lat:42.6005,lon:-5.5705,t:"Monumento",
-  d:"La basílica y la muralla iluminadas, con la plaza casi vacía.",
-  v:"Plaza de San Isidoro, en diagonal hacia la puerta sur y la torre.",
-  l:"Hora azul.",
-  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 200, f/8, 4–8 s."},
- {id:"n15",n:"Casa Botines de noche",p:"León",km:275,dv:1,lat:42.5985,lon:-5.5712,t:"Monumento",
-  d:"El edificio de Gaudí iluminado, con el Palacio de los Guzmanes al lado.",
-  v:"Esquina de la Plaza de San Marcelo, en diagonal.",
-  l:"Hora azul; después, las farolas le dan un tono cálido.",
-  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 200, f/8, 3–6 s."},
- {id:"n9",n:"Cielo estrellado en Pajares y Arbas",p:"León",km:335,dv:1,lat:42.9930,lon:-5.7470,t:"Cielo",
-  d:"Montaña sin apenas luz artificial: estrellas sobre la colegiata o mar de nubes bajo la luna hacia Asturias.",
-  v:"Prado junto a la colegiata de Arbas, o el mirador del puerto mirando al norte.",
-  l:"Noche sin luna para las estrellas; con luna, el mar de nubes brilla.",
-  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s. Lleva abrigo: hace frío incluso en verano."},
- {id:"n10",n:"Catedral de Oviedo",p:"Asturias",km:390,dv:1,lat:43.3625,lon:-5.8430,t:"Monumento",
-  d:"La torre gótica iluminada sobre la Plaza de Alfonso II el Casto.",
-  v:"Desde el fondo de la plaza, con la torre centrada y el empedrado delante.",
-  l:"Hora azul.",
-  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 200, f/8, 4–8 s."},
-
- {id:"n16",n:"Estrellas sobre Peña Ubiña",p:"Asturias",km:350,dv:18,lat:43.0283,lon:-5.8911,t:"Cielo",
-  d:"Uno de los cielos más oscuros cerca de la ruta: la Vía Láctea sobre el macizo.",
-  v:"Prados de Tuiza de Arriba, con la silueta de la Ubiña al sur.",
-  l:"Noche sin luna. La Vía Láctea queda sobre la montaña de primavera a finales de verano.",
-  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 3200, 15–20 s. Lleva linterna y abrigo."},
- {id:"n17",n:"Plaza del Fontán y casco de Oviedo",p:"Asturias",km:390,dv:1,lat:43.3617,lon:-5.8467,t:"Monumento",
-  d:"Soportales y fachadas bajo las farolas, con las calles empedradas brillando.",
-  v:"Bajo los soportales, con los arcos como marco. Si ha llovido, busca reflejos en el suelo.",
-  l:"Hora azul y primeras horas de la noche.",
-  f:"S24 Ultra: 0,6x en modo Noche. Cámara: 18 mm, trípode, ISO 400, f/5,6, 2–4 s."},
- {id:"n11",n:"Oviedo desde el Naranco",p:"Asturias",km:392,dv:7,lat:43.3830,lon:-5.8745,t:"Mirador",
-  d:"Toda la ciudad encendida a tus pies.",
-  v:"Explanada del monumento al Sagrado Corazón, mirando al sur.",
-  l:"Hora azul, en cuanto se encienden las luces de la ciudad.",
-  f:"S24 Ultra: 1x–3x en modo Noche. Cámara: 24–70 mm, trípode, ISO 100, f/8, 5–15 s."},
- {id:"n12",n:"Gijón desde el Cerro de Santa Catalina",p:"Asturias",km:420,dv:0,lat:43.5475,lon:-5.6655,t:"Mirador",
-  d:"La bahía iluminada, la playa de San Lorenzo y la silueta del Elogio del Horizonte.",
-  v:"Junto a la escultura, mirando hacia la playa.",
-  l:"Hora azul, sobre todo con marea alta.",
-  f:"S24 Ultra: modo Noche. Cámara: 18–35 mm, trípode, ISO 100, f/8, 10–20 s (el mar queda sedoso)."},
- {id:"n18",n:"Puerto deportivo y Cimadevilla, Gijón",p:"Asturias",km:420,dv:0,lat:43.5440,lon:-5.6640,t:"Paisaje",
-  d:"Los barcos y las casas de Cimadevilla iluminados, reflejados en el agua del puerto.",
-  v:"Desde el paseo del puerto deportivo, con los barcos en primer plano y el barrio detrás.",
-  l:"Hora azul, mejor con marea alta y sin viento.",
-  f:"S24 Ultra: modo Noche. Cámara: 24–35 mm, trípode, ISO 100, f/8, 10–20 s."},
- {id:"n19",n:"Faro de Cabo Peñas bajo las estrellas",p:"Asturias",km:420,dv:25,lat:43.6560,lon:-5.8490,t:"Cielo",
-  d:"El haz del faro barriendo el cielo estrellado sobre el acantilado.",
-  v:"Desde las pasarelas, con el faro a un lado del encuadre y el mar abierto al norte.",
-  l:"Noche sin luna y despejada. Mucho cuidado con el borde del acantilado: no salgas de las pasarelas.",
-  f:"S24 Ultra: Expert RAW, modo Astro. Cámara: 18 mm, f/3,5, ISO 1600–3200, 15–20 s."}
+/* ---------- datos iniciales ---------- */
+/* [nombre, precio orientativo por unidad (€), cantidad] */
+var SEED = [
+ ["Cocina",[
+  ["Menaje para cocinar",[["Batería de cacerolas inox (set)",90],["Juego de sartenes antiadherentes 20/24/28",45],["Sartén grill / plancha",25],["Wok",25],["Olla a presión",60],["Cazo para leche",15],["Cacerola de hierro fundido",50],["Fuente de horno de cristal",10,2],["Bandeja de horno",12],["Molde para bizcocho",10],["Vaporera",15]]],
+  ["Utensilios",[["Juego de cuchillos con taco",50],["Afilador de cuchillos",10],["Tabla de cortar",10,2],["Set cucharón, espumadera, espátula y pinzas",25],["Cucharas de madera",8],["Espátula de silicona",5],["Varillas",6],["Pelador",5],["Rallador",10],["Colador",8],["Escurridor de pasta",10],["Abrelatas",6],["Sacacorchos y abrebotellas",8],["Tijeras de cocina",10],["Exprimidor manual",8],["Mortero",15],["Rodillo",8],["Jarra medidora",6],["Báscula de cocina",15],["Embudo",3],["Termómetro de cocina",12]]],
+  ["Vajilla, cubertería y cristalería",[["Vajilla 18 piezas",60],["Cubertería 24 piezas",45],["Cuchillos de carne",4,6],["Vasos de agua",3,6],["Copas de vino",4,6],["Tazas de café",3,6],["Tazas de desayuno",4,6],["Fuentes de servir",12,2],["Ensaladera",12],["Jarra de agua",10],["Bandeja",15]]],
+  ["Pequeño electrodoméstico",[["Cafetera",80],["Hervidor de agua",30],["Tostadora",30],["Batidora de mano",40],["Microondas",120],["Freidora de aire",100],["Exprimidor eléctrico",25]]],
+  ["Almacenaje y orden",[["Juego de táperes de cristal",30],["Botes herméticos",25],["Especiero con botes",20],["Organizador de cubiertos para cajón",12],["Panera",15],["Cubo de basura con reciclaje",60],["Escurreplatos",20],["Portarrollos de cocina",10]]],
+  ["Textil y limpieza",[["Paños de cocina",3,6],["Manoplas y agarradores",10],["Delantal",10],["Salvamanteles",10],["Mantel",20],["Estropajos y bayetas",5],["Cepillo friegaplatos",3],["Dispensador de jabón",8]]]
+ ]],
+ ["Salón",[
+  ["Mobiliario",[["Sofá",700],["Sillón",250],["Mesa de centro",120],["Mueble de TV",200],["Estantería",120],["Mesa auxiliar",50],["Puf",60]]],
+  ["Iluminación",[["Lámpara de techo",80],["Lámpara de pie",70],["Lámpara de mesa",35]]],
+  ["Textil y decoración",[["Alfombra",120],["Cortinas",80],["Visillos",40],["Barra o riel de cortinas",30],["Cojines",10,4],["Manta para el sofá",30],["Cuadros",30,2],["Plantas y macetas",50]]],
+  ["Electrónica",[["Televisor",500],["Barra de sonido",150],["Regleta con protección",15]]]
+ ]],
+ ["Comedor",[
+  ["Mobiliario",[["Mesa de comedor",300],["Sillas",60,6],["Aparador",250],["Vitrina",200]]],
+  ["Iluminación",[["Lámpara colgante sobre la mesa",90]]],
+  ["Textil y decoración",[["Alfombra bajo la mesa",100],["Mantel",25],["Camino de mesa",15],["Centro de mesa",20],["Cuadro",40]]]
+ ]],
+ ["Dormitorio",[
+  ["Mobiliario",[["Canapé abatible",300],["Colchón",400],["Cabecero",150],["Mesitas de noche",70,2],["Cómoda",200],["Armario",400],["Banco a los pies de la cama",80],["Galán de noche",50],["Espejo de pie",60]]],
+  ["Iluminación",[["Lámpara de techo",70],["Lámparas de mesita",35,2],["Lámpara de lectura",40]]],
+  ["Ropa de cama",[["Almohadas",30,2],["Protector de colchón",25],["Juegos de sábanas",35,3],["Relleno nórdico",80],["Fundas nórdicas",40,2],["Colcha",50],["Manta",30]]],
+  ["Textil y orden",[["Cortinas",70],["Estor opaco",40],["Alfombra",80],["Perchas (pack 40)",20],["Organizadores de armario",25],["Cajas de almacenaje",20]]]
+ ]],
+ ["Baño dormitorio",[
+  ["Mobiliario y accesorios",[["Espejo con luz",80],["Columna o armario de baño",100],["Toallero",25],["Portarrollos",15],["Escobilla WC",15],["Papelera",12],["Dispensador de jabón",10],["Vaso para cepillos",8],["Alfombrilla de baño",15,2],["Cesto de ropa sucia",30],["Báscula",25],["Colgadores y ganchos",10],["Organizadores de cajón",15],["Secador de pelo",40],["Botiquín",25]]],
+  ["Ajuar de toallas",[["Toallas de ducha",15,4],["Toallas de lavabo",8,4],["Toallas de bidé / tocador",5,4],["Albornoces",35,2],["Toallas de pie (alfombrilla)",10,2]]],
+  ["Aseo hombre",[["Gel de ducha",4],["Champú",4],["Desodorante",4],["Espuma o gel de afeitar",4],["Maquinilla de afeitar",8],["Recambios de cuchillas",12],["Bálsamo aftershave",6],["Colonia",25],["Crema hidratante facial",10],["Recortadora de barba",30],["Cepillo de dientes",4],["Peine",3],["Cortaúñas",4]]],
+  ["Aseo mujer",[["Gel de ducha",4],["Champú",4],["Acondicionador",4],["Mascarilla capilar",6],["Desodorante",4],["Crema facial de día",12],["Crema de noche",14],["Contorno de ojos",12],["Agua micelar / desmaquillante",6],["Discos de algodón",2],["Crema corporal",6],["Protector solar",12],["Perfume",35],["Maquillaje básico",30],["Cepillo de pelo",8],["Cepillo de dientes",4],["Cuchillas o depiladora",10],["Compresas y tampones",6],["Set de manicura y lima",8],["Quitaesmalte",3],["Gomas y horquillas",3]]],
+  ["Uso común",[["Pasta de dientes",3],["Hilo dental",3],["Enjuague bucal",4],["Jabón de manos",3],["Papel higiénico (paquete)",6],["Pañuelos de papel",3],["Bastoncillos",2],["Algodón",2],["Ambientador",4],["Limpiador de baño",4]]]
+ ]],
+ ["Estudio",[
+  ["Mobiliario",[["Escritorio",150],["Silla de oficina ergonómica",150],["Librería / estantería",120],["Cajonera",60],["Sofá cama",400],["Archivador",50]]],
+  ["Iluminación",[["Lámpara de techo",60],["Flexo de escritorio",35],["Lámpara de pie",50]]],
+  ["Textil y ropa de cama invitados",[["Cortinas o estor",50],["Alfombra",60],["Juego de sábanas para sofá cama",30],["Almohada",20],["Manta",25]]],
+  ["Equipamiento",[["Regleta / multicontacto",15],["Organizadores de escritorio",20],["Impresora",100],["Tablón de corcho",15],["Papelera",10]]]
+ ]],
+ ["Baño cortesía",[
+  ["Mobiliario y accesorios",[["Espejo",50],["Toallero",20],["Portarrollos",12],["Escobilla WC",12],["Papelera",10],["Dispensador de jabón",10],["Alfombrilla",15],["Estante u organizador",30],["Colgador",8],["Ambientador",6]]],
+  ["Ajuar de toallas",[["Toallas de ducha",15,2],["Toallas de lavabo",8,4],["Toallas de invitados / tocador",5,4],["Toalla de pie",10]]],
+  ["Aseo hombre (invitados)",[["Gel de ducha",4],["Champú",4],["Desodorante",4],["Maquinillas desechables",4],["Espuma de afeitar (viaje)",3],["Cepillos de dientes de cortesía",4]]],
+  ["Aseo mujer (invitadas)",[["Gel de ducha",4],["Champú",4],["Acondicionador",4],["Agua micelar / desmaquillante",6],["Discos de algodón",2],["Crema hidratante",6],["Compresas y tampones",6],["Cepillo o peine",4],["Gomas de pelo",2]]],
+  ["Uso común",[["Jabón de manos",3],["Papel higiénico (paquete)",6],["Pañuelos de papel",3],["Pasta de dientes",3],["Enjuague bucal",4],["Bastoncillos",2],["Kit de cortesía (costurero, limas)",8]]]
+ ]],
+ ["Hall",[
+  ["Mobiliario",[["Espejo de entrada",80],["Mueble recibidor / consola",150],["Zapatero",100],["Perchero",50],["Banco para calzarse",80],["Paragüero",25]]],
+  ["Iluminación y detalles",[["Lámpara de techo",50],["Lámpara de mesa",35],["Colgador de llaves",15],["Vaciabolsillos",12],["Felpudo",20],["Cuadro",40]]]
+ ]]
 ];
+var SEED_TASKS = {
+  nosotros:["Medir los huecos de cada estancia antes de comprar muebles","Elegir colores de pintura y acabados","Dar de alta luz, agua, gas e internet","Pedir presupuestos de mudanza","Revisar garantías y facturas de lo comprado"],
+  crear:["Confirmar fecha de fin de obra","Puntos de luz y enchufes según plano","Revisión de fontanería en los dos baños","Colocación de mamparas y sanitarios","Pintura general","Limpieza final de obra","Entregar facturas y certificados"]
+};
 
-const COMER = [
- {id:"r1",n:"Churrería de San Rafael",p:"Segovia",km:0,dv:10,lat:40.7225,lon:-4.2140,t:"Desayuno",q:"Churrería San Rafael, El Espinar",
-  d:"Un santuario del desayuno a la salida de la sierra.",pide:"Churros con chocolate o café.",ojo:"Ideal para empezar la ida o como última parada a la vuelta."},
- {id:"r2",n:"Mesón de Cándido",p:"Segovia",km:0,dv:18,lat:40.9480,lon:-4.1176,t:"Asador",q:"Mesón de Cándido, Segovia",
-  d:"El mesón histórico al pie del Acueducto.",pide:"Cochinillo asado y judiones de La Granja.",ojo:"Reserva en fin de semana."},
- {id:"r3",n:"Restaurante José María",p:"Segovia",km:0,dv:18,lat:40.9505,lon:-4.1230,t:"Asador y barra",q:"Restaurante José María, Segovia",
-  d:"Clásico segoviano junto a la Plaza Mayor, con barra muy animada.",pide:"Cochinillo; en la barra, raciones y pinchos.",ojo:"Reserva para el comedor."},
- {id:"r4",n:"Restaurante Montesol",p:"Segovia",km:22,dv:1,lat:40.7760,lon:-4.4000,t:"Carretera",q:"Restaurante Montesol, Villacastín",
-  d:"Mesón de carretera de los de siempre en la N-VI, a la altura de Villacastín.",pide:"Menú casero del día, amplio y a buen precio.",ojo:"Suele llenarse: reserva en fin de semana."},
- {id:"r5",n:"Restaurante Marcial",p:"Segovia",km:22,dv:1,lat:40.7800,lon:-4.4050,t:"Desayuno",q:"Restaurante Marcial, Villacastín",
-  d:"A las afueras de Villacastín, parada clásica para un alto rápido.",pide:"Pincho de tortilla de patatas.",ojo:""},
- {id:"r6",n:"D'Ramos",p:"Ávila",km:45,dv:0,lat:40.8940,lon:-4.5830,t:"Carretera",q:"D'Ramos Restaurante, Sanchidrián",
-  d:"Mesón en la N-VI en Sanchidrián, con aparcamiento amplio y acceso directo.",pide:"Menú del día; también raciones.",ojo:"Abre de martes a domingo."},
- {id:"r7",n:"El Figón de Arévalo",p:"Ávila",km:62,dv:1,lat:41.0640,lon:-4.7180,t:"Asador",q:"El Figón de Arévalo",
-  d:"El decano de los asadores de Ávila y referencia del tostón (cochinillo) en Castilla.",pide:"Tostón asado en horno de leña, lechazo y bacalao.",ojo:"Reserva siempre; los asados, por encargo."},
- {id:"r8",n:"Asador Las Cubas",p:"Ávila",km:62,dv:1,lat:41.0650,lon:-4.7200,t:"Asador",q:"Asador Las Cubas, Arévalo",
-  d:"Templo del cochinillo en Arévalo, muy valorado.",pide:"Cochinillo y lechazo en horno de leña; níscalos con jamón en temporada.",ojo:"Reserva con antelación."},
- {id:"r9",n:"Asador Siboney",p:"Ávila",km:62,dv:1,lat:41.0630,lon:-4.7170,t:"Asador",q:"Asador Siboney, Arévalo",
-  d:"Asador en un palacete de arquitectura cubana lleno de obras de arte.",pide:"Cochinillo, cordero y bacalao.",ojo:"Reserva en fin de semana."},
- {id:"r10",n:"Pastelería Ribón",p:"Valladolid",km:90,dv:2,lat:41.3110,lon:-4.9150,t:"Desayuno",q:"Pastelería Ribón, Medina del Campo",
-  d:"Pastelería de Medina del Campo para desayunar bien y barato.",pide:"Hojaldres y café.",ojo:""},
- {id:"r11",n:"Panadería Raúl",p:"Valladolid",km:105,dv:2,lat:41.4120,lon:-4.9580,t:"Dulces",q:"Panadería Raúl, Rueda",
-  d:"Panadería artesana en Rueda.",pide:"Pastas de piñones, rosquillas y pan para el viaje.",ojo:""},
- {id:"r12",n:"El Torreón",p:"Valladolid",km:115,dv:1,lat:41.5020,lon:-5.0050,t:"Asador",q:"El Torreón, Tordesillas",
-  d:"El asador de referencia de Tordesillas, con más de cuarenta años y decoración castellana.",pide:"Carnes rojas a la brasa de carbón, lechazo; de entrante, cecina y queso frito con pimientos.",ojo:"No es barato; reserva."},
- {id:"r13",n:"Mesón Villa de Urueña",p:"Valladolid",km:150,dv:5,lat:41.7268,lon:-5.2040,t:"Mesón",q:"Mesón Villa de Urueña",
-  d:"El mesón de la plaza de siempre, a pocos metros de la muralla.",pide:"Platos de cuchara y empanada de morcilla con manzana.",ojo:"Encaja con el atardecer en la muralla."},
- {id:"r14",n:"Las Brasas de San Esteban",p:"Zamora",km:190,dv:1,lat:41.9400,lon:-5.5500,t:"Parrilla",q:"Las Brasas de San Esteban, San Esteban del Molar",
-  d:"Asador en la salida 251 de la A-6: eliges la carne en el mostrador.",pide:"Carne a la parrilla; menú con bebida y postre.",ojo:"Fácil de aparcar; tienda de productos."},
- {id:"r15",n:"La Despensa",p:"Zamora",km:190,dv:0,lat:41.9420,lon:-5.5530,t:"Bocadillos",q:"La Despensa, San Esteban del Molar",
-  d:"Bar-tienda de culto en el km 250 de la A-6.",pide:"Bocadillos de embutido casero en pan de pueblo.",ojo:"Para un alto rápido; venden quesos y legumbres."},
- {id:"r16",n:"El Ermitaño",p:"Zamora",km:205,dv:2,lat:42.0105,lon:-5.6625,t:"Estrella Michelin",q:"El Ermitaño, Benavente",
-  d:"La gran parada gastronómica de la ruta, con estrella Michelin.",pide:"Lechazo, cecina, cocochas; en la barra, croquetas y tortilla.",ojo:"Comedor con reserva obligatoria; la barra, sin reserva."},
- {id:"r17",n:"La Trébede",p:"Zamora",km:215,dv:12,lat:42.1000,lon:-5.7300,t:"Cocina creativa",q:"La Trébede, Pobladura del Valle",
-  d:"Pequeño restaurante rural de cocina tradicional con un toque creativo.",pide:"Tortillita de camarones, oreja confitada, bacalao.",ojo:"Unas 30 plazas: reserva."},
- {id:"r18",n:"La Bicha",p:"León",km:275,dv:1,lat:42.5972,lon:-5.5692,t:"Pinchos",q:"La Bicha, León",
-  d:"Taberna mítica del Barrio Húmedo, con mucho carácter.",pide:"La tapa de morcilla.",ojo:"En León la tapa viene con la bebida."},
- {id:"r19",n:"El Rebote",p:"León",km:275,dv:1,lat:42.5975,lon:-5.5700,t:"Pinchos",q:"El Rebote, Plaza de San Martín, León",
-  d:"Croquetería de la Plaza de San Martín, en pleno Barrio Húmedo.",pide:"Croquetas: jamón, pizza o la picante Jalisco.",ojo:"Suele estar lleno; sin comedor."},
- {id:"r20",n:"El Flechazo",p:"León",km:275,dv:1,lat:42.5970,lon:-5.5695,t:"Pinchos",q:"El Flechazo, Barrio Húmedo, León",
-  d:"Otro imprescindible de la ruta de tapas del Húmedo.",pide:"Sus patatas.",ojo:""},
- {id:"r21",n:"Restaurante Pablo",p:"León",km:275,dv:1,lat:42.5995,lon:-5.5655,t:"Estrella Michelin",q:"Restaurante Pablo, Avenida de los Cubos, León",
-  d:"Cocina leonesa de autor junto a la muralla y la catedral.",pide:"Menú degustación.",ojo:"Reserva con antelación."},
- {id:"r22",n:"Cocinandos",p:"León",km:275,dv:1,lat:42.6010,lon:-5.5830,t:"Estrella Michelin",q:"Cocinandos, Plaza de San Marcos, León",
-  d:"Alta cocina en la Plaza de San Marcos.",pide:"Menú degustación de temporada.",ojo:"Reserva con antelación."},
- {id:"r23",n:"Roble by Jairo Rodríguez",p:"Asturias",km:360,dv:1,lat:43.1550,lon:-5.8280,t:"Guía Michelin",q:"Roble by Jairo Rodríguez, Pola de Lena",
-  d:"Cocina asturiana actualizada en las afueras de Pola de Lena.",pide:"Pescado de la rula de Avilés y el carro de quesos.",ojo:"Cierra lunes y martes; cenas solo viernes y sábado (comprueba)."},
- {id:"r24",n:"Vía Carisa",p:"Asturias",km:365,dv:5,lat:43.1830,lon:-5.8020,t:"Cocina asturiana",q:"Vía Carisa, Carabanzo, Lena",
-  d:"Casa de comidas rural muy valorada en Carabanzo.",pide:"Pote de berzas, fabada y cordero.",ojo:"Raciones generosas."},
- {id:"r25",n:"Calle Gascona (Bulevar de la Sidra)",p:"Asturias",km:390,dv:1,lat:43.3640,lon:-5.8455,t:"Sidrerías",q:"Calle Gascona, Oviedo",
-  d:"La calle de las sidrerías de Oviedo, una detrás de otra.",pide:"Sidra escanciada, cachopo, tortos con picadillo.",ojo:"Para ir de una en otra sin reservar."},
- {id:"r26",n:"Casa Fermín",p:"Asturias",km:390,dv:1,lat:43.3618,lon:-5.8470,t:"Clásico",q:"Casa Fermín, Oviedo",
-  d:"Restaurante clásico de Oviedo, junto al Campo de San Francisco.",pide:"Cocina asturiana de producto.",ojo:"Reserva."},
- {id:"r27",n:"Confitería Camilo de Blas",p:"Asturias",km:390,dv:1,lat:43.3626,lon:-5.8462,t:"Dulces",q:"Camilo de Blas, Oviedo",
-  d:"Confitería histórica de Oviedo.",pide:"Carbayones.",ojo:"Buen recuerdo para llevar."},
- {id:"r28",n:"Sidrería El Planeta",p:"Asturias",km:420,dv:0,lat:43.5445,lon:-5.6640,t:"Sidrería",q:"Sidrería El Planeta, Gijón",
-  d:"En Cimadevilla, frente al puerto deportivo.",pide:"Pescado y marisco con sidra.",ojo:"Terraza muy buscada con buen tiempo."},
- {id:"r29",n:"La Galana",p:"Asturias",km:420,dv:0,lat:43.5440,lon:-5.6625,t:"Sidrería y pinchos",q:"La Galana, Plaza Mayor, Gijón",
-  d:"Sidrería-restaurante en la Plaza Mayor de Gijón.",pide:"Pinchos en la barra y sidra; comedor de cocina asturiana.",ojo:""},
- {id:"r30",n:"Casa Gerardo",p:"Asturias",km:420,dv:12,lat:43.5345,lon:-5.7650,t:"Estrella Michelin",q:"Casa Gerardo, Prendes",
-  d:"Casa de comidas centenaria convertida en referencia de la cocina asturiana.",pide:"Fabada y arroz con leche.",ojo:"Reserva con antelación."}
-];
-
-const RUTA_KM = [0,22,45,62,90,115,140,175,205,232,275,295,305,318,335,360,372,390,420];
-const RUTA = [[40.8167,-4.2083],[40.7797,-4.4136],[40.9450,-4.6050],[41.0650,-4.7200],[41.3100,-4.9300],[41.5000,-5.0000],[41.6330,-5.1750],[41.8660,-5.4130],[42.0020,-5.6780],[42.2300,-5.6100],[42.5990,-5.5670],[42.8000,-5.6200],[42.8530,-5.6700],[42.9200,-5.6600],[42.9930,-5.7470],[43.1600,-5.8200],[43.2500,-5.7700],[43.3620,-5.8440],[43.5320,-5.6610]];
-
-/* ---------- Estado ---------- */
-const hoy = new Date();
-const state = {tab:"dia", sentido:"ida", prov:"Todas", fecha:new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate(),12)};
-state.yo = null; state.yoMsg = "Buscando tu ubicación…"; state.marca = null; state.marcaTxt = "";
-let visitados = {};
-try { visitados = JSON.parse(localStorage.getItem("rutaN6_visitados")||"{}")||{}; } catch(e){ visitados = {}; }
-function guardar(){ try{ localStorage.setItem("rutaN6_visitados", JSON.stringify(visitados)); }catch(e){} }
-
-/* ---------- Sol y luna ---------- */
-const RAD=Math.PI/180, J1970=2440588, J2000=2451545, DAYMS=864e5, E=RAD*23.4397;
-const toDays = d => d/DAYMS - 0.5 + J1970 - J2000;
-const fromJ = j => new Date((j + 0.5 - J1970)*DAYMS);
-function solar(date,lat,lng){
-  const lw=RAD*-lng, phi=RAD*lat, d=toDays(date);
-  const n=Math.round(d-0.0009-lw/(2*Math.PI));
-  const ds=0.0009+lw/(2*Math.PI)+n;
-  const M=RAD*(357.5291+0.98560028*ds);
-  const C=RAD*(1.9148*Math.sin(M)+0.02*Math.sin(2*M)+0.0003*Math.sin(3*M));
-  const L=M+C+RAD*102.9372+Math.PI;
-  const dec=Math.asin(Math.sin(L)*Math.sin(E));
-  const Jnoon=J2000+ds+0.0053*Math.sin(M)-0.0069*Math.sin(2*L);
-  function at(h){
-    const x=(Math.sin(h*RAD)-Math.sin(phi)*Math.sin(dec))/(Math.cos(phi)*Math.cos(dec));
-    if (x<-1||x>1) return [null,null];
-    const w=Math.acos(x);
-    const a=0.0009+(w+lw)/(2*Math.PI)+n;
-    const Jset=J2000+a+0.0053*Math.sin(M)-0.0069*Math.sin(2*L);
-    return [fromJ(Jnoon-(Jset-Jnoon)), fromJ(Jset)];
+var n = 0;
+function uid(){ return Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2,7) + (n++); }
+function buildSeed(){
+  return {
+    version:2, savedAt:0,
+    rooms: SEED.map(function(r,i){
+      return {id:uid(), label:r[0], color:i % PALETTE.length,
+        groups:r[1].map(function(g){
+          return {id:uid(), label:g[0], items:g[1].map(function(it){
+            return {id:uid(), text:it[0], price:null, qty:it[2]||1, bought:false};
+          })};
+        })};
+    }),
+    pages:[],
+    tasks:{
+      nosotros: SEED_TASKS.nosotros.map(function(t){ return {id:uid(), text:t, done:false}; }),
+      crear: SEED_TASKS.crear.map(function(t){ return {id:uid(), text:t, done:false}; })
+    }
+  };
+}
+function valid(s){
+  var ok = s && Array.isArray(s.rooms) && s.tasks && Array.isArray(s.tasks.nosotros) && Array.isArray(s.tasks.crear);
+  if(ok && !Array.isArray(s.pages)) s.pages = [];
+  if(ok && (s.version||1) < 2){
+    /* versión 1 traía precios orientativos: se quitan de lo no comprado */
+    s.rooms.forEach(function(r){ r.groups.forEach(function(g){ g.items.forEach(function(it){ if(!it.bought) it.price = null; }); }); });
+    s.version = 2;
   }
-  const az=Math.acos(Math.max(-1,Math.min(1,Math.sin(dec)/Math.cos(phi))))/RAD;
-  return {at, azRise:az, azSet:360-az};
-}
-function hora(d){ return d ? d.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Madrid"}) : "—"; }
-const RUMBOS=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"];
-const rumbo = a => RUMBOS[Math.round(a/22.5)%16];
-function luna(date){
-  const jd=date/DAYMS+2440587.5, S=29.530588853;
-  const edad=((jd-2451550.1)%S+S)%S;
-  const ilum=Math.round((1-Math.cos(2*Math.PI*edad/S))/2*100);
-  const nombres=[[1.84,"Luna nueva"],[5.53,"Creciente"],[9.22,"Cuarto creciente"],[12.91,"Gibosa creciente"],[16.61,"Luna llena"],[20.30,"Gibosa menguante"],[23.99,"Cuarto menguante"],[27.68,"Menguante"],[99,"Luna nueva"]];
-  return {nombre:nombres.find(x=>edad<x[0])[1], ilum};
+  return ok;
 }
 
-/* ---------- Utilidades ---------- */
-const kmDe = p => state.sentido==="ida" ? p.km : TOTAL - p.km;
-function dist(a1,o1,a2,o2){
-  const r=Math.PI/180, dA=(a2-a1)*r, dO=(o2-o1)*r;
-  const h=Math.sin(dA/2)**2+Math.cos(a1*r)*Math.cos(a2*r)*Math.sin(dO/2)**2;
-  return 12742*Math.asin(Math.sqrt(h));
-}
-const aMi = p => state.yo ? dist(state.yo.lat,state.yo.lon,p.lat,p.lon) : null;
-const kmTxt = d => d<1 ? `${Math.round(d*1000)} m` : d<10 ? `${d.toFixed(1).replace(".",",")} km` : `${Math.round(d)} km`;
-const gmComer = (lat,lon) => `https://www.google.com/maps/search/restaurantes/@${lat},${lon},15z`;
-function filtrar(arr){
-  const f = arr.map((p,i)=>({p,i})).filter(o => state.prov==="Todas" || o.p.p===state.prov);
-  f.sort((a,b)=> kmDe(a.p)-kmDe(b.p) || (state.sentido==="ida" ? a.i-b.i : b.i-a.i));
-  return f.map(o=>o.p);
-}
-const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-/* ---------- Fichas ---------- */
-function bloqueSol(p, noche){
-  const s = solar(state.fecha, p.lat, p.lon);
-  const fechaTxt = state.fecha.toLocaleDateString("es-ES",{day:"numeric",month:"long"});
-  if(!noche){
-    const [salida, puesta] = s.at(-0.833);
-    const [finDorada, iniDorada] = s.at(6);
-    return `<div class="sun"><h4>Luz el ${fechaTxt}</h4><div class="grid">
-      <span>Amanecer <b>${hora(salida)}</b></span>
-      <span>Luz dorada hasta <b>${hora(finDorada)}</b></span>
-      <span>Luz dorada desde <b>${hora(iniDorada)}</b></span>
-      <span>Puesta de sol <b>${hora(puesta)}</b></span></div>
-      <p>El sol sale por el ${rumbo(s.azRise)} (${Math.round(s.azRise)}°) y se pone por el ${rumbo(s.azSet)} (${Math.round(s.azSet)}°).</p></div>`;
-  }
-  const [, puesta] = s.at(-0.833);
-  const [, azulIni] = s.at(-4);
-  const [, azulFin] = s.at(-8);
-  const [, oscuro] = s.at(-18);
-  const noche22 = new Date(state.fecha.getTime()+10*3600e3);
-  const m = luna(noche22);
-  let consejo;
-  if (p.t==="Cielo") consejo = m.ilum<=25 ? "Buena noche para estrellas." : m.ilum>=60 ? "La luna aclara el cielo: mejor otra noche para estrellas, o aprovecha la luz lunar para el paisaje." : "Luna a medias: busca las horas en que no esté en el cielo.";
-  else consejo = m.ilum>=40 ? "Una luna visible puede completar el encuadre." : "Sin luna que moleste: todo el protagonismo para la iluminación.";
-  return `<div class="sun"><h4>Noche del ${fechaTxt}</h4><div class="grid">
-    <span>Puesta de sol <b>${hora(puesta)}</b></span>
-    <span>Hora azul <b>${hora(azulIni)}–${hora(azulFin)}</b></span>
-    <span>Noche cerrada desde <b>${hora(oscuro)}</b></span>
-    <span>${m.nombre} <b>${m.ilum}%</b></span></div>
-    <p>${consejo}</p></div>`;
-}
-function hito(p){
-  if (p.km===0 || p.km===TOTAL){
-    const lugar = p.km===0 ? "OTERO" : "GIJÓN";
-    return `<div class="hito" aria-label="${p.dv} km desde ${lugar}"><div class="top">${lugar}</div><div class="k">a</div><b>${p.dv}</b><div class="k fin">km</div></div>`;
-  }
-  const extra = p.dv>1 ? `<div class="dv">+${p.dv} km</div>` : "";
-  return `<div class="hito" aria-label="Kilómetro ${kmDe(p)} de la ruta"><div class="top">${p.km>=205?"A-66":"N-VI"}</div><div class="k">km</div><b>${kmDe(p)}</b>${extra}</div>`;
-}
-const gmLugar = p => `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}`;
-const gmRuta = p => `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving`;
-let nav = "google";
-try { nav = localStorage.getItem("rutaN6_nav") || "google"; } catch(e){}
-const wazeIr = p => p.q && !p.mio ? `https://waze.com/ul?q=${encodeURIComponent(p.q)}&navigate=yes` : `https://waze.com/ul?ll=${p.lat},${p.lon}&navigate=yes`;
-const irA = p => nav==="waze" ? wazeIr(p) : (p.q ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.q)}&travelmode=driving` : gmRuta(p));
-const navSel = () => `<div class="navsel"><span>Navegar con</span><div class="seg" role="group" aria-label="Navegador">
-  <button data-nav="google" aria-pressed="${nav==="google"}">Google Maps</button><button data-nav="waze" aria-pressed="${nav==="waze"}">Waze</button></div></div>`;
-function cabecera(p){
-  const hecho = !!visitados[p.id];
-  const off = p.dv<=1 ? "En ruta"
-    : p.km===0 ? `A ${p.dv} km de Otero de Herreros`
-    : p.km===TOTAL ? `A ${p.dv} km de Gijón`
-    : `Desvío de ${p.dv} km desde la ruta`;
-  const marca = state.marca===p.id ? `<span class="marca">${esc(state.marcaTxt||"▶ Siguiente en tu ruta")}</span>` : "";
-  return `${marca}<div class="titulo"><h3>${esc(p.n)}${p.mio?' <span class="mio">Mío</span>':""}</h3>
-      <button class="visto${hecho?" on":""}" data-visto="${p.id}" aria-pressed="${hecho}" title="Marcar como visitado">${hecho?"✓ Visto":"Visto"}</button></div>
-      <p class="meta"><span>${esc(p.p)}</span><span>${esc(p.t)}</span><span class="off">${off}</span>${state.yo?`<span class="cerca">📍 a ${kmTxt(aMi(p))} de ti</span>`:""}</p>
-      ${p.d?`<p class="desc">${esc(p.d)}</p>`:""}`;
-}
-const dd = (t,v) => v ? `<dt>${t}</dt><dd>${esc(v)}</dd>` : "";
-const misBotones = p => p.mio ? `<div class="acts mias"><button class="btn" data-editar="${p.id}">Editar</button><button class="btn del" data-borrar="${p.id}">Borrar</button></div>` : "";
-function ficha(p, noche){
-  return `<article class="spot${visitados[p.id]?" done":""}${state.marca===p.id?" siguiente":""}" id="card-${p.id}">
-    ${hito(p)}
-    <div>
-      ${cabecera(p)}
-      <dl>
-        ${dd("Mejor punto de vista",p.v)}
-        ${dd(noche?"Mejor momento":"Mejor luz",p.l)}
-        ${dd("Encuadre y ajustes",p.f)}
-        ${dd("Mejor época",p.e)}
-      </dl>
-      ${bloqueSol(p, noche)}
-      <div class="fotos" data-fotos="${p.id}"></div>
-      <div class="acts tres">
-        <a class="btn main" href="${irA(p)}" target="_blank" rel="noopener">Cómo llegar</a>
-        <a class="btn" href="${gmLugar(p)}" target="_blank" rel="noopener">Google Maps</a>
-        <button class="btn" data-comer="${p.id}">Comer cerca</button>
-      </div>
-      ${misBotones(p)}
-    </div></article>`;
+function loadState(){
+  var embedded = null, local = null;
+  try{ embedded = JSON.parse(document.getElementById("app-state").textContent); }catch(e){}
+  try{ local = JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){}
+  if(!valid(embedded)) embedded = null;
+  if(!valid(local)) local = null;
+  if(embedded && local) return (local.savedAt||0) > (embedded.savedAt||0) ? local : embedded;
+  return embedded || local || buildSeed();
 }
 
-const gmSitio = r => r.q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.q)}` : gmLugar(r);
-const gmIrSitio = r => r.q ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.q)}&travelmode=driving` : gmRuta(r);
-function fichaComer(r){
-  return `<article class="spot${visitados[r.id]?" done":""}${state.marca===r.id?" siguiente":""}" id="card-${r.id}">
-    ${hito(r)}
-    <div>
-      ${cabecera(r)}
-      <dl>
-        ${dd("Qué pedir",r.pide)}
-        ${dd("A tener en cuenta",r.ojo)}
-      </dl>
-      <div class="acts dos">
-        <a class="btn main" href="${irA(r)}" target="_blank" rel="noopener">Cómo llegar</a>
-        <a class="btn" href="${gmSitio(r)}" target="_blank" rel="noopener">Google Maps</a>
-      </div>
-      ${misBotones(r)}
-    </div></article>`;
+var state = loadState();
+var ui = {tab:"resumen", onlyPending:false};
+try{ var t = localStorage.getItem(STORE_KEY+"-tab"); if(t) ui.tab = t; }catch(e){}
+if(ui.tab !== "resumen" && ui.tab !== "pendientes" && !findRoom(ui.tab) && !findPage(ui.tab)) ui.tab = state.rooms[0] ? state.rooms[0].id : "resumen";
+
+var artifactApi = null, downloadsApi = null, publishTimer = null, dragState = null;
+
+/* ---------- utilidades ---------- */
+function eur(v){
+  v = Math.round((v||0)*100)/100;
+  var neg = v < 0; v = Math.abs(v);
+  var ent = Math.floor(v), dec = Math.round((v-ent)*100);
+  var s = String(ent).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  if(dec) s += "," + (dec<10?"0":"") + dec;
+  return (neg?"-":"") + s + " €";
+}
+function parsePrice(s){ s = String(s||"").replace(/[€\s]/g,"").replace(/\.(?=\d{3}(\D|$))/g,"").replace(",","."); var v = parseFloat(s); return isFinite(v) && v >= 0 ? v : 0; }
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];}); }
+function findRoom(id){ return state.rooms.find(function(r){ return r.id === id; }); }
+function findPage(id){ return (state.pages||[]).find(function(p){ return p.id === id; }); }
+function findGroup(room,id){ return room.groups.find(function(g){ return g.id === id; }); }
+function tint(color){ var p = PALETTE[color % PALETTE.length]; return "--cl:"+p.l+";--cd:"+p.d; }
+function hasPrice(it){ return typeof it.price === "number" && isFinite(it.price); }
+function itemTotal(it){ return hasPrice(it) ? it.price * (it.qty||1) : 0; }
+function priceLabel(it){ return hasPrice(it) ? (it.price === 0 ? "0 € · lo tenemos" : eur(itemTotal(it))) : ""; }
+function roomTotals(r){
+  var t = {budget:0, spent:0, items:0, bought:0};
+  r.groups.forEach(function(g){ g.items.forEach(function(it){ t.items++; if(it.bought){ t.spent += itemTotal(it); t.bought++; } }); });
+  return t;
+}
+function groupTotals(g){ var t={spent:0,bought:0}; g.items.forEach(function(it){ if(it.bought){t.spent+=itemTotal(it);t.bought++;} }); return t; }
+
+/* ---------- guardar ---------- */
+function save(){
+  state.savedAt = Date.now();
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  schedulePublish();
+  if(window.CasaSync && typeof window.CasaSync.push === "function") window.CasaSync.push(state);
+}
+function buildDocument(){
+  var json = JSON.stringify(state).replace(/</g,"\\u003c");
+  var body = PRISTINE_BODY.replace(/<script id="app-state" type="application\/json">[\s\S]*?<\/script>/,
+    function(){ return '<script id="app-state" type="application/json">' + json + '<\/script>'; });
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>' + body + '</body></html>';
+}
+function schedulePublish(){
+  if(!artifactApi) return;
+  if(publishTimer) clearTimeout(publishTimer);
+  publishTimer = setTimeout(function(){
+    publishTimer = null;
+    artifactApi.publish(buildDocument()).catch(function(){});
+  }, 1500);
+}
+function toast(msg){
+  var el = document.createElement("div"); el.className = "toast"; el.textContent = msg;
+  document.body.appendChild(el); setTimeout(function(){ el.remove(); }, 2200);
 }
 
-/* ---------- Mis sitios y restaurantes propios ---------- */
-let propios = {dia:[], noche:[], comer:[]};
-try { const g = JSON.parse(localStorage.getItem("rutaN6_propios")||"null"); if (g) propios = Object.assign(propios, g); } catch(e){}
-function guardarPropios(){ try{ localStorage.setItem("rutaN6_propios", JSON.stringify(propios)); }catch(e){ alert("No se ha podido guardar."); } }
-const BASE = {dia:DIA, noche:NOCHE, comer:COMER};
-const todos = tab => BASE[tab].concat(propios[tab]);
-const buscarId = id => ["dia","noche","comer"].map(t=>todos(t).find(x=>x.id===id)).find(Boolean);
-function provinciaDeKm(k){ return k<35?"Segovia":k<80?"Ávila":k<170?"Valladolid":k<232?"Zamora":k<337?"León":"Asturias"; }
-function leerCoords(txt){
-  if(!txt) return null;
-  const t = txt.replace(/\s+/g," ");
-  let m = t.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) || t.match(/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/) || t.match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);
-  if(!m) return null;
-  const lat=+m[1], lon=+m[2];
-  return (Math.abs(lat)<=90 && Math.abs(lon)<=180) ? {lat,lon} : null;
+/* ---------- pestañas ---------- */
+/* todas las pestañas, en el orden que habéis elegido */
+function tabList(){
+  var all = state.rooms.map(function(r){ return {id:r.id, label:r.label, color:r.color, kind:"Estancia"}; })
+    .concat((state.pages||[]).map(function(pg){ return {id:pg.id, label:pg.label, color:pg.color, kind:"Página de notas"}; }))
+    .concat([{id:"pendientes", label:"Pendientes", color:null, kind:"Fija"}, {id:"resumen", label:"Resumen de gastos", color:null, kind:"Fija"}]);
+  var order = Array.isArray(state.order) ? state.order : [];
+  var byId = {}; all.forEach(function(t){ byId[t.id] = t; });
+  var out = [];
+  order.forEach(function(id){ if(byId[id]){ out.push(byId[id]); delete byId[id]; } });
+  all.forEach(function(t){ if(byId[t.id]) out.push(t); });   /* las nuevas, al final */
+  return out;
 }
-const capa = document.getElementById("capaForm");
-let editando = null, formTab = "dia";
-function abrirForm(tab, item){
-  formTab = tab; editando = item||null;
-  const f = id => document.getElementById(id);
-  f("tituloForm").textContent = (item?"Editar ":"Nuevo ") + (tab==="comer"?"restaurante":tab==="noche"?"sitio nocturno":"sitio");
-  f("bloqueSitio").hidden = tab==="comer";
-  f("bloqueComer").hidden = tab!=="comer";
-  f("fEpoca").closest("label").hidden = tab!=="dia";
-  f("fLuzTxt").textContent = tab==="noche" ? "Mejor momento" : "Mejor luz";
-  f("fTipo").setAttribute("list", tab==="comer" ? "tiposComer" : "tiposSitio");
-  const v = item||{};
-  f("fNombre").value=v.n||""; f("fTipo").value=v.t||""; f("fDesc").value=v.d||"";
-  f("fCoords").value = v.lat!=null ? `${v.lat.toFixed(6)}, ${v.lon.toFixed(6)}` : "";
-  f("fDir").value=v.q||""; f("fVista").value=v.v||""; f("fLuz").value=v.l||""; f("fAjustes").value=v.f||""; f("fEpoca").value=v.e||"";
-  f("fPide").value=v.pide||""; f("fOjo").value=v.ojo||"";
-  f("fProv").value = v.p || "";
-  actualizarCalculo();
-  capa.hidden=false; document.body.style.overflow="hidden";
-  setTimeout(()=>f("fNombre").focus(),50);
+function renderTabs(){
+  var h = tabList().map(function(t){
+    var fixed = t.color === null;
+    return '<button type="button" class="tinted'+(fixed?' fixed':'')+(ui.tab===t.id?' on':'')+'"'+(fixed?'':' style="'+tint(t.color)+'"')+' data-tab="'+t.id+'">'+esc(t.label)+'</button>';
+  }).join("");
+  h += '<button type="button" class="new" id="newPageBtn" aria-label="Crear estancia o página" title="Crear estancia o página">+</button>';
+  h += '<button type="button" class="new" id="orderBtn" aria-label="Ordenar pestañas" title="Ordenar pestañas">⇅</button>';
+  var nav = document.getElementById("tabs");
+  nav.innerHTML = h;
+  nav.querySelectorAll("button[data-tab]").forEach(function(b){
+    b.addEventListener("click", function(){ go(b.dataset.tab); });
+  });
+  document.getElementById("newPageBtn").addEventListener("click", openNewSheet);
+  document.getElementById("orderBtn").addEventListener("click", openOrderSheet);
+  var on = nav.querySelector(".on");
 }
-function cerrarForm(){ capa.hidden=true; document.body.style.overflow=""; editando=null; }
-function actualizarCalculo(){
-  const c = leerCoords(document.getElementById("fCoords").value);
-  const out = document.getElementById("fCalc");
-  if(!c){ out.textContent = "Pon las coordenadas o pulsa «Usar mi posición» para situarlo en la ruta."; return; }
-  const r = kmEnRuta(c.lat,c.lon);
-  const k = Math.round(r.km);
-  out.textContent = `Queda en el km ${k} de la ruta (desde Otero), a unos ${Math.round(r.fuera)} km de la carretera.`;
-  const pv = document.getElementById("fProv"); if(!pv.value) pv.value = provinciaDeKm(k);
-}
-function guardarForm(){
-  const g = id => document.getElementById(id).value.trim();
-  const n = g("fNombre");
-  if(!n){ alert("Pon un nombre."); return; }
-  const c = leerCoords(g("fCoords"));
-  if(!c){ alert("Falta la ubicación: pulsa «Usar mi posición» o pega las coordenadas de Google Maps."); return; }
-  const r = kmEnRuta(c.lat,c.lon);
-  const k = Math.max(1, Math.min(TOTAL-1, Math.round(r.km)));
-  const item = {id: editando?editando.id:"u"+Date.now(), mio:true, n, lat:c.lat, lon:c.lon, km:k, dv:Math.round(r.fuera),
-    p: g("fProv") || provinciaDeKm(k), t: g("fTipo")||(formTab==="comer"?"Restaurante":"Mi sitio"), d:g("fDesc"), q:g("fDir")};
-  if(formTab==="comer"){ item.pide=g("fPide"); item.ojo=g("fOjo"); }
-  else { item.v=g("fVista"); item.l=g("fLuz"); item.f=g("fAjustes"); if(formTab==="dia") item.e=g("fEpoca"); }
-  const lista = propios[formTab];
-  const i = lista.findIndex(x=>x.id===item.id);
-  if(i>=0) lista[i]=item; else lista.push(item);
-  guardarPropios(); cerrarForm();
-  state.tab=formTab; state.marca=item.id; state.marcaTxt="✚ Guardado"; if(state.prov!=="Todas" && state.prov!==item.p) state.prov="Todas";
-  render();
-  setTimeout(()=>document.getElementById("card-"+item.id)?.scrollIntoView({behavior:"smooth",block:"center"}),60);
-}
-function borrarPropio(id){
-  for(const t of ["dia","noche","comer"]){
-    const i = propios[t].findIndex(x=>x.id===id);
-    if(i>=0 && confirm(`¿Borrar «${propios[t][i].n}»?`)){ propios[t].splice(i,1); guardarPropios(); delete visitados[id]; guardar(); render(); }
-  }
-}
-function comerCerca(id){
-  const p = buscarId(id); if(!p) return;
-  const r = todos("comer").reduce((m,x)=> !m || dist(p.lat,p.lon,x.lat,x.lon) < dist(p.lat,p.lon,m.lat,m.lon) ? x : m, null);
-  if(!r) return;
-  const d = dist(p.lat,p.lon,r.lat,r.lon);
-  state.tab="comer"; state.marca=r.id; state.marcaTxt=`🍴 El más cercano a ${p.n} (${kmTxt(d)})`;
-  if(state.prov!=="Todas" && state.prov!==r.p) state.prov="Todas";
-  render(); window.scrollTo({top:0});
-  setTimeout(()=>document.getElementById("card-"+r.id)?.scrollIntoView({behavior:"smooth",block:"center"}),80);
+function go(tab){
+  ui.tab = tab; ui.onlyPending = false;
+  try{ localStorage.setItem(STORE_KEY+"-tab", tab); }catch(e){}
+  render(); window.scrollTo(0,0);
 }
 
 function render(){
-  document.body.classList.toggle("night", state.tab==="noche");
-  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===state.tab));
-  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.sentido===state.sentido));
-  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.prov===state.prov));
-  enlaceRuta();
-  const noche = state.tab==="noche", comer = state.tab==="comer";
-  const lista = filtrar(todos(state.tab));
-  pintarYo();
-  const origen = state.sentido==="ida" ? "Otero de Herreros" : "Gijón";
-  document.getElementById("intro").textContent = comer
-    ? "Selección de restaurantes, asadores y bares de pinchos de los más recomendados a lo largo de la ruta. Comprueba horarios y reserva antes de ir."
-    : noche
-    ? "Para todas: trípode o apoyo firme, disparo con retardo de 2 s, estabilizador apagado en trípode y enfoque manual en las estrellas."
-    : "Las horas de luz se recalculan para cada lugar según la fecha del viaje.";
-  const vistos = lista.filter(p=>visitados[p.id]).length;
-  document.getElementById("count").textContent = lista.length
-    ? `${lista.length} ${comer?"sitios para comer":"lugares"} desde ${origen}${state.prov!=="Todas"?" en "+state.prov:""}${vistos?`, ${vistos} visitados`:""}`
-    : "";
-  document.getElementById("list").innerHTML = lista.length
-    ? lista.map(p=> comer ? fichaComer(p) : ficha(p,noche)).join("")
-    : `<p class="empty">No hay ${comer?"sitios para comer":noche?"lugares nocturnos":"lugares diurnos"} en ${state.prov}. Elige otra provincia o pulsa «Todas».</p>`;
-  pintarTodasFotos();
-  if (typeof textoBotonAnadir==="function") textoBotonAnadir();
-  if (typeof estadoCopia==="function") estadoCopia();
+  renderTabs();
+  var v = document.getElementById("view");
+  var room = findRoom(ui.tab);
+  var page = findPage(ui.tab);
+  if(room) v.innerHTML = renderRoom(room), bindRoom(room);
+  else if(page) v.innerHTML = renderPage(page), bindPage(page);
+  else if(ui.tab === "pendientes") v.innerHTML = renderTasks(), bindTasks();
+  else v.innerHTML = renderSummary(), bindSummary();
 }
 
-/* ---------- Mi ubicación ---------- */
-function kmEnRuta(lat,lon){
-  const r=Math.PI/180, c=Math.cos(lat*r);
-  const xy=(a,o)=>[o*111.32*c, a*110.57];
-  const P=xy(lat,lon); let mejor={d:1e9,km:0};
-  for(let i=0;i<RUTA.length-1;i++){
-    const A=xy(...RUTA[i]), B=xy(...RUTA[i+1]);
-    const vx=B[0]-A[0], vy=B[1]-A[1], wx=P[0]-A[0], wy=P[1]-A[1];
-    const t=Math.max(0,Math.min(1,(vx*wx+vy*wy)/(vx*vx+vy*vy||1)));
-    const d=Math.hypot(P[0]-(A[0]+t*vx), P[1]-(A[1]+t*vy));
-    if(d<mejor.d) mejor={d, km:RUTA_KM[i]+t*(RUTA_KM[i+1]-RUTA_KM[i])};
-  }
-  return {km: mejor.km, fuera: mejor.d};
+/* ---------- estancia ---------- */
+function renderRoom(r){
+  var t = roomTotals(r);
+  var pct = t.items ? Math.round(t.bought / t.items * 100) : 0;
+  var groups = r.groups.map(function(g, gi){
+    var items = ui.onlyPending ? g.items.filter(function(i){ return !i.bought; }) : g.items;
+    if(ui.onlyPending && !items.length) return "";
+    var gt = groupTotals(g);
+    var lis = items.map(function(it){
+      return '<li class="item'+(it.bought?' done':'')+'" data-g="'+g.id+'" data-id="'+it.id+'">'+
+        '<label class="chk"><input type="checkbox" '+(it.bought?'checked':'')+' aria-label="Conseguido: '+esc(it.text)+'"></label>'+
+        '<button type="button" class="txt" data-edit="1"><span class="t">'+esc(it.text)+'</span>'+
+          (it.qty>1?'<span class="q">×'+it.qty+'</span>':'')+
+          (it.bought ? '<span class="p'+(itemTotal(it)?'':' zero')+'">'+(hasPrice(it)?priceLabel(it):'añadir precio')+'</span>' : '')+'</button>'+
+        (ui.onlyPending?'':'<button type="button" class="icon del" aria-label="Eliminar '+esc(it.text)+'">&times;</button>'+
+        '<button type="button" class="drag" aria-label="Arrastrar para reordenar"><span></span><span></span><span></span></button>')+
+      '</li>';
+    }).join("");
+    return '<section class="group" data-g="'+g.id+'">'+
+      '<div class="g-head"><h3>'+esc(g.label)+'</h3><span class="g-sum">'+gt.bought+'/'+g.items.length+' · '+eur(gt.spent)+'</span>'+
+      (ui.onlyPending?'':'<button type="button" class="icon" data-gedit="'+g.id+'" aria-label="Editar sección '+esc(g.label)+'">⋯</button>')+'</div>'+
+      '<ul class="items">'+lis+'</ul>'+
+      (ui.onlyPending?'':'<form class="add" data-g="'+g.id+'"><input class="name" id="add-n-'+g.id+'" name="text" placeholder="Añadir a '+esc(g.label.toLowerCase())+'…" autocomplete="off"><input class="price" id="add-p-'+g.id+'" name="price" inputmode="decimal" placeholder="€ (si ya lo compraste)" autocomplete="off"><button type="submit" aria-label="Añadir">+</button></form>')+
+    '</section>';
+  }).join("");
+  if(ui.onlyPending && !groups) groups = '<p class="empty">Ya tenéis todo lo de esta estancia.</p>';
+  return '<div class="tinted" style="'+tint(r.color)+'">'+
+    '<div class="page-head"><div class="title-row"><h2>'+esc(r.label)+'</h2><button type="button" class="icon" id="editRoomBtn" aria-label="Cambiar nombre, color o eliminar estancia">⋯</button></div>'+
+    '<p class="sub">Toca un producto para poner lo que te ha costado (0 € si ya lo tenéis). También puedes marcarlo, cambiar la cantidad o moverlo a otra estancia.</p>'+
+    '<p class="money-line">Gastado <strong>'+eur(t.spent)+'</strong> · '+t.bought+' de '+t.items+' conseguidos</p>'+
+    '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+    '<div class="tools"><button type="button" class="pill'+(ui.onlyPending?' active':'')+'" id="pendToggle"><strong>'+(t.items-t.bought)+'</strong> '+(ui.onlyPending?'por comprar — ver toda la lista':'por comprar — ver solo estos')+'</button></div></div>'+
+    '<main>'+groups+'</main>'+
+    (ui.onlyPending?'':'<form class="newgroup" id="newGroup" style="margin-top:16px"><input id="newGroupName" placeholder="Nueva sección… (p. ej. Decoración)" autocomplete="off"><button type="submit">Crear sección</button></form>')+
+  '</div>';
 }
-function siguiente(arr){
-  if(!state.yo) return null;
-  const u = kmEnRuta(state.yo.lat,state.yo.lon).km;
-  const uK = state.sentido==="ida" ? u : TOTAL-u;
-  const orden = arr.map((p,i)=>({p,i})).sort((a,b)=> kmDe(a.p)-kmDe(b.p) || (state.sentido==="ida"?a.i-b.i:b.i-a.i)).map(o=>o.p);
-  const delante = orden.filter(p=> kmDe(p) >= uK-2);
-  if(!delante.length) return null;
-  const k = kmDe(delante[0]);
-  return delante.filter(p=>kmDe(p)===k).sort((a,b)=>aMi(a)-aMi(b))[0];
+function bindRoom(r){
+  var v = document.getElementById("view");
+  document.getElementById("editRoomBtn").addEventListener("click", function(){ openRoomSheet(r); });
+  var pt = document.getElementById("pendToggle");
+  pt.addEventListener("click", function(){ ui.onlyPending = !ui.onlyPending; render(); });
+  v.querySelectorAll("li.item").forEach(function(li){
+    var g = findGroup(r, li.dataset.g); var it = g && g.items.find(function(x){ return x.id === li.dataset.id; });
+    if(!it) return;
+    li.querySelector("input[type=checkbox]").addEventListener("change", function(e){ it.bought = e.target.checked; save(); render(); });
+    li.querySelector("[data-edit]").addEventListener("click", function(){ openItemSheet(r, g, it); });
+    var del = li.querySelector("button.del");
+    if(del) del.addEventListener("click", function(){
+      var idx = g.items.indexOf(it); g.items.splice(idx,1); save(); render();
+      undoToast("“"+it.text+"” eliminado", function(){ g.items.splice(idx,0,it); save(); render(); });
+    });
+    var h = li.querySelector("button.drag");
+    if(h) h.addEventListener("pointerdown", function(e){ startDrag(e, li, g.items, 'li.item[data-g="'+g.id+'"]'); });
+  });
+  v.querySelectorAll("form.add").forEach(function(f){
+    f.addEventListener("submit", function(e){
+      e.preventDefault();
+      var name = f.querySelector(".name").value.trim(); if(!name) return;
+      var g = findGroup(r, f.dataset.g);
+      var pv = f.querySelector(".price").value.trim();
+      g.items.push({id:uid(), text:name, price:pv===""?null:parsePrice(pv), qty:1, bought:pv!==""});
+      save(); render();
+      var ni = document.getElementById("add-n-"+g.id); if(ni) ni.focus();
+    });
+  });
+  v.querySelectorAll("[data-gedit]").forEach(function(b){
+    b.addEventListener("click", function(){ openGroupSheet(r, findGroup(r, b.dataset.gedit)); });
+  });
+  var ng = document.getElementById("newGroup");
+  if(ng) ng.addEventListener("submit", function(e){
+    e.preventDefault(); var name = document.getElementById("newGroupName").value.trim(); if(!name) return;
+    r.groups.push({id:uid(), label:name, items:[]}); save(); render();
+  });
 }
-function marcar(tab, arr){
-  const p = siguiente(arr);
-  state.tab = tab;
-  if (p && state.prov!=="Todas" && p.p!==state.prov) state.prov="Todas";
-  state.marca = p ? p.id : null;
-  state.marcaTxt = tab==="comer" ? "▶ El más cercano en tu ruta" : "▶ Siguiente en tu ruta";
+
+/* ---------- arrastrar ---------- */
+function startDrag(e, li, list, selector){
+  e.preventDefault();
+  dragState = {list:list, id:li.dataset.id, selector:selector, moved:false};
+  li.classList.add("dragging");
+  document.addEventListener("pointermove", onDragMove);
+  document.addEventListener("pointerup", onDragEnd);
+  document.addEventListener("pointercancel", onDragEnd);
+}
+function onDragMove(e){
+  if(!dragState) return;
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  var over = el && el.closest ? el.closest(dragState.selector) : null;
+  if(!over || over.dataset.id === dragState.id) return;
+  var L = dragState.list;
+  var from = L.findIndex(function(x){ return x.id === dragState.id; });
+  var to = L.findIndex(function(x){ return x.id === over.dataset.id; });
+  if(from < 0 || to < 0) return;
+  L.splice(to, 0, L.splice(from,1)[0]);
+  dragState.moved = true;
   render();
-  if (p){
-    const el=document.getElementById("card-"+p.id);
-    if(el) setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"center"}),60);
-  } else {
-    alert("No quedan lugares por delante en este sentido de la ruta.");
-  }
+  var nl = document.querySelector(dragState.selector+'[data-id="'+dragState.id+'"]');
+  if(nl) nl.classList.add("dragging");
 }
-function pintarYo(){
-  const el = document.getElementById("yo");
-  if (!state.yo){
-    el.innerHTML = `<h4>📍 Mi situación</h4><p>${state.yoMsg}</p>
-      <div class="acts"><button class="btn main" data-yo="buscar">Actualizar posición</button>
-      <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button></div>${navSel()}`;
+function onDragEnd(){
+  document.removeEventListener("pointermove", onDragMove);
+  document.removeEventListener("pointerup", onDragEnd);
+  document.removeEventListener("pointercancel", onDragEnd);
+  if(!dragState) return;
+  var nl = document.querySelector(dragState.selector+'[data-id="'+dragState.id+'"]');
+  if(nl) nl.classList.remove("dragging");
+  if(dragState.moved) save();
+  dragState = null;
+}
+
+/* ---------- hojas de edición ---------- */
+function closeSheet(){ document.getElementById("sheetRoot").innerHTML = ""; }
+function showSheet(html, styleVars){
+  var root = document.getElementById("sheetRoot");
+  root.innerHTML = '<div class="sheet-bg"><div class="sheet tinted" style="'+(styleVars||"")+'" role="dialog" aria-modal="true">'+html+'</div></div>';
+  var bg = root.querySelector(".sheet-bg");
+  bg.addEventListener("click", function(e){ if(e.target === bg) closeSheet(); });
+  root.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeSheet); });
+  return root.querySelector(".sheet");
+}
+function armDelete(btn, onConfirm){
+  btn.addEventListener("click", function(){
+    if(btn.classList.contains("armed")){ onConfirm(); return; }
+    btn.classList.add("armed"); btn.textContent = "Pulsa otra vez para eliminar";
+    setTimeout(function(){ if(btn.isConnected){ btn.classList.remove("armed"); btn.textContent = "Eliminar"; } }, 3500);
+  });
+}
+function undoToast(msg, undo){
+  var el = document.createElement("div"); el.className = "toast";
+  el.innerHTML = esc(msg)+' · <button type="button" style="background:none;border:none;color:inherit;font:inherit;text-decoration:underline;cursor:pointer;padding:0">Deshacer</button>';
+  document.body.appendChild(el);
+  el.querySelector("button").addEventListener("click", function(){ el.remove(); undo(); });
+  setTimeout(function(){ el.remove(); }, 5000);
+}
+function destOptions(selRoom, selGroup){
+  return state.rooms.map(function(r){
+    return '<optgroup label="'+esc(r.label)+'">'+r.groups.map(function(g){
+      return '<option value="'+r.id+'|'+g.id+'"'+(r===selRoom&&g===selGroup?' selected':'')+'>'+esc(r.label)+' › '+esc(g.label)+'</option>';
+    }).join("")+'</optgroup>';
+  }).join("");
+}
+function openItemSheet(r, g, it){
+  var s = showSheet(
+    '<h3>Editar producto</h3>'+
+    '<div class="field"><label for="e-name">Producto</label><input id="e-name" value="'+esc(it.text)+'"></div>'+
+    '<div class="two"><div class="field"><label for="e-price">Gastado por unidad (€)</label><input id="e-price" inputmode="decimal" placeholder="sin comprar" value="'+(hasPrice(it)?String(it.price).replace(".",","):"")+'"></div>'+
+    '<div class="field"><label for="e-qty">Cantidad</label><input id="e-qty" type="number" min="1" step="1" value="'+(it.qty||1)+'"></div></div>'+
+    '<div class="row-btns" style="justify-content:flex-start;margin:-2px 0 12px"><button type="button" class="btn" id="e-have">Ya lo tenemos (0 €)</button><button type="button" class="btn" id="e-clear">Quitar precio</button></div>'+
+    '<div class="field"><label for="e-dest">Estancia y sección</label><select id="e-dest">'+destOptions(r,g)+'</select></div>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="e-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="e-save">Guardar</button></div></div>',
+    tint(r.color));
+  s.querySelector("#e-save").addEventListener("click", function(){
+    var name = s.querySelector("#e-name").value.trim(); if(name) it.text = name;
+    var pv = s.querySelector("#e-price").value.trim();
+    if(pv === ""){ it.price = null; } else { it.price = parsePrice(pv); it.bought = true; }
+    it.qty = Math.max(1, parseInt(s.querySelector("#e-qty").value,10) || 1);
+    var d = s.querySelector("#e-dest").value.split("|");
+    var nr = findRoom(d[0]), ng = nr && findGroup(nr, d[1]);
+    if(ng && ng !== g){ g.items.splice(g.items.indexOf(it),1); ng.items.push(it); toast("Movido a "+nr.label+" › "+ng.label); }
+    save(); closeSheet(); render();
+  });
+  armDelete(s.querySelector("#e-del"), function(){ g.items.splice(g.items.indexOf(it),1); save(); closeSheet(); render(); });
+  s.querySelector("#e-have").addEventListener("click", function(){ s.querySelector("#e-price").value = "0"; s.querySelector("#e-save").click(); });
+  s.querySelector("#e-clear").addEventListener("click", function(){ s.querySelector("#e-price").value = ""; s.querySelector("#e-price").focus(); });
+}
+function openGroupSheet(r, g){
+  var idx = r.groups.indexOf(g);
+  var s = showSheet(
+    '<h3>Sección</h3>'+
+    '<div class="field"><label for="g-name">Nombre</label><input id="g-name" value="'+esc(g.label)+'"></div>'+
+    '<div class="field"><label for="g-room">Mover la sección a la estancia</label><select id="g-room">'+state.rooms.map(function(x){ return '<option value="'+x.id+'"'+(x===r?' selected':'')+'>'+esc(x.label)+'</option>'; }).join("")+'</select></div>'+
+    '<div class="row-btns" style="justify-content:flex-start;margin-bottom:12px"><button type="button" class="btn" id="g-up"'+(idx===0?' disabled':'')+'>↑ Subir</button><button type="button" class="btn" id="g-down"'+(idx===r.groups.length-1?' disabled':'')+'>↓ Bajar</button></div>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="g-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="g-save">Guardar</button></div></div>',
+    tint(r.color));
+  function move(d){ var i = r.groups.indexOf(g); var j = i+d; if(j<0||j>=r.groups.length) return; r.groups.splice(j,0,r.groups.splice(i,1)[0]); save(); closeSheet(); render(); }
+  s.querySelector("#g-up").addEventListener("click", function(){ move(-1); });
+  s.querySelector("#g-down").addEventListener("click", function(){ move(1); });
+  s.querySelector("#g-save").addEventListener("click", function(){
+    var name = s.querySelector("#g-name").value.trim(); if(name) g.label = name;
+    var nr = findRoom(s.querySelector("#g-room").value);
+    if(nr && nr !== r){ r.groups.splice(r.groups.indexOf(g),1); nr.groups.push(g); toast("Sección movida a "+nr.label); }
+    save(); closeSheet(); render();
+  });
+  armDelete(s.querySelector("#g-del"), function(){ r.groups.splice(r.groups.indexOf(g),1); save(); closeSheet(); render(); });
+}
+
+/* ---------- pendientes ---------- */
+var TASK_LISTS = [
+  {key:"nosotros", label:"Pendiente nuestro", color:1, hint:"Lo que tenemos que hacer nosotros"},
+  {key:"crear", label:"Pendiente de Crear", color:3, hint:"Empresa de reformas"}
+];
+function renderTasks(){
+  var total = 0, open = 0;
+  TASK_LISTS.forEach(function(L){ state.tasks[L.key].forEach(function(t){ total++; if(!t.done) open++; }); });
+  var secs = TASK_LISTS.map(function(L){
+    var list = ui.onlyPending ? state.tasks[L.key].filter(function(t){ return !t.done; }) : state.tasks[L.key];
+    var lis = list.map(function(t){
+      return '<li class="item'+(t.done?' done':'')+'" data-l="'+L.key+'" data-id="'+t.id+'">'+
+        '<label class="chk"><input type="checkbox" '+(t.done?'checked':'')+' aria-label="Hecho: '+esc(t.text)+'"></label>'+
+        '<button type="button" class="txt" data-edit="1"><span class="t">'+esc(t.text)+'</span></button>'+
+        (ui.onlyPending?'':'<button type="button" class="icon del" aria-label="Eliminar">&times;</button><button type="button" class="drag" aria-label="Arrastrar para reordenar"><span></span><span></span><span></span></button>')+
+      '</li>';
+    }).join("");
+    var done = state.tasks[L.key].filter(function(t){ return t.done; }).length;
+    return '<section class="group tinted" style="'+tint(L.color)+'">'+
+      '<div class="g-head"><h3>'+L.label+'</h3><span class="g-sum">'+done+'/'+state.tasks[L.key].length+' hechas</span></div>'+
+      '<p style="margin:0 16px 4px;font-size:.8rem;color:var(--ink-soft)">'+L.hint+'</p>'+
+      '<ul class="items">'+lis+'</ul>'+
+      (ui.onlyPending?'':'<form class="add" data-l="'+L.key+'"><input class="name" id="task-n-'+L.key+'" placeholder="Añadir tarea…" autocomplete="off"><button type="submit" aria-label="Añadir">+</button></form>')+
+    '</section>';
+  }).join("");
+  return '<div class="tinted" style="'+tint(1)+'"><div class="page-head"><h2>Pendientes</h2>'+
+    '<p class="sub">Marca cada tarea al terminarla. Toca el texto para editarla o pasarla a la otra lista.</p>'+
+    '<div class="tools"><button type="button" class="pill'+(ui.onlyPending?' active':'')+'" id="pendToggle"><strong>'+open+'</strong> '+(ui.onlyPending?'sin hacer — ver todas':'sin hacer — ver solo estas')+'</button></div></div>'+
+    '<main>'+secs+'</main></div>';
+}
+function bindTasks(){
+  var v = document.getElementById("view");
+  document.getElementById("pendToggle").addEventListener("click", function(){ ui.onlyPending = !ui.onlyPending; render(); });
+  v.querySelectorAll("li.item").forEach(function(li){
+    var list = state.tasks[li.dataset.l]; var t = list.find(function(x){ return x.id === li.dataset.id; });
+    li.querySelector("input[type=checkbox]").addEventListener("change", function(e){ t.done = e.target.checked; save(); render(); });
+    li.querySelector("[data-edit]").addEventListener("click", function(){ openTaskSheet(li.dataset.l, t); });
+    var del = li.querySelector("button.del");
+    if(del) del.addEventListener("click", function(){ var i = list.indexOf(t); list.splice(i,1); save(); render(); undoToast("Tarea eliminada", function(){ list.splice(i,0,t); save(); render(); }); });
+    var h = li.querySelector("button.drag");
+    if(h) h.addEventListener("pointerdown", function(e){ startDrag(e, li, list, 'li.item[data-l="'+li.dataset.l+'"]'); });
+  });
+  v.querySelectorAll("form.add").forEach(function(f){
+    f.addEventListener("submit", function(e){
+      e.preventDefault(); var name = f.querySelector(".name").value.trim(); if(!name) return;
+      state.tasks[f.dataset.l].push({id:uid(), text:name, done:false}); save(); render();
+      var ni = document.getElementById("task-n-"+f.dataset.l); if(ni) ni.focus();
+    });
+  });
+}
+function openTaskSheet(key, t){
+  var s = showSheet(
+    '<h3>Editar tarea</h3>'+
+    '<div class="field"><label for="t-name">Tarea</label><input id="t-name" value="'+esc(t.text)+'"></div>'+
+    '<div class="field"><label for="t-list">Lista</label><select id="t-list">'+TASK_LISTS.map(function(L){ return '<option value="'+L.key+'"'+(L.key===key?' selected':'')+'>'+L.label+'</option>'; }).join("")+'</select></div>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="t-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="t-save">Guardar</button></div></div>',
+    tint(1));
+  var list = state.tasks[key];
+  s.querySelector("#t-save").addEventListener("click", function(){
+    var name = s.querySelector("#t-name").value.trim(); if(name) t.text = name;
+    var nk = s.querySelector("#t-list").value;
+    if(nk !== key){ list.splice(list.indexOf(t),1); state.tasks[nk].push(t); }
+    save(); closeSheet(); render();
+  });
+  armDelete(s.querySelector("#t-del"), function(){ list.splice(list.indexOf(t),1); save(); closeSheet(); render(); });
+}
+
+/* ---------- resumen ---------- */
+function renderSummary(){
+  var tot = {spent:0, items:0, bought:0};
+  var rows = state.rooms.map(function(r){
+    var t = roomTotals(r); tot.spent += t.spent; tot.items += t.items; tot.bought += t.bought;
+    var pct = t.items ? Math.round(t.bought/t.items*100) : 0;
+    return '<tr class="tinted" style="'+tint(r.color)+'"><td><button type="button" class="room" data-go="'+r.id+'"><span class="dot"></span>'+esc(r.label)+'</button><div class="bar mini"><i style="width:'+pct+'%"></i></div></td>'+
+      '<td>'+t.bought+'/'+t.items+'</td><td><strong>'+eur(t.spent)+'</strong></td></tr>';
+  }).join("");
+  var admin = state.rooms.map(function(r,i){
+    return '<div class="row tinted" style="'+tint(r.color)+'"><span class="name"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:var(--c);flex-shrink:0"></span><span>'+esc(r.label)+'</span></span>'+
+      '<button type="button" class="icon" data-redit="'+r.id+'" aria-label="Editar estancia">⋯</button></div>';
+  }).join("");
+  return '<div class="tinted"><div class="page-head"><h2>Resumen de gastos</h2>'+
+    '<p class="sub">Solo cuenta lo realmente gastado en cada producto. Lo que ya teníais suma 0 €.</p></div>'+
+    '<div class="kpis" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-bottom:16px"><div class="kpi spent"><div class="l">Gastado en total</div><div class="v">'+eur(tot.spent)+'</div></div>'+
+    '<div class="kpi"><div class="l">Conseguidos</div><div class="v">'+tot.bought+' de '+tot.items+'</div></div></div>'+
+    '<div class="table-wrap"><table><thead><tr><th>Estancia</th><th>Conseguidos</th><th>Gastado</th></tr></thead><tbody>'+rows+'</tbody>'+
+    '<tfoot><tr><td>Total</td><td>'+tot.bought+'/'+tot.items+'</td><td>'+eur(tot.spent)+'</td></tr></tfoot></table></div>'+
+    '<div style="display:flex;align-items:center;gap:8px;margin:14px 0 8px"><h3 class="block" style="margin:0;flex:1">Estancias</h3><button type="button" class="btn" id="orderBtn2">⇅ Ordenar pestañas</button></div>'+
+    '<div class="rooms-admin">'+admin+'<form id="newRoom"><input id="newRoomName" placeholder="Nueva estancia… (p. ej. Terraza)" autocomplete="off"><button type="submit" class="btn">Crear</button></form></div></div>';
+}
+function bindSummary(){
+  var v = document.getElementById("view");
+  v.querySelectorAll("[data-go]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.go); }); });
+  function mv(id,d){ var i = state.rooms.findIndex(function(r){ return r.id===id; }); var j=i+d; if(j<0||j>=state.rooms.length) return; state.rooms.splice(j,0,state.rooms.splice(i,1)[0]); save(); render(); }
+  document.getElementById("orderBtn2").addEventListener("click", openOrderSheet);
+  v.querySelectorAll("[data-redit]").forEach(function(b){ b.addEventListener("click", function(){ openRoomSheet(findRoom(b.dataset.redit)); }); });
+  document.getElementById("newRoom").addEventListener("submit", function(e){
+    e.preventDefault(); var name = document.getElementById("newRoomName").value.trim(); if(!name) return;
+    var c = nextColor();
+    state.rooms.push({id:uid(), label:name, color:c, groups:[{id:uid(), label:"General", items:[]}]}); save(); render();
+  });
+}
+function openRoomSheet(r){
+  var s = showSheet(
+    '<h3>Estancia</h3>'+
+    '<div class="field"><label for="r-name">Nombre</label><input id="r-name" value="'+esc(r.label)+'"></div>'+
+    '<div class="field"><label for="r-color">Color</label><select id="r-color">'+PALETTE.map(function(p,i){ return '<option value="'+i+'"'+(i===r.color?' selected':'')+'>Color '+(i+1)+'</option>'; }).join("")+'</select></div>'+
+    '<p style="font-size:.82rem;color:var(--ink-soft);margin:0 0 10px">Al eliminar una estancia se borran también sus productos.</p>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="r-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="r-save">Guardar</button></div></div>',
+    tint(r.color));
+  s.querySelector("#r-color").addEventListener("change", function(e){ s.setAttribute("style", tint(+e.target.value)); });
+  s.querySelector("#r-save").addEventListener("click", function(){
+    var name = s.querySelector("#r-name").value.trim(); if(name) r.label = name;
+    r.color = +s.querySelector("#r-color").value; save(); closeSheet(); render();
+  });
+  armDelete(s.querySelector("#r-del"), function(){ state.rooms.splice(state.rooms.indexOf(r),1); save(); closeSheet(); if(ui.tab === r.id) go("resumen"); else render(); });
+}
+
+/* ---------- ordenar pestañas ---------- */
+function openOrderSheet(){
+  var list = tabList();
+  var s = showSheet('<h3>Ordenar pestañas</h3>'+
+    '<p style="margin:0 0 10px;color:var(--ink-soft);font-size:.88rem">Arrastra con las rayas o usa las flechas. Se guarda al pulsar «Guardar».</p>'+
+    '<ul class="items" id="ordList" style="padding:0;margin:0 0 12px;background:var(--surface);border:1px solid var(--border);border-radius:12px"></ul>'+
+    '<div class="row-btns"><span></span><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="ord-save">Guardar</button></div></div>');
+  var ul = s.querySelector("#ordList"), drag = null;
+  function paint(){
+    ul.innerHTML = list.map(function(t, i){
+      return '<li class="item tinted" data-id="'+t.id+'"'+(t.color===null?'':' style="'+tint(t.color)+'"')+'>'+
+        '<span style="width:10px;height:10px;border-radius:50%;background:'+(t.color===null?'var(--ink)':'var(--c)')+';margin:0 8px 0 10px;flex-shrink:0"></span>'+
+        '<span class="t" style="padding:8px 0">'+esc(t.label)+'<br><small style="color:var(--ink-soft);font-size:.74rem">'+t.kind+'</small></span>'+
+        '<button type="button" class="icon" data-mv="-1" aria-label="Subir"'+(i===0?' disabled':'')+'>↑</button>'+
+        '<button type="button" class="icon" data-mv="1" aria-label="Bajar"'+(i===list.length-1?' disabled':'')+'>↓</button>'+
+        '<button type="button" class="drag" aria-label="Arrastrar"><span></span><span></span><span></span></button></li>';
+    }).join("");
+    if(drag){ var d = ul.querySelector('li[data-id="'+drag+'"]'); if(d) d.classList.add("dragging"); }
+  }
+  function move(id, to){
+    var from = list.findIndex(function(t){ return t.id === id; });
+    if(from < 0 || to < 0 || to >= list.length || from === to) return false;
+    list.splice(to, 0, list.splice(from, 1)[0]); return true;
+  }
+  ul.addEventListener("click", function(e){
+    var b = e.target.closest("[data-mv]"); if(!b) return;
+    var id = b.closest("li").dataset.id;
+    var i = list.findIndex(function(t){ return t.id === id; });
+    if(move(id, i + (+b.dataset.mv))) paint();
+  });
+  function onMove(e){
+    var el = document.elementFromPoint(e.clientX, e.clientY);
+    var over = el && el.closest ? el.closest("#ordList li") : null;
+    if(!over || over.dataset.id === drag) return;
+    if(move(drag, list.findIndex(function(t){ return t.id === over.dataset.id; }))) paint();
+  }
+  function onUp(){
+    document.removeEventListener("pointermove", onMove); document.removeEventListener("pointerup", onUp); document.removeEventListener("pointercancel", onUp);
+    drag = null; paint();
+  }
+  ul.addEventListener("pointerdown", function(e){
+    var h = e.target.closest("button.drag"); if(!h) return;
+    e.preventDefault(); drag = h.closest("li").dataset.id; paint();
+    document.addEventListener("pointermove", onMove); document.addEventListener("pointerup", onUp); document.addEventListener("pointercancel", onUp);
+  });
+  s.querySelector("#ord-save").addEventListener("click", function(){
+    state.order = list.map(function(t){ return t.id; });
+    /* el resumen y las listas internas siguen el mismo orden */
+    var pos = {}; state.order.forEach(function(id, i){ pos[id] = i; });
+    state.rooms.sort(function(a,b){ return pos[a.id] - pos[b.id]; });
+    (state.pages||[]).sort(function(a,b){ return pos[a.id] - pos[b.id]; });
+    save(); closeSheet(); render(); toast("Orden guardado");
+  });
+  paint();
+}
+
+/* ---------- nueva estancia o página ---------- */
+function nextColor(){
+  var used = state.rooms.map(function(r){ return r.color; }).concat((state.pages||[]).map(function(p){ return p.color; }));
+  for(var c = 0; c < PALETTE.length; c++){ if(used.indexOf(c) === -1) return c; }
+  return used.length % PALETTE.length;
+}
+function openNewSheet(){
+  var s = showSheet(
+    '<h3>Crear nueva</h3>'+
+    '<div class="type-pick">'+
+      '<label><input type="radio" name="n-type" value="room" checked><span>Estancia<small>Productos con lo gastado; suma en el resumen</small></span></label>'+
+      '<label><input type="radio" name="n-type" value="page"><span>Página de notas<small>Listas de tareas o cosas por hacer</small></span></label>'+
+    '</div>'+
+    '<div class="field"><label for="n-name">Nombre</label><input id="n-name" placeholder="p. ej. Terraza, Mudanza, Ideas…" autocomplete="off"></div>'+
+    '<div class="row-btns"><span></span><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="n-save">Crear</button></div></div>');
+  var inp = s.querySelector("#n-name"); inp.focus();
+  function create(){
+    var name = inp.value.trim(); if(!name){ inp.focus(); return; }
+    var type = s.querySelector('input[name="n-type"]:checked').value;
+    var id = uid(), color = nextColor();
+    if(type === "room") state.rooms.push({id:id, label:name, color:color, groups:[{id:uid(), label:"General", items:[]}]});
+    else state.pages.push({id:id, label:name, color:color, lists:[{id:uid(), label:"Lista", items:[]}]});
+    save(); closeSheet(); go(id);
+  }
+  s.querySelector("#n-save").addEventListener("click", create);
+  inp.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); create(); } });
+}
+
+/* ---------- páginas de notas creadas por vosotros ---------- */
+function renderPage(pg){
+  var total = 0, open = 0;
+  pg.lists.forEach(function(L){ L.items.forEach(function(t){ total++; if(!t.done) open++; }); });
+  var secs = pg.lists.map(function(L){
+    var list = ui.onlyPending ? L.items.filter(function(t){ return !t.done; }) : L.items;
+    if(ui.onlyPending && !list.length) return "";
+    var lis = list.map(function(t){
+      return '<li class="item'+(t.done?' done':'')+'" data-l="'+L.id+'" data-id="'+t.id+'">'+
+        '<label class="chk"><input type="checkbox" '+(t.done?'checked':'')+' aria-label="Hecho: '+esc(t.text)+'"></label>'+
+        '<button type="button" class="txt" data-edit="1"><span class="t">'+esc(t.text)+'</span></button>'+
+        (ui.onlyPending?'':'<button type="button" class="icon del" aria-label="Eliminar">&times;</button><button type="button" class="drag" aria-label="Arrastrar para reordenar"><span></span><span></span><span></span></button>')+
+      '</li>';
+    }).join("");
+    var done = L.items.filter(function(t){ return t.done; }).length;
+    return '<section class="group">'+
+      '<div class="g-head"><h3>'+esc(L.label)+'</h3><span class="g-sum">'+done+'/'+L.items.length+' hechas</span>'+
+      (ui.onlyPending?'':'<button type="button" class="icon" data-ledit="'+L.id+'" aria-label="Editar lista">⋯</button>')+'</div>'+
+      '<ul class="items">'+lis+'</ul>'+
+      (ui.onlyPending?'':'<form class="add" data-l="'+L.id+'"><input class="name" id="pg-n-'+L.id+'" placeholder="Añadir…" autocomplete="off"><button type="submit" aria-label="Añadir">+</button></form>')+
+    '</section>';
+  }).join("");
+  if(ui.onlyPending && !secs) secs = '<p class="empty">No queda nada por hacer en esta página.</p>';
+  return '<div class="tinted" style="'+tint(pg.color)+'"><div class="page-head"><div class="title-row"><h2>'+esc(pg.label)+'</h2><button type="button" class="icon" id="editPageBtn" aria-label="Cambiar nombre, color o eliminar página">⋯</button></div>'+
+    '<p class="sub">Marca lo que esté hecho. Toca un texto para editarlo o pasarlo a otra lista.</p>'+
+    '<div class="tools"><button type="button" class="pill'+(ui.onlyPending?' active':'')+'" id="pendToggle"><strong>'+open+'</strong> '+(ui.onlyPending?'sin hacer — ver todo':'sin hacer — ver solo estas')+'</button></div></div>'+
+    '<main>'+secs+'</main>'+
+    (ui.onlyPending?'':'<form class="newgroup" id="newList" style="margin-top:16px"><input id="newListName" placeholder="Nueva lista… (p. ej. Llamadas)" autocomplete="off"><button type="submit">Crear lista</button></form>')+
+  '</div>';
+}
+function bindPage(pg){
+  var v = document.getElementById("view");
+  function findList(id){ return pg.lists.find(function(L){ return L.id === id; }); }
+  document.getElementById("editPageBtn").addEventListener("click", function(){ openPageSheet(pg); });
+  document.getElementById("pendToggle").addEventListener("click", function(){ ui.onlyPending = !ui.onlyPending; render(); });
+  v.querySelectorAll("li.item").forEach(function(li){
+    var L = findList(li.dataset.l); var t = L && L.items.find(function(x){ return x.id === li.dataset.id; });
+    if(!t) return;
+    li.querySelector("input[type=checkbox]").addEventListener("change", function(e){ t.done = e.target.checked; save(); render(); });
+    li.querySelector("[data-edit]").addEventListener("click", function(){ openPageItemSheet(pg, L, t); });
+    var del = li.querySelector("button.del");
+    if(del) del.addEventListener("click", function(){ var i = L.items.indexOf(t); L.items.splice(i,1); save(); render(); undoToast("Eliminado", function(){ L.items.splice(i,0,t); save(); render(); }); });
+    var h = li.querySelector("button.drag");
+    if(h) h.addEventListener("pointerdown", function(e){ startDrag(e, li, L.items, 'li.item[data-l="'+L.id+'"]'); });
+  });
+  v.querySelectorAll("form.add").forEach(function(f){
+    f.addEventListener("submit", function(e){
+      e.preventDefault(); var name = f.querySelector(".name").value.trim(); if(!name) return;
+      findList(f.dataset.l).items.push({id:uid(), text:name, done:false}); save(); render();
+      var ni = document.getElementById("pg-n-"+f.dataset.l); if(ni) ni.focus();
+    });
+  });
+  v.querySelectorAll("[data-ledit]").forEach(function(b){ b.addEventListener("click", function(){ openListSheet(pg, findList(b.dataset.ledit)); }); });
+  var nl = document.getElementById("newList");
+  if(nl) nl.addEventListener("submit", function(e){
+    e.preventDefault(); var name = document.getElementById("newListName").value.trim(); if(!name) return;
+    pg.lists.push({id:uid(), label:name, items:[]}); save(); render();
+  });
+}
+function openPageItemSheet(pg, L, t){
+  var s = showSheet(
+    '<h3>Editar</h3>'+
+    '<div class="field"><label for="pi-name">Texto</label><input id="pi-name" value="'+esc(t.text)+'"></div>'+
+    '<div class="field"><label for="pi-list">Lista</label><select id="pi-list">'+pg.lists.map(function(x){ return '<option value="'+x.id+'"'+(x===L?' selected':'')+'>'+esc(x.label)+'</option>'; }).join("")+'</select></div>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="pi-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="pi-save">Guardar</button></div></div>',
+    tint(pg.color));
+  s.querySelector("#pi-save").addEventListener("click", function(){
+    var name = s.querySelector("#pi-name").value.trim(); if(name) t.text = name;
+    var nl = pg.lists.find(function(x){ return x.id === s.querySelector("#pi-list").value; });
+    if(nl && nl !== L){ L.items.splice(L.items.indexOf(t),1); nl.items.push(t); }
+    save(); closeSheet(); render();
+  });
+  armDelete(s.querySelector("#pi-del"), function(){ L.items.splice(L.items.indexOf(t),1); save(); closeSheet(); render(); });
+}
+function openListSheet(pg, L){
+  var idx = pg.lists.indexOf(L);
+  var s = showSheet(
+    '<h3>Lista</h3>'+
+    '<div class="field"><label for="l-name">Nombre</label><input id="l-name" value="'+esc(L.label)+'"></div>'+
+    '<div class="row-btns" style="justify-content:flex-start;margin-bottom:12px"><button type="button" class="btn" id="l-up"'+(idx===0?' disabled':'')+'>↑ Subir</button><button type="button" class="btn" id="l-down"'+(idx===pg.lists.length-1?' disabled':'')+'>↓ Bajar</button></div>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="l-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="l-save">Guardar</button></div></div>',
+    tint(pg.color));
+  function move(d){ var i = pg.lists.indexOf(L), j = i+d; if(j<0||j>=pg.lists.length) return; pg.lists.splice(j,0,pg.lists.splice(i,1)[0]); save(); closeSheet(); render(); }
+  s.querySelector("#l-up").addEventListener("click", function(){ move(-1); });
+  s.querySelector("#l-down").addEventListener("click", function(){ move(1); });
+  s.querySelector("#l-save").addEventListener("click", function(){ var name = s.querySelector("#l-name").value.trim(); if(name) L.label = name; save(); closeSheet(); render(); });
+  armDelete(s.querySelector("#l-del"), function(){ pg.lists.splice(pg.lists.indexOf(L),1); save(); closeSheet(); render(); });
+}
+function openPageSheet(pg){
+  var idx = state.pages.indexOf(pg);
+  var s = showSheet(
+    '<h3>Página</h3>'+
+    '<div class="field"><label for="p-name">Nombre</label><input id="p-name" value="'+esc(pg.label)+'"></div>'+
+    '<div class="field"><label for="p-color">Color</label><select id="p-color">'+PALETTE.map(function(p,i){ return '<option value="'+i+'"'+(i===pg.color?' selected':'')+'>Color '+(i+1)+'</option>'; }).join("")+'</select></div>'+
+    '<p style="font-size:.82rem;color:var(--ink-soft);margin:0 0 10px">Al eliminar la página se borra todo su contenido.</p>'+
+    '<div class="row-btns"><button type="button" class="btn danger" id="p-del">Eliminar</button><div><button type="button" class="btn" data-close>Cancelar</button><button type="button" class="btn primary" id="p-save">Guardar</button></div></div>',
+    tint(pg.color));
+  s.querySelector("#p-color").addEventListener("change", function(e){ s.setAttribute("style", tint(+e.target.value)); });
+  s.querySelector("#p-save").addEventListener("click", function(){
+    var name = s.querySelector("#p-name").value.trim(); if(name) pg.label = name;
+    pg.color = +s.querySelector("#p-color").value; save(); closeSheet(); render();
+  });
+  armDelete(s.querySelector("#p-del"), function(){ state.pages.splice(state.pages.indexOf(pg),1); save(); closeSheet(); go("resumen"); });
+}
+
+/* ---------- copia de seguridad ---------- */
+function hoyAMD(){
+  var d = new Date();
+  return d.getFullYear() + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0");
+}
+function exportBackup(){
+  var data = JSON.stringify(state, null, 2);
+  var filename = "Gijón " + hoyAMD() + ".json";
+  if(downloadsApi){
+    downloadsApi.save({filename:filename, data:data}).catch(function(){ toast("No se guardó la copia"); });
     return;
   }
-  const y = state.yo;
-  const hora = new Date(y.t).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
-  const r = kmEnRuta(y.lat,y.lon);
-  const kmR = Math.round(state.sentido==="ida" ? r.km : TOTAL-r.km);
-  const donde = r.fuera>25 ? `Estás a unos ${Math.round(r.fuera)} km de la ruta.`
-    : `Vas por el km ${kmR} de la ruta (${state.sentido==="ida"?"ida, desde Otero":"vuelta, desde Gijón"}).`;
-  el.innerHTML = `<h4>📍 Mi situación</h4>
-    <p>${donde}</p>
-    <p>Latitud ${y.lat.toFixed(5).replace(".",",")} / Longitud ${y.lon.toFixed(5).replace(".",",")} (±${Math.round(y.acc)} m, a las ${hora})</p>
-    <div class="acts">
-      <button class="btn main" data-yo="buscar">Actualizar posición</button>
-      <button class="btn main" data-yo="ver">Ver</button>
-      <a class="btn" href="${gmComer(y.lat,y.lon)}" target="_blank" rel="noopener">Restaurantes Google</a>
-      <button class="btn" data-yo="comer-ruta">Restaurantes ruta</button>
-    </div>${navSel()}`;
+  try{
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([data],{type:"application/json"}));
+    a.download = filename; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }catch(e){ toast("No se pudo descargar la copia"); }
 }
-function buscarYo(){
-  if (!("geolocation" in navigator)){ state.yoMsg="Este móvil no permite obtener la ubicación desde la app."; render(); return; }
-  state.yoMsg = "Buscando tu ubicación…"; if(!state.yo) render();
-  navigator.geolocation.getCurrentPosition(pos=>{
-    state.yo = {lat:pos.coords.latitude, lon:pos.coords.longitude, acc:pos.coords.accuracy, t:Date.now()};
-    render();
-  }, err=>{
-    state.yoMsg = err.code===1
-      ? "No has dado permiso para usar tu ubicación. Para activarlo: mantén pulsado el icono de la app, toca «Información de la aplicación», luego «Permisos» y activa «Ubicación»; o en Chrome, toca el candado junto a la dirección y permite la ubicación."
-      : "No se ha podido obtener la ubicación. Comprueba que la ubicación del móvil está activada y pulsa de nuevo.";
-    render();
-  }, {enableHighAccuracy:true, timeout:20000, maximumAge:60000});
-}
+document.getElementById("exportBackup").addEventListener("click", exportBackup);
 
-/* ---------- Mis fotos (hasta 3 por lugar, guardadas en el móvil) ---------- */
-const MAXF = 3;
-let dbP = null;
-function db(){
-  if (dbP) return dbP;
-  dbP = new Promise((ok, ko)=>{
-    if (!("indexedDB" in window)) return ko(new Error("sin IndexedDB"));
-    const r = indexedDB.open("rutaN6_fotos", 1);
-    r.onupgradeneeded = ()=> r.result.createObjectStore("fotos");
-    r.onsuccess = ()=> ok(r.result);
-    r.onerror = ()=> ko(r.error);
-  });
-  return dbP;
+/* copia automática al iniciar la app (una vez al día, fuera de Claude) */
+var autoBackupDone = false;
+function autoBackup(){
+  if(autoBackupDone) return; autoBackupDone = true;
+  if(window.claude) return;                       /* la versión de Claude no descarga sola */
+  var hoy = hoyAMD(), ultima = "";
+  try{ ultima = localStorage.getItem(STORE_KEY + "-autocopia") || ""; }catch(e){}
+  if(ultima === hoy) return;
+  exportBackup();
+  try{ localStorage.setItem(STORE_KEY + "-autocopia", hoy); }catch(e){}
+  toast("Copia de seguridad guardada: Gijón " + hoy);
 }
-async function leerFotos(id){
-  try{
-    const d = await db();
-    return await new Promise(ok=>{ const q=d.transaction("fotos").objectStore("fotos").get(id); q.onsuccess=()=>ok(q.result||[]); q.onerror=()=>ok([]); });
-  }catch(e){ return []; }
-}
-async function guardarFotos(id, arr){
-  const d = await db();
-  return new Promise((ok,ko)=>{ const tx=d.transaction("fotos","readwrite"); tx.objectStore("fotos").put(arr,id); tx.oncomplete=ok; tx.onerror=()=>ko(tx.error); });
-}
-async function reducir(file){
-  let src;
-  try { src = await createImageBitmap(file, {imageOrientation:"from-image"}); }
-  catch(e){
-    src = await new Promise((ok,ko)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=URL.createObjectURL(file); });
-  }
-  const w = src.width||src.naturalWidth, h = src.height||src.naturalHeight;
-  const k = Math.min(1, 1600/Math.max(w,h));
-  const c = document.createElement("canvas"); c.width=Math.round(w*k); c.height=Math.round(h*k);
-  c.getContext("2d").drawImage(src,0,0,c.width,c.height);
-  return new Promise(ok=>c.toBlob(b=>ok(b||file),"image/jpeg",0.85));
-}
-let urls = [];
-function pintarTodasFotos(){
-  urls.forEach(u=>URL.revokeObjectURL(u)); urls=[];
-  document.querySelectorAll("[data-fotos]").forEach(el=>pintarFotos(el));
-}
-async function pintarFotos(el){
-  const id = el.dataset.fotos;
-  const arr = await leerFotos(id);
-  const th = arr.map((f,i)=>{ const u=URL.createObjectURL(f.blob); urls.push(u);
-    return `<button class="th" data-ver="${id}" data-i="${i}" aria-label="Ver foto ${i+1}"><img src="${u}" alt="Foto ${i+1}"></button>`; }).join("");
-  const add = arr.length<MAXF ? `<label class="add"><b>+</b>Añadir foto<input type="file" accept="image/*" multiple data-add="${id}" hidden></label>` : "";
-  el.innerHTML = `<h4>Mis fotos <span>(${arr.length} de ${MAXF})</span></h4><div class="fgrid">${th}${add}</div>`;
-}
-async function anadirFotos(input){
-  const id = input.dataset.add, files=[...input.files];
-  if (!files.length) return;
-  const lab = input.closest("label"); lab.classList.add("busy");
-  try{
-    const arr = await leerFotos(id);
-    for (const f of files){
-      if (arr.length>=MAXF) { alert("Solo se pueden guardar "+MAXF+" fotos por lugar."); break; }
-      arr.push({blob: await reducir(f), t: Date.now()});
-    }
-    await guardarFotos(id, arr);
-    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
-  }catch(e){ alert("No se ha podido guardar la foto."); }
-  pintarFotos(document.querySelector(`[data-fotos="${id}"]`)); estadoCopia();
-}
-async function verFoto(id, i){
-  const arr = await leerFotos(id); const f = arr[i]; if(!f) return;
-  const u = URL.createObjectURL(f.blob);
-  const lugar = (buscarId(id)||{}).n||"";
-  const v = document.createElement("div"); v.className="visor"; v.setAttribute("role","dialog");
-  const puedeCompartir = navigator.canShare && navigator.canShare({files:[new File([f.blob],"foto.jpg",{type:"image/jpeg"})]});
-  v.innerHTML = `<p>${esc(lugar)} (${i+1} de ${arr.length})</p><img src="${u}" alt=""><div class="vbar">
-    <button data-v="cerrar">Cerrar</button>${puedeCompartir?'<button data-v="compartir">Compartir</button>':""}<button class="del" data-v="borrar">Borrar foto</button></div>`;
-  const cerrar = ()=>{ v.remove(); URL.revokeObjectURL(u); };
-  v.addEventListener("click", async e=>{
-    const a = e.target.dataset.v;
-    if (a==="cerrar" || e.target===v) cerrar();
-    if (a==="compartir") navigator.share({files:[new File([f.blob],`${lugar||"foto"}.jpg`,{type:"image/jpeg"})], title:lugar}).catch(()=>{});
-    if (a==="borrar" && confirm("¿Borrar esta foto?")){
-      arr.splice(i,1); await guardarFotos(id, arr); cerrar();
-      pintarFotos(document.querySelector(`[data-fotos="${id}"]`)); estadoCopia();
-    }
-  });
-  document.body.appendChild(v);
-}
+/* espera a tener los datos de la nube; si no hay sincronización, la hace a los pocos segundos */
+setTimeout(autoBackup, 8000);
+document.getElementById("importBackupBtn").addEventListener("click", function(){ document.getElementById("importBackupInput").click(); });
+document.getElementById("importBackupInput").addEventListener("change", function(e){
+  var f = e.target.files && e.target.files[0]; e.target.value = ""; if(!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    try{ var p = JSON.parse(rd.result); if(!valid(p)) throw 0; state = p; ui.tab = "resumen"; save(); render(); toast("Copia restaurada"); }
+    catch(err){ toast("Ese archivo no es una copia de Gijón"); }
+  };
+  rd.readAsText(f);
+});
 
-/* ---------- Eventos ---------- */
-function enlaceRuta(){
-  const a="Otero de Herreros, Segovia", b="Gijón, Asturias", w="Benavente, Zamora|León";
-  const ida = state.sentido==="ida";
-  document.getElementById("rutaGM").href = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(ida?a:b)}&destination=${encodeURIComponent(ida?b:a)}&waypoints=${encodeURIComponent(ida?w:"León|Benavente, Zamora")}&travelmode=driving`;
-}
-const chips = document.getElementById("chips");
-chips.innerHTML = ["Todas",...PROVS].map(p=>`<button class="chip" data-prov="${p}" aria-pressed="false">${p}</button>`).join("");
-chips.addEventListener("click", e=>{ const b=e.target.closest(".chip"); if(!b) return; state.prov=b.dataset.prov; render(); });
-document.querySelector(".seg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.sentido=b.dataset.sentido; render(); });
-document.querySelector(".tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.tab=b.dataset.tab; state.marca=null; render(); window.scrollTo({top:0}); });
-const fi = document.getElementById("fecha");
-const pad = n=>String(n).padStart(2,"0");
-fi.value = `${state.fecha.getFullYear()}-${pad(state.fecha.getMonth()+1)}-${pad(state.fecha.getDate())}`;
-fi.addEventListener("change", ()=>{ if(!fi.value) return; const [y,m,d]=fi.value.split("-").map(Number); state.fecha=new Date(y,m-1,d,12); render(); });
-document.getElementById("yo").addEventListener("click", e=>{
-  const nb = e.target.closest("[data-nav]");
-  if (nb){ nav = nb.dataset.nav; try{ localStorage.setItem("rutaN6_nav", nav); }catch(err){} render(); return; }
-  const b = e.target.closest("[data-yo]"); if(!b) return;
-  const a = b.dataset.yo;
-  if (a==="buscar") buscarYo();
-  if (a==="ver"){
-    const url = `https://www.google.com/maps/search/?api=1&query=${state.yo.lat},${state.yo.lon}`;
-    marcar(state.tab==="comer" ? "dia" : state.tab, todos(state.tab==="noche" ? "noche" : "dia"));
-    window.open(url, "_blank", "noopener");
-  }
-  if (a==="comer-ruta"){
-    if (state.yo) marcar("comer", todos("comer"));
-    else { state.tab="comer"; state.marca=null; render(); }
-  }
-});
-document.getElementById("list").addEventListener("change", e=>{ if (e.target.matches("[data-add]")) anadirFotos(e.target); });
-document.getElementById("list").addEventListener("click", e=>{
-  const t = e.target.closest("[data-ver]");
-  if (t){ verFoto(t.dataset.ver, +t.dataset.i); return; }
-  const cm = e.target.closest("[data-comer]"); if (cm){ comerCerca(cm.dataset.comer); return; }
-  const ed = e.target.closest("[data-editar]"); if (ed){ const it=buscarId(ed.dataset.editar); if(it) abrirForm(state.tab, it); return; }
-  const bo = e.target.closest("[data-borrar]"); if (bo){ borrarPropio(bo.dataset.borrar); return; }
-  const v = e.target.closest("[data-visto]");
-  if (v){ const id=v.dataset.visto; if(visitados[id]) delete visitados[id]; else visitados[id]=true; guardar(); render(); document.getElementById("card-"+id)?.scrollIntoView({block:"nearest"}); return; }
-});
-document.getElementById("btnAnadir").addEventListener("click", ()=> abrirForm(state.tab));
-capa.addEventListener("click", e=>{ if(e.target===capa || e.target.closest("[data-cerrar]")) cerrarForm(); });
-document.getElementById("fGuardar").addEventListener("click", guardarForm);
-document.getElementById("fCoords").addEventListener("input", ()=>{ document.getElementById("fProv").value=""; actualizarCalculo(); });
-document.getElementById("fMiPos").addEventListener("click", ()=>{
-  const b=document.getElementById("fMiPos"); b.textContent="Buscando…";
-  navigator.geolocation.getCurrentPosition(pos=>{
-    document.getElementById("fCoords").value = `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
-    document.getElementById("fProv").value=""; actualizarCalculo(); b.textContent="📍 Usar mi posición";
-  }, ()=>{ b.textContent="📍 Usar mi posición"; alert("No se ha podido obtener tu posición."); }, {enableHighAccuracy:true,timeout:20000,maximumAge:30000});
-});
-/* ---------- Copia de seguridad ---------- */
-const aDataURL = blob => new Promise((ok,ko)=>{ const r=new FileReader(); r.onload=()=>ok(r.result); r.onerror=ko; r.readAsDataURL(blob); });
-const deDataURL = async u => (await fetch(u)).blob();
-async function todasLasFotos(){
-  try{
-    const d = await db();
-    return await new Promise(ok=>{ const out={}; const q=d.transaction("fotos").objectStore("fotos").openCursor();
-      q.onsuccess=()=>{ const c=q.result; if(c){ out[c.key]=c.value; c.continue(); } else ok(out); }; q.onerror=()=>ok(out); });
-  }catch(e){ return {}; }
-}
-async function estadoCopia(){
-  const f = await todasLasFotos();
-  const nf = Object.values(f).reduce((n,a)=>n+a.length,0);
-  const np = propios.dia.length+propios.noche.length+propios.comer.length;
-  const nv = Object.keys(visitados).length;
-  let ultima = ""; try{ ultima = localStorage.getItem("rutaN6_ultimaCopia")||""; }catch(e){}
-  document.getElementById("copiaEstado").textContent =
-    `Ahora tienes ${np} ${np===1?"ficha propia":"fichas propias"}, ${nv} ${nv===1?"marcada":"marcadas"} como ${nv===1?"vista":"vistas"} y ${nf} ${nf===1?"foto":"fotos"}.` + (ultima?` Última copia: ${new Date(+ultima).toLocaleDateString("es-ES")}.`:" Aún no has hecho ninguna copia.");
-}
-let copiaArchivo = null;
-async function guardarCopia(){
-  const b = document.getElementById("copiaGuardar"); b.disabled=true; b.textContent="Preparando…";
-  try{
-    const f = await todasLasFotos(), fotos = {};
-    for (const [id,arr] of Object.entries(f)) fotos[id] = await Promise.all(arr.map(async x=>({t:x.t, img: await aDataURL(x.blob)})));
-    const datos = {app:"ruta-foto-n6", version:1, fecha:new Date().toISOString(), visitados, propios, nav, fotos};
-    const hoy = new Date(); const pad2=n=>String(n).padStart(2,"0");
-    const nombre = `${hoy.getFullYear()}${pad2(hoy.getMonth()+1)}${pad2(hoy.getDate())} Ruta fotográfica.json`;
-    copiaArchivo = new File([JSON.stringify(datos)], nombre, {type:"application/json"});
-    const a = document.getElementById("copiaDescargar");
-    if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
-    a.dataset.url = URL.createObjectURL(copiaArchivo); a.href = a.dataset.url; a.download = nombre;
-    document.getElementById("copiaNombre").textContent = `Copia lista: «${nombre}» (${Math.max(1,Math.round(copiaArchivo.size/1024))} KB). Elige dónde guardarla:`;
-    document.getElementById("copiaCompartir").hidden = !(navigator.canShare && navigator.canShare({files:[copiaArchivo]}));
-    document.getElementById("copiaLista").hidden = false;
-  }catch(e){ alert("No se ha podido preparar la copia."); }
-  b.disabled=false; b.textContent="Hacer copia";
-}
-function copiaHecha(){ try{ localStorage.setItem("rutaN6_ultimaCopia", String(Date.now())); }catch(e){} estadoCopia(); }
-document.getElementById("copiaDescargar").addEventListener("click", ()=> setTimeout(copiaHecha, 500));
-document.getElementById("copiaCompartir").addEventListener("click", async ()=>{
-  if(!copiaArchivo) return;
-  try{ await navigator.share({files:[copiaArchivo], title:copiaArchivo.name}); copiaHecha(); }catch(e){}
-});
-async function recuperarCopia(input){
-  const file = input.files[0]; input.value=""; if(!file) return;
-  let datos;
-  try{ datos = JSON.parse(await file.text()); }catch(e){ alert("Ese archivo no es una copia válida."); return; }
-  if(!datos || datos.app!=="ruta-foto-n6"){ alert("Ese archivo no es una copia de esta app."); return; }
-  if(!confirm("Se sustituirán tus fichas propias, los vistos y las fotos actuales por los de la copia. ¿Continuar?")) return;
-  try{
-    propios = Object.assign({dia:[],noche:[],comer:[]}, datos.propios||{}); guardarPropios();
-    visitados = datos.visitados||{}; guardar();
-    if(datos.nav){ nav = datos.nav; try{ localStorage.setItem("rutaN6_nav", nav); }catch(e){} }
-    const d = await db();
-    await new Promise((ok,ko)=>{ const tx=d.transaction("fotos","readwrite"); tx.objectStore("fotos").clear(); tx.oncomplete=ok; tx.onerror=()=>ko(tx.error); });
-    for (const [id,arr] of Object.entries(datos.fotos||{})){
-      const lista = await Promise.all(arr.map(async x=>({t:x.t, blob: await deDataURL(x.img)})));
-      await guardarFotos(id, lista);
-    }
-    render(); estadoCopia();
-    alert("Copia recuperada.");
-  }catch(e){ alert("No se ha podido recuperar la copia completa."); }
-}
-document.getElementById("copiaGuardar").addEventListener("click", guardarCopia);
-document.getElementById("copiaRecuperar").addEventListener("change", e=>recuperarCopia(e.target));
-
-function textoBotonAnadir(){ document.getElementById("btnAnadir").textContent = state.tab==="comer" ? "+ Añadir restaurante" : "+ Añadir sitio"; }
 render();
-buscarYo();
-if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-  navigator.serviceWorker.register("sw.js", {updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});
-  let recargada = false;
-  navigator.serviceWorker.addEventListener("controllerchange", ()=>{ if(!recargada){ recargada=true; location.reload(); } });
+
+/* enlace para la sincronización externa (Firebase en la versión de GitHub Pages) */
+window.CasaNueva = {
+  getState: function(){ return state; },
+  setState: function(s){
+    if(!valid(s)) return;
+    state = s; dragState = null; closeSheet();
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+    if(ui.tab !== "resumen" && ui.tab !== "pendientes" && !findRoom(ui.tab) && !findPage(ui.tab)) ui.tab = "resumen";
+    render();
+  },
+  toast: toast,
+  syncReady: function(){ setTimeout(autoBackup, 500); },
+  setSync: function(kind, label, detail){
+    syncInfo = {kind:kind, label:label, detail:detail||""};
+    var b = document.getElementById("syncBadge");
+    b.hidden = false; b.className = "sync-badge " + kind;
+    document.getElementById("syncLabel").textContent = label;
+    b.setAttribute("aria-label", label + ". " + (detail||""));
+  }
+};
+var syncInfo = null;
+document.getElementById("syncBadge").addEventListener("click", function(){
+  if(!syncInfo) return;
+  var S = window.CasaSync, signed = S && S.signedIn && S.signedIn();
+  var s = showSheet('<h3>'+esc(syncInfo.label)+'</h3><p style="margin:0 0 14px;color:var(--ink-soft);font-size:.92rem;line-height:1.45">'+esc(syncInfo.detail)+'</p>'+
+    '<div class="row-btns"><div>'+(signed?'<button type="button" class="btn" id="sy-out">Cerrar sesión</button>':'')+'</div><div><button type="button" class="btn" data-close>Cerrar</button>'+
+    (signed?'<button type="button" class="btn primary" id="sy-now">Sincronizar ahora</button>':'')+'</div></div>');
+  var now = s.querySelector("#sy-now"); if(now) now.addEventListener("click", function(){ closeSheet(); S.syncNow(); });
+  var out = s.querySelector("#sy-out"); if(out) out.addEventListener("click", function(){ closeSheet(); S.signOut(); });
+});
+
+if(window.claude && typeof window.claude.use === "function"){
+  window.claude.use("artifact").then(function(api){
+    artifactApi = api;
+    if(api) window.CasaNueva.setSync("off", "Versión Claude", "Esta es la versión de Claude: guarda sus cambios aquí, pero no se comunica con la app del móvil. Para tener los mismos datos en el ordenador y en el móvil, usa en el ordenador la dirección de GitHub Pages en Chrome, con tu correo.");
+  }).catch(function(){});
+  window.claude.use("downloads").then(function(api){ downloadsApi = api; }).catch(function(){});
 }
+})();
 </script>
-</body>
-</html>
+
+<script src="sync.js"></script><script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});}</script></body></html>
